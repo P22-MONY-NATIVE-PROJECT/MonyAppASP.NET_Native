@@ -1,70 +1,53 @@
-\# Create react native project
+# Create react native project
 
 ```
-
 npx create-expo-app my-app
-
 ```
 
-
-
-\# Config tailwind (naitivewind)
+# Config tailwind (naitivewind)
 
 ```
-
 npm install nativewind
 
 npm install --save-dev tailwindcss
 
 npx tailwindcss init
-
-
-
-add tailwind.config.js
-
-
-
-/\*\* @type {import('tailwindcss').Config} \*/
-
-module.exports = {
-
-&nbsp; content: \[
-
-&nbsp;   "./App.{js,jsx,ts,tsx}",
-
-&nbsp;   "./src/\*\*/\*.{js,jsx,ts,tsx}",
-
-&nbsp; ],
-
-&nbsp; theme: {
-
-&nbsp;   extend: {},
-
-&nbsp; },
-
-&nbsp; plugins: \[],
-
-}
-
-
-
-
-
-add babel.config.js
-
-
-
-module.exports = {
-
-&nbsp; presets: \['babel-preset-expo'], // або 'module:metro-react-native-babel-preset' для CLI
-
-&nbsp; plugins: \['nativewind/babel'],
-
-};
-
-
-
-
+```
+## Add babel.config.js
 
 ```
+module.exports = function (api) {
+    api.cache(true);
+    return {
+        presets: [
+            ["babel-preset-expo", { jsxImportSource: "nativewind" }],
+            "nativewind/babel",
+        ],
+        plugins: [
+            // ВАЖЛИВО: цей плагін має бути останнім
+            "react-native-reanimated/plugin",
+        ],
+    };
+};
+```
 
+## Add nativewind-env.d.ts
+
+## Add metro.config.js
+
+```
+const { getDefaultConfig } = require("expo/metro-config");
+const { withNativeWind } = require('nativewind/metro');
+
+const config = getDefaultConfig(__dirname)
+
+module.exports = withNativeWind(config, { input: './global.css' })
+```
+
+## Add global.css
+
+```
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
