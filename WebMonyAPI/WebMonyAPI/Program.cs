@@ -1,15 +1,22 @@
+using Microsoft.EntityFrameworkCore;
+using WebMonyAPI.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Додаємо сервіси
 
 builder.Services.AddControllers();
 
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
+// Додаємо підключення до БД
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Налаштовуємо HTTP конвеєр
 
 app.UseAuthorization();
 
