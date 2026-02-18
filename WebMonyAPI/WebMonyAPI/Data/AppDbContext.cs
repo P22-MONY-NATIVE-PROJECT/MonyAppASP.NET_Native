@@ -8,6 +8,7 @@ public class AppDbContext : DbContext
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options){}
 
     public DbSet<ExpenseCategoryEntity> ExpenseCategories { get; set; }
+    public DbSet<SavingCategoryEntity> SavingCategories { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
