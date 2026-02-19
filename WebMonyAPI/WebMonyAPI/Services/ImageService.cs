@@ -48,7 +48,7 @@ public class ImageService(IConfiguration configuration) : IImageService
         return imageName;
     }
 
-    private async Task<string> SaveImageAsync(byte[] bytes)
+    public async Task<string> SaveImageAsync(byte[] bytes)
     {
         string imageName = $"{Path.GetRandomFileName()}.webp";
         var sizes = configuration.GetRequiredSection("ImageSizes").Get<List<int>>();

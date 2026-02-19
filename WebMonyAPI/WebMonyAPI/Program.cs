@@ -37,4 +37,6 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = $"/{dir}"
 });
 
+await app.SeedDataAsync();
+
 app.Run();
