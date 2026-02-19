@@ -9,6 +9,7 @@ public class AppDbContext : DbContext
 
     public DbSet<ExpenseCategoryEntity> ExpenseCategories { get; set; }
     public DbSet<SavingCategoryEntity> SavingCategories { get; set; }
+    public DbSet<IncomeCategoryEntity> IncomeCategories { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
