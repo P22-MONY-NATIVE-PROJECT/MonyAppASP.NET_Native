@@ -1,0 +1,18 @@
+[
+  {
+    "Name": "Криптовалюта",
+    "Icon": "/Helpers/images/cryptocurrency.png"
+  },
+  {
+    "Name": "Зарплата",
+    "Icon": "/Helpers/images/salary.png"
+  },
+  {
+    "Name": "День народження",
+    "Icon": "/Helpers/images/birthday.png"
+  },
+  {
+    "Name": "Спадок",
+    "Icon": "/Helpers/images/spadok.png"
+  }
+]

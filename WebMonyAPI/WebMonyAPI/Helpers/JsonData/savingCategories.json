@@ -1,0 +1,22 @@
+[
+  {
+    "Name": "Відпустка",
+    "Icon": "/Helpers/images/vacation.png"
+  },
+  {
+    "Name": "Фінансова подушка",
+    "Icon": "/Helpers/images/emergency.png"
+  },
+  {
+    "Name": "Дитина",
+    "Icon": "/Helpers/images/child.png"
+  },
+  {
+    "Name": "Весілля",
+    "Icon": "/Helpers/images/wedding.png"
+  },
+  {
+    "Name": "Майбутній бізнес",
+    "Icon": "/Helpers/images/business.png"
+  }
+]
