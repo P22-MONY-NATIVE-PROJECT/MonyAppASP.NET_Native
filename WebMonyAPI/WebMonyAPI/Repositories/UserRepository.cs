@@ -11,7 +11,7 @@ namespace WebMonyAPI.Repositories
     {
         private readonly IMapper _mapper;
 
-        public UserRepository(ApplicationDbContext ctx, IMapper mapper)
+        public UserRepository(AppDbContext ctx, IMapper mapper)
             : base(ctx)
         {
             _mapper = mapper;

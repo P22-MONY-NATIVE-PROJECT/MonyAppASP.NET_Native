@@ -1,23 +1,28 @@
-using WebMonyAPI.Repositories;
-using WebMonyAPI.Services;
-using WebMonyAPI.Data;
-using WebMonyAPI.Mapping;
-using Microsoft.OpenApi;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
+using WebMonyAPI.Data;
+using WebMonyAPI.Interfaces;
+using WebMonyAPI.Services;
+
+using WebMonyAPI.Repositories;
+using Microsoft.OpenApi;
+using WebMonyAPI.Mappers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Додаємо сервіси
 
 builder.Services.AddControllers();
-
+builder.Services.AddScoped<IImageService, ImageService>();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddOpenApi(options =>
@@ -75,5 +80,17 @@ app.UseSwaggerUI(options =>
 app.UseAuthorization();
 
 app.MapControllers();
+
+var dir = builder.Configuration["ImagesDir"];
+var path = Path.Combine(Directory.GetCurrentDirectory(), dir!);
+Directory.CreateDirectory(path);
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(path),
+    RequestPath = $"/{dir}"
+});
+
+await app.SeedDataAsync();
 
 app.Run();
