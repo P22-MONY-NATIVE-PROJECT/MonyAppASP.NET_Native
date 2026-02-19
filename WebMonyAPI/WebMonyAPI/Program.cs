@@ -1,12 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using WebMonyAPI.Data;
+using WebMonyAPI.Interfaces;
+using WebMonyAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Додаємо сервіси
 
 builder.Services.AddControllers();
-
+builder.Services.AddScoped<IImageService, ImageService>();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
