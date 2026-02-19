@@ -4,6 +4,10 @@ using WebMonyAPI.Data;
 using WebMonyAPI.Interfaces;
 using WebMonyAPI.Services;
 
+using WebMonyAPI.Repositories;
+using Microsoft.OpenApi;
+using WebMonyAPI.Mappers;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Додаємо сервіси
@@ -13,15 +17,65 @@ builder.Services.AddScoped<IImageService, ImageService>();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-// Додаємо підключення до БД
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer((document, context, cancellationToken) =>
+    {
+        // Ensure instances exist
+        document.Components ??= new OpenApiComponents();
+        document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
+
+        document.Components.SecuritySchemes["Bearer"] = new OpenApiSecurityScheme
+        {
+            Type = SecuritySchemeType.Http,
+            Scheme = "bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Name = "Authorization",
+            Description = "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\""
+        };
+
+        // Apply security requirement globally
+        document.Security = [
+            new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecuritySchemeReference("Bearer"),
+                    []
+                }
+            }
+        ];
+
+        document.SetReferenceHostDocument();
+
+        return Task.CompletedTask;
+    });
+});
+
+
 var app = builder.Build();
 
-// Налаштовуємо HTTP конвеєр
+app.UseHttpsRedirection();
+app.UseAuthorization();
+
+app.MapControllers();
+app.MapOpenApi();  
+
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/openapi/v1.json", "v1");
+    options.OAuthUsePkce();
+});
+
+// Configure the HTTP request pipeline.
 
 app.UseAuthorization();
 
