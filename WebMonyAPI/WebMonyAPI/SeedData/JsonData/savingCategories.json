@@ -1,22 +1,22 @@
 [
   {
     "Name": "Відпустка",
-    "Icon": "/Helpers/images/vacation.png"
+    "Icon": "/SeedData/images/vacation.png"
   },
   {
     "Name": "Фінансова подушка",
-    "Icon": "/Helpers/images/emergency.png"
+    "Icon": "/SeedData/images/emergency.png"
   },
   {
     "Name": "Дитина",
-    "Icon": "/Helpers/images/child.png"
+    "Icon": "/SeedData/images/child.png"
   },
   {
     "Name": "Весілля",
-    "Icon": "/Helpers/images/wedding.png"
+    "Icon": "/SeedData/images/wedding.png"
   },
   {
     "Name": "Майбутній бізнес",
-    "Icon": "/Helpers/images/business.png"
+    "Icon": "/SeedData/images/business.png"
   }
 ]
