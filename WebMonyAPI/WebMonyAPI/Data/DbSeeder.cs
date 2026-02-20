@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using WebMonyAPI.Entities.Categories;
+using WebMonyAPI.Entities.Finances;
 using WebMonyAPI.Interfaces;
 using WebMonyAPI.SeedData.Models;
 
@@ -18,6 +19,8 @@ public static class DbSeeder
         var imageService = scope.ServiceProvider.GetRequiredService<IImageService>();
 
         context.Database.Migrate();
+
+        // Сід для категорій витрат
         if (!context.ExpenseCategories.Any())
         {
             var jsonFile = Path.Combine(Directory.GetCurrentDirectory(), "SeedData", "JsonData", "expenseCategories.json");
@@ -60,6 +63,8 @@ public static class DbSeeder
                 Console.WriteLine("Not found file expenseCategories.json");
             }
         }
+
+        // Сід для категорій доходів
         if (!context.IncomeCategories.Any())
         {
             var jsonFile = Path.Combine(Directory.GetCurrentDirectory(), "SeedData", "JsonData", "incomeCategories.json");
@@ -103,6 +108,7 @@ public static class DbSeeder
             }
         }
 
+        // Сід для категорій заощаджень
         if (!context.SavingCategories.Any())
         {
             var jsonFile = Path.Combine(Directory.GetCurrentDirectory(), "SeedData", "JsonData", "savingCategories.json");
@@ -143,6 +149,33 @@ public static class DbSeeder
             else
             {
                 Console.WriteLine("Not found file savingCategories.json");
+            }
+        }
+
+        // Сід для валют
+        if (!context.Currencies.Any()) 
+        {
+            var jsonFile = Path.Combine(Directory.GetCurrentDirectory(), "SeedData", "JsonData", "currencies.json");
+
+            if (File.Exists(jsonFile))
+            {
+                var jsonData = await File.ReadAllTextAsync(jsonFile);
+                try
+                {
+                    var categories = JsonSerializer.Deserialize<List<SeederCurrencyModel>>(jsonData);
+                    var entityItems = mapper.Map<List<CurrencyEntity>>(categories);
+                    
+                    await context.Currencies.AddRangeAsync(entityItems);
+                    await context.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error Json Parse Data", ex.Message);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Not found file expenseCategories.json");
             }
         }
     }

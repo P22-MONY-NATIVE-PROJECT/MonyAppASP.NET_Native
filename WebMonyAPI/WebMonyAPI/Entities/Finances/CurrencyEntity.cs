@@ -9,7 +9,7 @@ public class CurrencyEntity : BaseEntity<long>
 {
     // Долар, Євро, Гривня
     [StringLength(100)]
-    public string Name { get; set; } = String.Empty;
+    public string Name { get; set; } = string.Empty;
 
     // USD, EUR, UAH
     [StringLength(10)]
