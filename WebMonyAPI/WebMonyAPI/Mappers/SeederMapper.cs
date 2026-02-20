@@ -13,5 +13,6 @@ public class SeederMapper : Profile
         CreateMap<SeederBaseCategoryModel, IncomeCategoryEntity>();
         CreateMap<SeederBaseCategoryModel, SavingCategoryEntity>();
         CreateMap<SeederCurrencyModel, CurrencyEntity>();
+        CreateMap<SeederBalanceModel, BalanceEntity>();
     }
 }
