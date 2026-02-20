@@ -3,5 +3,5 @@ using WebMonyAPI.Dtos.Categories;
 
 namespace WebMonyAPI.Queries.Categories;
 
-public record GetExpenseCategoryByIdQuery(long Id)
-    : IRequest<ExpenseCategoryDto?>;
+public record GetCategoriesQuery()
+    : IRequest<IEnumerable<CategoryDto>>;

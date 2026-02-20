@@ -5,13 +5,13 @@ using WebMonyAPI.Commands.Category;
 using WebMonyAPI.Interfaces;
 using WebMonyAPI.Entities.Categories;
 
-namespace WebMonyAPI.Handlers.Categories;
+namespace WebMonyAPI.Handlers.Categories.Expense;
 
 public class CreateExpenseCategoryHandler(IGenericRepository<ExpenseCategoryEntity, long> repo, IMapper mapper, IImageService imageService)
-    : IRequestHandler<CreateExpenseCategoryCommand, ExpenseCategoryDto>
+    : IRequestHandler<CreateCategoryCommand, CategoryDto>
 {
-    public async Task<ExpenseCategoryDto> Handle(
-        CreateExpenseCategoryCommand request,
+    public async Task<CategoryDto> Handle(
+        CreateCategoryCommand request,
         CancellationToken cancellationToken)
     {
         Console.WriteLine($"request:{request}");
@@ -29,6 +29,6 @@ public class CreateExpenseCategoryHandler(IGenericRepository<ExpenseCategoryEnti
         await repo.AddAsync(entity);
         await repo.SaveChangesAsync();
 
-        return mapper.Map<ExpenseCategoryDto>(entity);
+        return mapper.Map<CategoryDto>(entity);
     }
 }

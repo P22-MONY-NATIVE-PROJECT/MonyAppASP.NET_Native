@@ -8,39 +8,39 @@ using WebMonyAPI.Queries.Categories;
 namespace WebMonyAPI.Controllers;
 
 [ApiController]
-[Route("api/expense-categories")]
-public class ExpenseCategoriesController(IMediator mediator) : ControllerBase
+[Route("api/income-categories")]
+public class IncomeCategoriesController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> Get()
-        => Ok(await mediator.Send(new GetExpenseCategoriesQuery()));
+        => Ok(await mediator.Send(new GetCategoriesQuery()));
 
     [HttpGet("{id:long}")]
     public async Task<IActionResult> Get(long id)
-        => Ok(await mediator.Send(new GetExpenseCategoryByIdQuery(id)));
+        => Ok(await mediator.Send(new GetCategoryByIdQuery(id)));
 
     [HttpPost]
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> Create(
-        [FromForm] CreateExpenseCategoryDto dto)
+        [FromForm] CreateCategoryDto dto)
     {
         return Ok(await mediator
-            .Send(new CreateExpenseCategoryCommand(dto)));
+            .Send(new CreateCategoryCommand(dto)));
     }
 
     [HttpPut]
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> Update(
-        [FromForm] UpdateExpenseCategoryDto dto)
+        [FromForm] UpdateCategoryDto dto)
     {
         return Ok(await mediator
-            .Send(new UpdateExpenseCategoryCommand(dto)));
+            .Send(new UpdateCategoryCommand(dto)));
     }
 
     [HttpDelete("{id:long}")]
     public async Task<IActionResult> Delete(long id)
     {
-        await mediator.Send(new DeleteExpenseCategoryCommand(id));
+        await mediator.Send(new DeleteCategoryCommand(id));
         return Ok();
     }
 }

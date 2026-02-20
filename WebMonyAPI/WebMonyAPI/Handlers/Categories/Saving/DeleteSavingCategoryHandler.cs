@@ -5,13 +5,13 @@ using WebMonyAPI.Commands.Category;
 using WebMonyAPI.Interfaces;
 using WebMonyAPI.Entities.Categories;
 
-namespace WebMonyAPI.Handlers.Categories;
+namespace WebMonyAPI.Handlers.Categories.Saving;
 
-public class DeleteExpenseCategoryHandler(IGenericRepository<ExpenseCategoryEntity, long> repo)
-    : IRequestHandler<DeleteExpenseCategoryCommand>
+public class DeleteSavingCategoryHandler(IGenericRepository<SavingCategoryEntity, long> repo)
+    : IRequestHandler<DeleteCategoryCommand>
 {
     public async Task Handle(
-        DeleteExpenseCategoryCommand request,
+        DeleteCategoryCommand request,
         CancellationToken cancellationToken)
     {
         await repo.DeleteAsync(request.Id);

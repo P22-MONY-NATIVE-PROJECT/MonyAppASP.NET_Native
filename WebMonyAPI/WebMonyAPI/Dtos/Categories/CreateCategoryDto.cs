@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace WebMonyAPI.Dtos.Categories;
 
-public class CreateExpenseCategoryDto
+public class CreateCategoryDto
 {
     public string Name { get; set; } = string.Empty;
 

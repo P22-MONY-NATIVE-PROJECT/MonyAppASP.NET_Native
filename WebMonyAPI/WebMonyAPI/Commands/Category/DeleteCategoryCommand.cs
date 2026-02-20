@@ -3,5 +3,5 @@ using WebMonyAPI.Dtos.Categories;
 
 namespace WebMonyAPI.Commands.Category;
 
-public record DeleteExpenseCategoryCommand(long Id)
+public record DeleteCategoryCommand(long Id)
     : IRequest;

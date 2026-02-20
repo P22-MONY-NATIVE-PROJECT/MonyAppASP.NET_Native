@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace WebMonyAPI.Dtos.Categories;
 
-public class UpdateExpenseCategoryDto
+public class UpdateCategoryDto
 {
     public long Id { get; set; }
 

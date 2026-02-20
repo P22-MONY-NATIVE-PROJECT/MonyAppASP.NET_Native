@@ -5,16 +5,16 @@ using WebMonyAPI.Queries.Categories;
 using WebMonyAPI.Interfaces;
 using WebMonyAPI.Entities.Categories;
 
-namespace WebMonyAPI.Handlers.Categories;
+namespace WebMonyAPI.Handlers.Categories.Expense;
 
 public class GetExpenseCategoriesHandler(IGenericRepository<ExpenseCategoryEntity, long> repo, IMapper mapper)
-    : IRequestHandler<GetExpenseCategoriesQuery, IEnumerable<ExpenseCategoryDto>>
+    : IRequestHandler<GetCategoriesQuery, IEnumerable<CategoryDto>>
 {
-    public async Task<IEnumerable<ExpenseCategoryDto>> Handle(
-        GetExpenseCategoriesQuery request,
+    public async Task<IEnumerable<CategoryDto>> Handle(
+        GetCategoriesQuery request,
         CancellationToken cancellationToken)
     {
         var entities = await repo.ListAllAsync();
-        return mapper.Map<IEnumerable<ExpenseCategoryDto>>(entities);
+        return mapper.Map<IEnumerable<CategoryDto>>(entities);
     }
 }

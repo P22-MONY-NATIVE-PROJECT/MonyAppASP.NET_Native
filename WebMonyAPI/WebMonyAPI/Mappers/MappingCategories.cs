@@ -6,8 +6,8 @@ public class MappingCategories : Profile
 {
     public MappingCategories()
     {
-        CreateMap<ExpenseCategoryEntity, ExpenseCategoryDto>();
-        CreateMap<SavingCategoryEntity, CreateExpenseCategoryDto>();
-        CreateMap<IncomeCategoryEntity, UpdateExpenseCategoryDto>();
+        CreateMap<ExpenseCategoryEntity, CategoryDto>();
+        CreateMap<SavingCategoryEntity, CategoryDto>();
+        CreateMap<IncomeCategoryEntity, CategoryDto>();
     }
 }
