@@ -20,4 +20,6 @@ public class CurrencyEntity : BaseEntity<long>
 
     // Курс обміну до долара. € = 1.18, ₴ = 0.023
     public decimal DollarExchangeRate { get; set; }
+
+    public ICollection<BalanceEntity>? Balances { get; set; }
 }
