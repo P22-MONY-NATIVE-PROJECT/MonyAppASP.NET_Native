@@ -4,7 +4,7 @@ using WebMonyAPI.Data;
 using WebMonyAPI.Interfaces;
 using WebMonyAPI.Services;
 
-using WebMonyAPI.Repositories;
+using WebMonyAPI.Infrastructure.Repositories;
 using Microsoft.OpenApi;
 using WebMonyAPI.Mappers;
 
@@ -17,9 +17,7 @@ builder.Services.AddScoped<IImageService, ImageService>();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
