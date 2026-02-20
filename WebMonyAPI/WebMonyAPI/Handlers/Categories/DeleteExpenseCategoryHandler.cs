@@ -7,17 +7,9 @@ using WebMonyAPI.Entities.Categories;
 
 namespace WebMonyAPI.Handlers.Categories;
 
-public class DeleteExpenseCategoryHandler
+public class DeleteExpenseCategoryHandler(IGenericRepository<ExpenseCategoryEntity, long> repo)
     : IRequestHandler<DeleteExpenseCategoryCommand>
 {
-    private readonly IGenericRepository<ExpenseCategoryEntity, long> repo;
-
-    public DeleteExpenseCategoryHandler(
-        IGenericRepository<ExpenseCategoryEntity, long> repo)
-    {
-        this.repo = repo;
-    }
-
     public async Task Handle(
         DeleteExpenseCategoryCommand request,
         CancellationToken cancellationToken)

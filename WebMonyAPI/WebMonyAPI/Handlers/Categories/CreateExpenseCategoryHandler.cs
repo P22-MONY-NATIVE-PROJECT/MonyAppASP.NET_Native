@@ -7,25 +7,24 @@ using WebMonyAPI.Entities.Categories;
 
 namespace WebMonyAPI.Handlers.Categories;
 
-public class CreateExpenseCategoryHandler
+public class CreateExpenseCategoryHandler(IGenericRepository<ExpenseCategoryEntity, long> repo, IMapper mapper, IImageService imageService)
     : IRequestHandler<CreateExpenseCategoryCommand, ExpenseCategoryDto>
 {
-    private readonly IGenericRepository<ExpenseCategoryEntity, long> repo;
-    private readonly IMapper mapper;
-
-    public CreateExpenseCategoryHandler(
-        IGenericRepository<ExpenseCategoryEntity, long> repo,
-        IMapper mapper)
-    {
-        this.repo = repo;
-        this.mapper = mapper;
-    }
-
     public async Task<ExpenseCategoryDto> Handle(
         CreateExpenseCategoryCommand request,
         CancellationToken cancellationToken)
     {
-        var entity = mapper.Map<ExpenseCategoryEntity>(request.Model);
+        Console.WriteLine($"request:{request}");
+        var entity = new ExpenseCategoryEntity
+        {
+            Name = request.Model.Name
+        };
+
+        if (request.Model.Icon != null)
+        {
+            entity.Icon = await imageService
+                .SaveImageAsync(request.Model.Icon);
+        }
 
         await repo.AddAsync(entity);
         await repo.SaveChangesAsync();

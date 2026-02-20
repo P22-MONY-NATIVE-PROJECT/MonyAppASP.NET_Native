@@ -7,20 +7,9 @@ using WebMonyAPI.Entities.Categories;
 
 namespace WebMonyAPI.Handlers.Categories;
 
-public class GetExpenseCategoriesHandler
+public class GetExpenseCategoriesHandler(IGenericRepository<ExpenseCategoryEntity, long> repo, IMapper mapper)
     : IRequestHandler<GetExpenseCategoriesQuery, IEnumerable<ExpenseCategoryDto>>
 {
-    private readonly IGenericRepository<ExpenseCategoryEntity, long> repo;
-    private readonly IMapper mapper;
-
-    public GetExpenseCategoriesHandler(
-        IGenericRepository<ExpenseCategoryEntity, long> repo,
-        IMapper mapper)
-    {
-        this.repo = repo;
-        this.mapper = mapper;
-    }
-
     public async Task<IEnumerable<ExpenseCategoryDto>> Handle(
         GetExpenseCategoriesQuery request,
         CancellationToken cancellationToken)

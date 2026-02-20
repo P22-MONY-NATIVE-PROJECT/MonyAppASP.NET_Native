@@ -7,20 +7,9 @@ using WebMonyAPI.Entities.Categories;
 
 namespace WebMonyAPI.Handlers.Categories;
 
-public class UpdateExpenseCategoryHandler
+public class UpdateExpenseCategoryHandler(IGenericRepository<ExpenseCategoryEntity, long> repo, IMapper mapper, IImageService imageService)
     : IRequestHandler<UpdateExpenseCategoryCommand, ExpenseCategoryDto>
 {
-    private readonly IGenericRepository<ExpenseCategoryEntity, long> repo;
-    private readonly IMapper mapper;
-
-    public UpdateExpenseCategoryHandler(
-        IGenericRepository<ExpenseCategoryEntity, long> repo,
-        IMapper mapper)
-    {
-        this.repo = repo;
-        this.mapper = mapper;
-    }
-
     public async Task<ExpenseCategoryDto> Handle(
         UpdateExpenseCategoryCommand request,
         CancellationToken cancellationToken)
@@ -30,7 +19,17 @@ public class UpdateExpenseCategoryHandler
         if (entity == null || entity.IsDeleted)
             throw new KeyNotFoundException("Category not found");
 
-        mapper.Map(request.Model, entity);
+        entity.Name = request.Model.Name;
+
+        if (request.Model.Icon != null)
+        {
+            // Delete old file if exists
+            if (!string.IsNullOrEmpty(entity.Icon))
+                await imageService.DeleteImageAsync(entity.Icon);
+
+            entity.Icon = await imageService
+                .SaveImageAsync(request.Model.Icon);
+        }
 
         await repo.UpdateAsync(entity);
 
