@@ -8,6 +8,9 @@ public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options){}
 
+    public DbSet<CategoryTypeEntity> categoryTypes { get; set; }
+    public DbSet<CategoryEntity> Categories { get; set; }
+
     public DbSet<ExpenseCategoryEntity> ExpenseCategories { get; set; }
     public DbSet<SavingCategoryEntity> SavingCategories { get; set; }
     public DbSet<IncomeCategoryEntity> IncomeCategories { get; set; }
