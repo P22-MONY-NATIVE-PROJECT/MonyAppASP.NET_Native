@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WebMonyAPI.Data;
@@ -11,9 +12,11 @@ using WebMonyAPI.Data;
 namespace WebMonyAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260220032810_add_tbl_currencies")]
+    partial class add_tbl_currencies
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -103,44 +106,6 @@ namespace WebMonyAPI.Migrations
                     b.ToTable("tbl_savings_category");
                 });
 
-            modelBuilder.Entity("WebMonyAPI.Entities.Finances.BalanceEntity", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("numeric");
-
-                    b.Property<long>("CurrencyId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Icon")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsSaving")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CurrencyId");
-
-                    b.ToTable("tbl_balances");
-                });
-
             modelBuilder.Entity("WebMonyAPI.Entities.Finances.CurrencyEntity", b =>
                 {
                     b.Property<long>("Id")
@@ -174,22 +139,6 @@ namespace WebMonyAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("tbl_currencies");
-                });
-
-            modelBuilder.Entity("WebMonyAPI.Entities.Finances.BalanceEntity", b =>
-                {
-                    b.HasOne("WebMonyAPI.Entities.Finances.CurrencyEntity", "Currency")
-                        .WithMany("Balances")
-                        .HasForeignKey("CurrencyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Currency");
-                });
-
-            modelBuilder.Entity("WebMonyAPI.Entities.Finances.CurrencyEntity", b =>
-                {
-                    b.Navigation("Balances");
                 });
 #pragma warning restore 612, 618
         }

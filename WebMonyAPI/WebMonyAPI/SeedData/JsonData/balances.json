@@ -1,0 +1,23 @@
+[
+  {
+    "Name": "Готівка",
+    "Icon": "/SeedData/images/cash.png",
+    "Amount": 5000,
+    "IsSaving": false,
+    "CurrencyCode": "UAH"
+  },
+  {
+    "Name": "Картка",
+    "Icon": "/SeedData/images/card.png",
+    "Amount": 9800,
+    "IsSaving": false,
+    "CurrencyCode": "UAH"
+  },
+  {
+    "Name": "На авто",
+    "Icon": "/SeedData/images/car.png",
+    "Amount": 18500,
+    "IsSaving": true,
+    "CurrencyCode": "USD"
+  }
+]
