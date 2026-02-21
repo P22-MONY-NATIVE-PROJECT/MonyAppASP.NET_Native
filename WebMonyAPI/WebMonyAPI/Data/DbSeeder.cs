@@ -1,6 +1,5 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.CompilerServices;
 using System.Text.Json;
 using WebMonyAPI.Entities.Categories;
 using WebMonyAPI.Entities.Finances;
@@ -20,137 +19,66 @@ public static class DbSeeder
 
         context.Database.Migrate();
 
-        //// Сід для категорій витрат
-        //if (!context.ExpenseCategories.Any())
-        //{
-        //    var jsonFile = Path.Combine(Directory.GetCurrentDirectory(), "SeedData", "JsonData", "expenseCategories.json");
+        if (!await context.CategoryTypes.AnyAsync())
+        {
+            await context.CategoryTypes.AddRangeAsync(
+                new CategoryTypeEntity { Name = "Expense" },
+                new CategoryTypeEntity { Name = "Income" },
+                new CategoryTypeEntity { Name = "Saving" });
+            await context.SaveChangesAsync();
+        }
 
-        //    if (File.Exists(jsonFile))
-        //    {
-        //        var jsonData = await File.ReadAllTextAsync(jsonFile);
-        //        try
-        //        {
-        //            var categories = JsonSerializer.Deserialize<List<SeederBaseCategoryModel>>(jsonData);
-        //            var entityItems = mapper.Map<List<ExpenseCategoryEntity>>(categories);
-        //            foreach (var entity in entityItems)
-        //            {
-        //                try
-        //                {
-        //                    var imagePath = Path.Combine(Directory.GetCurrentDirectory(), entity.Icon.TrimStart('/'));
+        if (!await context.Categories.AnyAsync())
+        {
+            var jsonFile = Path.Combine(Directory.GetCurrentDirectory(), "SeedData", "JsonData", "categories.json");
+            if (File.Exists(jsonFile))
+            {
+                var jsonData = await File.ReadAllTextAsync(jsonFile);
+                try
+                {
+                    var items = JsonSerializer.Deserialize<List<SeederBaseCategoryModel>>(jsonData);
+                    if (items != null)
+                    {
+                        var typeByName = await context.CategoryTypes
+                            .ToDictionaryAsync(c => c.Name, c => c.Id);
 
-        //                    if (File.Exists(imagePath))
-        //                    {
-        //                        var bytes = await File.ReadAllBytesAsync(imagePath);
-        //                        entity.Icon = await imageService.SaveImageAsync(bytes);
-        //                    }
-        //                }
-        //                catch (Exception ex)
-        //                {
-        //                    Console.WriteLine($"Image not found: {ex.Message}");
-        //                }
+                        foreach (var item in items)
+                        {
+                            if (!typeByName.TryGetValue(item.CategoryType, out var typeId))
+                                continue;
 
-        //            }
-        //            await context.ExpenseCategories.AddRangeAsync(entityItems);
-        //            await context.SaveChangesAsync();
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Console.WriteLine("Error Json Parse Data", ex.Message);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("Not found file expenseCategories.json");
-        //    }
-        //}
+                            var entity = new CategoryBaseEntity
+                            {
+                                Name = item.Name,
+                                CategoryTypeId = typeId
+                            };
 
-        //// Сід для категорій доходів
-        //if (!context.IncomeCategories.Any())
-        //{
-        //    var jsonFile = Path.Combine(Directory.GetCurrentDirectory(), "SeedData", "JsonData", "incomeCategories.json");
+                            if (!string.IsNullOrWhiteSpace(item.Icon))
+                            {
+                                var imagePath = Path.Combine(Directory.GetCurrentDirectory(), item.Icon.TrimStart('/'));
+                                if (File.Exists(imagePath))
+                                {
+                                    var bytes = await File.ReadAllBytesAsync(imagePath);
+                                    entity.Icon = await imageService.SaveImageAsync(bytes);
+                                }
+                            }
 
-        //    if (File.Exists(jsonFile))
-        //    {
-        //        var jsonData = await File.ReadAllTextAsync(jsonFile);
-        //        try
-        //        {
-        //            var categories = JsonSerializer.Deserialize<List<SeederBaseCategoryModel>>(jsonData);
-        //            var entityItems = mapper.Map<List<IncomeCategoryEntity>>(categories);
-        //            foreach (var entity in entityItems)
-        //            {
-        //                try
-        //                {
-        //                    var imagePath = Path.Combine(Directory.GetCurrentDirectory(), entity.Icon.TrimStart('/'));
+                            context.Categories.Add(entity);
+                        }
 
-        //                    if (File.Exists(imagePath))
-        //                    {
-        //                        var bytes = await File.ReadAllBytesAsync(imagePath);
-        //                        entity.Icon = await imageService.SaveImageAsync(bytes);
-        //                    }
-        //                }
-        //                catch(Exception ex)
-        //                {
-        //                    Console.WriteLine($"Image not found: {ex.Message}");
-        //                }
-
-        //            }
-        //            await context.IncomeCategories.AddRangeAsync(entityItems);
-        //            await context.SaveChangesAsync();
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Console.WriteLine("Error Json Parse Data", ex.Message);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("Not found file incomeCategories.json");
-        //    }
-        //}
-
-        //// Сід для категорій заощаджень
-        //if (!context.SavingCategories.Any())
-        //{
-        //    var jsonFile = Path.Combine(Directory.GetCurrentDirectory(), "SeedData", "JsonData", "savingCategories.json");
-
-        //    if (File.Exists(jsonFile))
-        //    {
-        //        var jsonData = await File.ReadAllTextAsync(jsonFile);
-        //        try
-        //        {
-        //            var categories = JsonSerializer.Deserialize<List<SeederBaseCategoryModel>>(jsonData);
-        //            var entityItems = mapper.Map<List<SavingCategoryEntity>>(categories);
-        //            foreach (var entity in entityItems)
-        //            {
-        //                try
-        //                {
-        //                    var imagePath = Path.Combine(Directory.GetCurrentDirectory(), entity.Icon.TrimStart('/'));
-
-        //                    if (File.Exists(imagePath))
-        //                    {
-        //                        var bytes = await File.ReadAllBytesAsync(imagePath);
-        //                        entity.Icon = await imageService.SaveImageAsync(bytes);
-        //                    }
-        //                }
-        //                catch (Exception ex)
-        //                {
-        //                    Console.WriteLine($"Image not found: {ex.Message}");
-        //                }
-
-        //            }
-        //            await context.SavingCategories.AddRangeAsync(entityItems);
-        //            await context.SaveChangesAsync();
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Console.WriteLine("Error Json Parse Data", ex.Message);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("Not found file savingCategories.json");
-        //    }
-        //}
+                        await context.SaveChangesAsync();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error seeding categories: " + ex.Message);
+                }
+            }
+            else
+            {
+                Console.WriteLine("SeedData/JsonData/categories.json not found");
+            }
+        }
 
         // Сід для валют
         if (!context.Currencies.Any()) 

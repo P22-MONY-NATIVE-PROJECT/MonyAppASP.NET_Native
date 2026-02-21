@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 using WebMonyAPI.Commands.Category;
+using WebMonyAPI.Constants;
 using WebMonyAPI.Dtos.Categories;
 using WebMonyAPI.Queries.Categories;
 
@@ -13,7 +13,7 @@ public class ExpenseCategoriesController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> Get()
-        => Ok(await mediator.Send(new GetCategoriesQuery()));
+        => Ok(await mediator.Send(new GetCategoriesQuery(CategoryTypeIds.Expense)));
 
     [HttpGet("{id:long}")]
     public async Task<IActionResult> Get(long id)
@@ -25,7 +25,7 @@ public class ExpenseCategoriesController(IMediator mediator) : ControllerBase
         [FromForm] CreateCategoryDto dto)
     {
         return Ok(await mediator
-            .Send(new CreateCategoryCommand(dto)));
+            .Send(new CreateCategoryCommand(dto, CategoryTypeIds.Expense)));
     }
 
     [HttpPut]

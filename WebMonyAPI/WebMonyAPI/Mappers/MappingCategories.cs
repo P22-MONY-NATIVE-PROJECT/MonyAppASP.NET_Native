@@ -2,12 +2,12 @@ using AutoMapper;
 using WebMonyAPI.Entities.Categories;
 using WebMonyAPI.Dtos.Categories;
 
+namespace WebMonyAPI.Mappers;
+
 public class MappingCategories : Profile
 {
     public MappingCategories()
     {
-        //CreateMap<ExpenseCategoryEntity, CategoryDto>();
-        //CreateMap<SavingCategoryEntity, CategoryDto>();
-        //CreateMap<IncomeCategoryEntity, CategoryDto>();
+        CreateMap<CategoryBaseEntity, CategoryDto>();
     }
 }
