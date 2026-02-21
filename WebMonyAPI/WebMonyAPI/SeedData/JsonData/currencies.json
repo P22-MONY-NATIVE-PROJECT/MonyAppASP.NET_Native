@@ -1,0 +1,32 @@
+[
+  {
+    "Name": "Долар США",
+    "Code": "USD",
+    "Symbol": "$",
+    "DollarExchangeRate": 1.0
+  },
+  {
+    "Name": "Євро",
+    "Code": "EUR",
+    "Symbol": "€",
+    "DollarExchangeRate": 1.18
+  },
+  {
+    "Name": "Українська гривня",
+    "Code": "UAH",
+    "Symbol": "₴",
+    "DollarExchangeRate": 0.023
+  },
+  {
+    "Name": "Британський фунт стерлінгів",
+    "Code": "GBP",
+    "Symbol": "£",
+    "DollarExchangeRate": 1.34
+  },
+  {
+    "Name": "Японська єна",
+    "Code": "JPY",
+    "Symbol": "¥",
+    "DollarExchangeRate": 0.0064
+  }
+]
