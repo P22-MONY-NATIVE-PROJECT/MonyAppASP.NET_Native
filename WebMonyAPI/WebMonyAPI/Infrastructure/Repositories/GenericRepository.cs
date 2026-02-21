@@ -1,15 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using WebMonyAPI.Data;
 using WebMonyAPI.Interfaces;
 using WebMonyAPI.Entities.Base;
-using WebMonyAPI.Dtos.Helpers;
-using WebMonyAPI.Services;
 
 namespace WebMonyAPI.Infrastructure.Repositories;
 
@@ -17,9 +14,10 @@ public class GenericRepository<TEntity, TKey>(AppDbContext context, IMapper mapp
     IGenericRepository<TEntity, TKey>
     where TEntity : class, IEntity<TKey>, new()
 {
-    public async Task<TEntity?> GetByIdAsync(TKey id)
+    public async Task<TEntity?> GetByIdAsync(TKey id, bool isSoft = false)
     {
-        return await context.Set<TEntity>().FindAsync(id);
+        var entity = await context.Set<TEntity>().FindAsync(id);
+        return entity!.IsDeleted == isSoft ? entity : null;
     }
 
     public async Task<IReadOnlyList<TEntity>> ListAllAsync()

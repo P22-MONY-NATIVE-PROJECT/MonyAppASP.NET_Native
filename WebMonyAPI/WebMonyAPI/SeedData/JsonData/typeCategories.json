@@ -2,7 +2,7 @@
   {
     "Name": "Витрати",
     "Icon": "/SeedData/images/utilities.png",
-    "Categoris": [
+    "Categories": [
       {
         "Name": "Комунальні послуги",
         "Icon": "/SeedData/images/utilities.png"
