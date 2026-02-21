@@ -1,0 +1,120 @@
+[
+  {
+    "Name": "Витрати",
+    "Icon": "/SeedData/images/utilities.png",
+    "Categories": [
+      {
+        "Name": "Комунальні послуги",
+        "Icon": "/SeedData/images/utilities.png"
+      },
+      {
+        "Name": "Пальне",
+        "Icon": "/SeedData/images/petrol.png"
+      },
+      {
+        "Name": "Телефон",
+        "Icon": "/SeedData/images/phone.png"
+      },
+      {
+        "Name": "Інтернет",
+        "Icon": "/SeedData/images/internet.png"
+      },
+      {
+        "Name": "Освіта",
+        "Icon": "/SeedData/images/education.png"
+      },
+      {
+        "Name": "Дитина",
+        "Icon": "/SeedData/images/child.png"
+      },
+      {
+        "Name": "День народження",
+        "Icon": "/SeedData/images/birthday.png"
+      },
+      {
+        "Name": "Одяг",
+        "Icon": "/SeedData/images/clothes.png"
+      },
+      {
+        "Name": "Транспорт",
+        "Icon": "/SeedData/images/transport.png"
+      },
+      {
+        "Name": "Домашні тварини",
+        "Icon": "/SeedData/images/pets.png"
+      },
+      {
+        "Name": "Здоров'я",
+        "Icon": "/SeedData/images/health.png"
+      },
+      {
+        "Name": "Кафе",
+        "Icon": "/SeedData/images/cafe.png"
+      },
+      {
+        "Name": "Розваги",
+        "Icon": "/SeedData/images/entertainment.png"
+      },
+      {
+        "Name": "Їжа",
+        "Icon": "/SeedData/images/food.png"
+      },
+      {
+        "Name": "Книги",
+        "Icon": "/SeedData/images/books.png"
+      },
+      {
+        "Name": "Сім'я'",
+        "Icon": "/SeedData/images/family.png"
+      }
+    ]
+  },
+  {
+    "Name": "Заощадження",
+    "Icon": "/SeedData/images/petrol.png",
+    "Categories": [
+      {
+        "Name": "Відпустка",
+        "Icon": "/SeedData/images/vacation.png"
+      },
+      {
+        "Name": "Фінансова подушка",
+        "Icon": "/SeedData/images/emergency.png"
+      },
+      {
+        "Name": "Дитина",
+        "Icon": "/SeedData/images/child.png"
+      },
+      {
+        "Name": "Весілля",
+        "Icon": "/SeedData/images/wedding.png"
+      },
+      {
+        "Name": "Майбутній бізнес",
+        "Icon": "/SeedData/images/business.png"
+      }
+    ]
+  },
+  {
+    "Name": "Доходи",
+    "Icon": "/SeedData/images/phone.png",
+    "Categories": [
+      {
+        "Name": "Криптовалюта",
+        "Icon": "/SeedData/images/cryptocurrency.png"
+      },
+      {
+        "Name": "Зарплата",
+        "Icon": "/SeedData/images/salary.png"
+      },
+      {
+        "Name": "День народження",
+        "Icon": "/SeedData/images/birthday.png"
+      },
+      {
+        "Name": "Спадок",
+        "Icon": "/SeedData/images/spadok.png"
+      }
+    ]
+  }
+]

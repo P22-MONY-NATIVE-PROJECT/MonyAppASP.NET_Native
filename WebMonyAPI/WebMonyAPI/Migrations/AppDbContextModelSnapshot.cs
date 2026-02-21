@@ -22,6 +22,65 @@ namespace WebMonyAPI.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("WebMonyAPI.Entities.Categories.CategoryEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("CategoryTypeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Icon")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryTypeId");
+
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("WebMonyAPI.Entities.Categories.CategoryTypeEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Icon")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tblCategoryTypes");
+                });
+
             modelBuilder.Entity("WebMonyAPI.Entities.Categories.ExpenseCategoryEntity", b =>
                 {
                     b.Property<long>("Id")
@@ -176,6 +235,17 @@ namespace WebMonyAPI.Migrations
                     b.ToTable("tbl_currencies");
                 });
 
+            modelBuilder.Entity("WebMonyAPI.Entities.Categories.CategoryEntity", b =>
+                {
+                    b.HasOne("WebMonyAPI.Entities.Categories.CategoryTypeEntity", "CategoryType")
+                        .WithMany("Categories")
+                        .HasForeignKey("CategoryTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CategoryType");
+                });
+
             modelBuilder.Entity("WebMonyAPI.Entities.Finances.BalanceEntity", b =>
                 {
                     b.HasOne("WebMonyAPI.Entities.Finances.CurrencyEntity", "Currency")
@@ -185,6 +255,11 @@ namespace WebMonyAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("Currency");
+                });
+
+            modelBuilder.Entity("WebMonyAPI.Entities.Categories.CategoryTypeEntity", b =>
+                {
+                    b.Navigation("Categories");
                 });
 
             modelBuilder.Entity("WebMonyAPI.Entities.Finances.CurrencyEntity", b =>
