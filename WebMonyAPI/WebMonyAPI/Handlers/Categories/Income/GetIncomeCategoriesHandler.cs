@@ -7,7 +7,7 @@ using WebMonyAPI.Entities.Categories;
 
 namespace WebMonyAPI.Handlers.Categories.Income;
 
-public class GetIncomeCategoriesHandler(IGenericRepository<IncomeCategoryEntity, long> repo, IMapper mapper)
+public class GetIncomeCategoriesHandler(IGenericRepository<CategoryBaseEntity, long> repo, IMapper mapper)
     : IRequestHandler<GetCategoriesQuery, IEnumerable<CategoryDto>>
 {
     public async Task<IEnumerable<CategoryDto>> Handle(

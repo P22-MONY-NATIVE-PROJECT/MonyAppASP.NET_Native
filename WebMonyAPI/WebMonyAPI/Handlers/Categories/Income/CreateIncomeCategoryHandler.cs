@@ -7,7 +7,7 @@ using WebMonyAPI.Entities.Categories;
 
 namespace WebMonyAPI.Handlers.Categories.Income;
 
-public class CreateIncomeCategoryHandler(IGenericRepository<IncomeCategoryEntity, long> repo, IMapper mapper, IImageService imageService)
+public class CreateIncomeCategoryHandler(IGenericRepository<CategoryBaseEntity, long> repo, IMapper mapper, IImageService imageService)
     : IRequestHandler<CreateCategoryCommand, CategoryDto>
 {
     public async Task<CategoryDto> Handle(
@@ -15,7 +15,7 @@ public class CreateIncomeCategoryHandler(IGenericRepository<IncomeCategoryEntity
         CancellationToken cancellationToken)
     {
         Console.WriteLine($"request:{request}");
-        var entity = new IncomeCategoryEntity
+        var entity = new CategoryBaseEntity
         {
             Name = request.Model.Name
         };

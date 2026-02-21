@@ -7,7 +7,7 @@ using WebMonyAPI.Entities.Categories;
 
 namespace WebMonyAPI.Handlers.Categories.Expense;
 
-public class CreateExpenseCategoryHandler(IGenericRepository<ExpenseCategoryEntity, long> repo, IMapper mapper, IImageService imageService)
+public class CreateExpenseCategoryHandler(IGenericRepository<CategoryBaseEntity, long> repo, IMapper mapper, IImageService imageService)
     : IRequestHandler<CreateCategoryCommand, CategoryDto>
 {
     public async Task<CategoryDto> Handle(
@@ -15,7 +15,7 @@ public class CreateExpenseCategoryHandler(IGenericRepository<ExpenseCategoryEnti
         CancellationToken cancellationToken)
     {
         Console.WriteLine($"request:{request}");
-        var entity = new ExpenseCategoryEntity
+        var entity = new CategoryBaseEntity
         {
             Name = request.Model.Name
         };

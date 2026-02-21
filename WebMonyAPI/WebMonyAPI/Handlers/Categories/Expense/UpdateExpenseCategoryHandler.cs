@@ -7,7 +7,7 @@ using WebMonyAPI.Entities.Categories;
 
 namespace WebMonyAPI.Handlers.Categories.Expense;
 
-public class UpdateExpenseCategoryHandler(IGenericRepository<ExpenseCategoryEntity, long> repo, IMapper mapper, IImageService imageService)
+public class UpdateExpenseCategoryHandler(IGenericRepository<CategoryBaseEntity, long> repo, IMapper mapper, IImageService imageService)
     : IRequestHandler<UpdateCategoryCommand, CategoryDto>
 {
     public async Task<CategoryDto> Handle(

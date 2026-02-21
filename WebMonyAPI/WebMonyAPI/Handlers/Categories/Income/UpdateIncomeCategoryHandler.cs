@@ -7,7 +7,7 @@ using WebMonyAPI.Entities.Categories;
 
 namespace WebMonyAPI.Handlers.Categories.Income;
 
-public class UpdateIncomeCategoryHandler(IGenericRepository<IncomeCategoryEntity, long> repo, IMapper mapper, IImageService imageService)
+public class UpdateIncomeCategoryHandler(IGenericRepository<CategoryBaseEntity, long> repo, IMapper mapper, IImageService imageService)
     : IRequestHandler<UpdateCategoryCommand, CategoryDto>
 {
     public async Task<CategoryDto> Handle(

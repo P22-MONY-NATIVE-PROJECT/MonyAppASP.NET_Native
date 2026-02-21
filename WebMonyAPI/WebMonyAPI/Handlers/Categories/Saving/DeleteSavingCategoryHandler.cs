@@ -7,7 +7,7 @@ using WebMonyAPI.Entities.Categories;
 
 namespace WebMonyAPI.Handlers.Categories.Saving;
 
-public class DeleteSavingCategoryHandler(IGenericRepository<SavingCategoryEntity, long> repo)
+public class DeleteSavingCategoryHandler(IGenericRepository<CategoryBaseEntity, long> repo)
     : IRequestHandler<DeleteCategoryCommand>
 {
     public async Task Handle(

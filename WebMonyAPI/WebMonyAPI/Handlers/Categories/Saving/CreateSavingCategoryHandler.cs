@@ -7,7 +7,7 @@ using WebMonyAPI.Entities.Categories;
 
 namespace WebMonyAPI.Handlers.Categories.Saving;
 
-public class CreateSavingCategoryHandler(IGenericRepository<SavingCategoryEntity, long> repo, IMapper mapper, IImageService imageService)
+public class CreateSavingCategoryHandler(IGenericRepository<CategoryBaseEntity, long> repo, IMapper mapper, IImageService imageService)
     : IRequestHandler<CreateCategoryCommand, CategoryDto>
 {
     public async Task<CategoryDto> Handle(
@@ -15,7 +15,7 @@ public class CreateSavingCategoryHandler(IGenericRepository<SavingCategoryEntity
         CancellationToken cancellationToken)
     {
         Console.WriteLine($"request:{request}");
-        var entity = new SavingCategoryEntity
+        var entity = new CategoryBaseEntity
         {
             Name = request.Model.Name
         };

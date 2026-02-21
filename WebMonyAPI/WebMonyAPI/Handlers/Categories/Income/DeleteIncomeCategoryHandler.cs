@@ -7,7 +7,7 @@ using WebMonyAPI.Entities.Categories;
 
 namespace WebMonyAPI.Handlers.Categories.Income;
 
-public class DeleteIncomeCategoryHandler(IGenericRepository<IncomeCategoryEntity, long> repo)
+public class DeleteIncomeCategoryHandler(IGenericRepository<CategoryBaseEntity, long> repo)
     : IRequestHandler<DeleteCategoryCommand>
 {
     public async Task Handle(

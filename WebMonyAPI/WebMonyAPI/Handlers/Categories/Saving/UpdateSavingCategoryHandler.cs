@@ -7,7 +7,7 @@ using WebMonyAPI.Entities.Categories;
 
 namespace WebMonyAPI.Handlers.Categories.Saving;
 
-public class UpdateSavingCategoryHandler(IGenericRepository<SavingCategoryEntity, long> repo, IMapper mapper, IImageService imageService)
+public class UpdateSavingCategoryHandler(IGenericRepository<CategoryBaseEntity, long> repo, IMapper mapper, IImageService imageService)
     : IRequestHandler<UpdateCategoryCommand, CategoryDto>
 {
     public async Task<CategoryDto> Handle(

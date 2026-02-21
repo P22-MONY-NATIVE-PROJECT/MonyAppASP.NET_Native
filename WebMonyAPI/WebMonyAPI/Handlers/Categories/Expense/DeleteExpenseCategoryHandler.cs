@@ -7,7 +7,7 @@ using WebMonyAPI.Entities.Categories;
 
 namespace WebMonyAPI.Handlers.Categories.Expense;
 
-public class DeleteExpenseCategoryHandler(IGenericRepository<ExpenseCategoryEntity, long> repo)
+public class DeleteExpenseCategoryHandler(IGenericRepository<CategoryBaseEntity, long> repo)
     : IRequestHandler<DeleteCategoryCommand>
 {
     public async Task Handle(
