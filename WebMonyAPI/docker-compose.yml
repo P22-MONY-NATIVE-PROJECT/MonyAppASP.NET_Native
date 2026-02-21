@@ -1,0 +1,59 @@
+version: "3.9"
+
+networks:
+  f-track_net:
+    driver: bridge
+
+services:
+  db:
+    image: postgres:18.1
+    container_name: f-track-db-container
+    restart: unless-stopped
+    ports:
+      - "5375:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ${VOLUME_POSTGRES}
+    networks:
+      - f-track_net
+
+  api:
+    image: pedro007salo/f-track-api:latest
+    container_name: f-track-api-container
+    restart: unless-stopped
+    volumes:
+      - ${VOLUME_SERVERAPI}
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnection: "Host=db;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
+    ports:
+      - "127.0.0.1:4326:8080"
+    depends_on:
+      - db
+    networks:
+      - f-track_net
+
+  db-backup:
+    image: postgres:18.1
+    container_name: f-track-db-backup
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ${VOLUME_POSTGRES}:/var/lib/postgresql/data
+      - ./backups:/backups
+    networks:
+      - f-track_net
+    entrypoint: >
+      sh -c "
+        while true; do
+          TIMESTAMP=$(date +'%Y%m%d%H%M%S')
+          pg_dump -h db -U ${POSTGRES_USER} ${POSTGRES_DB} | gzip > /backups/db_$TIMESTAMP.sql.gz
+          
+          sleep 86400
+        done
+      "
