@@ -4,12 +4,12 @@ import {setupListeners} from "@reduxjs/toolkit/query";
 
 export const store = configureStore({
     reducer: {
-
+        [categoriesApi.reducerPath]: categoriesApi.reducer,
     },
 
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
-
+            categoriesApi.middleware
         )
 });
 
