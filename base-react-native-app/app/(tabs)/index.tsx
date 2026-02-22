@@ -6,8 +6,11 @@ import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Link } from 'expo-router';
+import {useGetCategoriesQuery} from "@/services/categoriesService";
 
 export default function HomeScreen() {
+  const {data: categories} = useGetCategoriesQuery({typeId: 1});
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -75,6 +78,12 @@ export default function HomeScreen() {
           <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
           <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
+
+          {categories && categories.map(category => (
+              <ThemedText key={category.id}>
+                {category.name}
+              </ThemedText>
+          ))}
         </ThemedText>
       </ThemedView>
     </ParallaxScrollView>
