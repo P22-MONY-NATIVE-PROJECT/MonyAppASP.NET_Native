@@ -79,7 +79,7 @@ export default function HomeScreen() {
           <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
 
-          {categories && categories.map(category => (
+          {categories?.map(category => (
               <ThemedText key={category.id}>
                 {category.name}
               </ThemedText>
