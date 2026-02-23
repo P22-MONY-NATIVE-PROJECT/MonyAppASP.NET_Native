@@ -8,6 +8,7 @@ export default function TabLayout() {
 
     return (
         <Tabs
+            initialRouteName="expenses"
             screenOptions={{
                 headerShown: false,
                 tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,

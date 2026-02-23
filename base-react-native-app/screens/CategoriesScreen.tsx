@@ -1,5 +1,7 @@
-import { View, Text, FlatList, TouchableOpacity, Image } from "react-native";
+import { FlatList, TouchableOpacity, View, Text, Image } from "react-native";
 import { useRouter } from "expo-router";
+import { ThemedView } from "@/components/themed-view";
+import { ThemedText } from "@/components/themed-text";
 import {
     useGetCategoriesQuery,
     useDeleteCategoryMutation,
@@ -16,26 +18,29 @@ export default function CategoriesScreen({ typeId }: Props) {
 
     if (isLoading) {
         return (
-            <View className="flex-1 items-center justify-center">
-                <Text>Loading...</Text>
-            </View>
+            <ThemedView className="flex-1 items-center justify-center">
+                <ThemedText>Loading...</ThemedText>
+            </ThemedView>
         );
     }
 
     return (
-        <View className="flex-1 bg-white p-4">
+        <ThemedView className="flex-1 relative">
             <FlatList
                 data={data}
                 keyExtractor={(item) => item.id.toString()}
-                contentContainerStyle={{ gap: 12 }}
+                contentContainerStyle={{ padding: 16, gap: 12, paddingBottom: 100 }}
+                showsVerticalScrollIndicator={false}
                 renderItem={({ item }) => (
-                    <View className="flex-row items-center justify-between bg-gray-100 p-4 rounded-xl">
+                    <ThemedView className="flex-row items-center justify-between p-4 rounded-2xl">
                         <View className="flex-row items-center gap-3">
                             <Image
                                 source={{ uri: item.icon }}
                                 className="w-10 h-10 rounded-full"
                             />
-                            <Text className="text-lg">{item.name}</Text>
+                            <ThemedText type="defaultSemiBold">
+                                {item.name}
+                            </ThemedText>
                         </View>
 
                         <View className="flex-row gap-4">
@@ -47,19 +52,22 @@ export default function CategoriesScreen({ typeId }: Props) {
                                     })
                                 }
                             >
-                                <Text className="text-blue-500">Edit</Text>
+                                <ThemedText type="link">Edit</ThemedText>
                             </TouchableOpacity>
 
                             <TouchableOpacity
                                 onPress={() => deleteCategory(item.id)}
                             >
-                                <Text className="text-red-500">Delete</Text>
+                                <ThemedText style={{ color: "red" }}>
+                                    Delete
+                                </ThemedText>
                             </TouchableOpacity>
                         </View>
-                    </View>
+                    </ThemedView>
                 )}
             />
 
+            {/* Floating Button */}
             <TouchableOpacity
                 onPress={() =>
                     router.push({
@@ -69,8 +77,10 @@ export default function CategoriesScreen({ typeId }: Props) {
                 }
                 className="absolute bottom-6 right-6 bg-black px-6 py-3 rounded-full"
             >
-                <Text className="text-white">+ Додати</Text>
+                <Text className="text-white font-semibold">
+                    + Додати
+                </Text>
             </TouchableOpacity>
-        </View>
+        </ThemedView>
     );
 }

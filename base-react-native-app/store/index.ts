@@ -1,16 +1,16 @@
 import { configureStore } from '@reduxjs/toolkit';
 import {type TypedUseSelectorHook, useDispatch, useSelector} from 'react-redux';
 import {setupListeners} from "@reduxjs/toolkit/query";
-import {chatService} from "@/services/categoriesService";
+import {categoriesService} from "@/services/categoriesService";
 
 export const store = configureStore({
     reducer: {
-        [chatService.reducerPath]: chatService.reducer,
+        [categoriesService.reducerPath]: categoriesService.reducer,
     },
 
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
-            chatService.middleware
+            categoriesService.middleware
         )
 });
 
