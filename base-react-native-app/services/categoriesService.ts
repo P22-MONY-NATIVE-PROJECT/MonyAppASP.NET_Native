@@ -1,9 +1,15 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import {ICategoryItemResponse} from "@/types/category/ICategoryItemResponse";
-import {IGetCategoriesRequest} from "@/types/category/IGetCategoriesRequest";
-import { createBaseQuery } from "@/utilities/createBaseQuery";
+import { serialize } from "object-to-formdata";
 
-export const chatService = createApi({
+import { ICategoryItemResponse } from "@/types/category/ICategoryItemResponse";
+import { IGetCategoriesRequest } from "@/types/category/IGetCategoriesRequest";
+import { ICreateCategoryRequest } from "@/types/category/ICreateCategoryRequest";
+import { IEditCategoryRequest } from "@/types/category/IEditCategoryRequest";
+
+import { createBaseQuery } from "@/utilities/createBaseQuery";
+import {IGetCategoryByIdRequest} from "@/types/category/IGetCategoryByIdRequest";
+
+export const categoriesService = createApi({
     reducerPath: "api/categories",
     tagTypes: ["Categories"],
     baseQuery: createBaseQuery("categories"),
@@ -14,10 +20,48 @@ export const chatService = createApi({
                 url: "",
                 params
             }),
+            providesTags: ["Categories"]
+        }),
+
+        getCategoryById: builder.query<ICategoryItemResponse, IGetCategoryByIdRequest>({
+            query: params => ({
+                url: "",
+                params
+            }),
+        }),
+
+        createCategory: builder.mutation<void, ICreateCategoryRequest>({
+            query: body => ({
+                url: "",
+                method: "POST",
+                body: serialize(body)
+            }),
+            invalidatesTags: ["Categories"]
+        }),
+
+        updateCategory: builder.mutation<void, IEditCategoryRequest>({
+            query: body => ({
+                url: "",
+                method: "PUT",
+                body: serialize(body)
+            }),
+            invalidatesTags: ["Categories"]
+        }),
+
+        deleteCategory: builder.mutation<void, number>({
+            query: id => ({
+                url: `/${id}`,
+                method: "DELETE"
+            }),
+            invalidatesTags: ["Categories"]
         }),
     }),
 });
 
 export const {
     useGetCategoriesQuery,
-} = chatService;
+    useCreateCategoryMutation,
+    useUpdateCategoryMutation,
+    useDeleteCategoryMutation,
+    useGetCategoryByIdQuery
+} = categoriesService;
