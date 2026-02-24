@@ -10,6 +10,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ICreateCategoryRequest } from "@/types/category/ICreateCategoryRequest";
 import { IEditCategoryRequest } from "@/types/category/IEditCategoryRequest";
+import {ThemedView} from "@/components/themed-view";
 
 export default function CategoryModal() {
     const { id } = useLocalSearchParams();
@@ -65,44 +66,46 @@ export default function CategoryModal() {
     }
 
     return (
-        <SafeAreaView className="flex-1 p-6 gap-6 bg-black">
-            <Text className="text-2xl font-bold text-white">
-                {isEdit ? "Редагувати" : "Створити"}
-            </Text>
-
-            <TextInput
-                value={form.name}
-                onChangeText={(value) =>
-                    setForm((prev) => ({
-                        ...prev,
-                        name: value,
-                    }))
-                }
-                placeholder="Назва"
-                placeholderTextColor="#9CA3AF"
-                className="border border-gray-600 p-4 rounded-xl text-white"
-            />
-
-            <SquareImagePicker
-                imageUri={form.icon?.uri ?? null}
-                onChange={(file) =>
-                    setForm((prev) => ({
-                        ...prev,
-                        icon: file,
-                    }))
-                }
-                size={160}
-                label="Обрати іконку"
-            />
-
-            <TouchableOpacity
-                onPress={onSubmit}
-                className="bg-white p-4 rounded-xl items-center"
-            >
-                <Text className="text-black font-semibold">
-                    {isEdit ? "Зберегти" : "Створити"}
+        <ThemedView className="flex-1">
+            <SafeAreaView className="flex-1 p-6 gap-6">
+                <Text className="text-2xl font-bold text-white">
+                    {isEdit ? "Редагувати" : "Створити"}
                 </Text>
-            </TouchableOpacity>
-        </SafeAreaView>
+
+                <TextInput
+                    value={form.name}
+                    onChangeText={(value) =>
+                        setForm((prev) => ({
+                            ...prev,
+                            name: value,
+                        }))
+                    }
+                    placeholder="Назва"
+                    placeholderTextColor="#9CA3AF"
+                    className="border border-gray-600 p-4 rounded-xl text-white"
+                />
+
+                <SquareImagePicker
+                    imageUri={form.icon?.uri ?? null}
+                    onChange={(file) =>
+                        setForm((prev) => ({
+                            ...prev,
+                            icon: file,
+                        }))
+                    }
+                    size={160}
+                    label="Обрати іконку"
+                />
+
+                <TouchableOpacity
+                    onPress={onSubmit}
+                    className="bg-white p-4 rounded-xl items-center"
+                >
+                    <Text className="text-black font-semibold">
+                        {isEdit ? "Зберегти" : "Створити"}
+                    </Text>
+                </TouchableOpacity>
+            </SafeAreaView>
+        </ThemedView>
     );
 }

@@ -8,6 +8,7 @@ import {
 } from "@/services/categoriesService";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import {APP_URLS} from "@/constants/Urls";
 
 interface Props {
     typeId: number;
@@ -38,7 +39,7 @@ export default function CategoriesListScreen({ typeId }: Props) {
                         <ThemedView className="flex-row items-center justify-between p-4 rounded-2xl">
                             <View className="flex-row items-center gap-3">
                                 <Image
-                                    source={{ uri: item.icon }}
+                                    source={{ uri: APP_URLS.IMAGES_100_URL + item.icon }}
                                     className="w-10 h-10 rounded-full"
                                 />
                                 <ThemedText type="defaultSemiBold">
