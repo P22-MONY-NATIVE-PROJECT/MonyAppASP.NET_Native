@@ -1,14 +1,15 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
-import { useEffect, useState } from "react";
-import * as ImagePicker from "expo-image-picker";
-
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { useState } from "react";
+import { SquareImagePicker } from "@/components/form/SquareImagePicker";
 import {
     useCreateCategoryMutation,
     useUpdateCategoryMutation,
     useGetCategoryByIdQuery,
 } from "@/services/categoriesService";
 import { SafeAreaView } from "react-native-safe-area-context";
+import {ICreateCategoryRequest} from "@/types/category/ICreateCategoryRequest";
+import {IEditCategoryRequest} from "@/types/category/IEditCategoryRequest";
 
 export default function CategoryModal() {
     const { id } = useLocalSearchParams();
@@ -21,45 +22,25 @@ export default function CategoryModal() {
         { skip: !isEdit }
     );
 
-    const [name, setName] = useState("");
-    const [icon, setIcon] = useState<any>(null);
-
     const [createCategory] = useCreateCategoryMutation();
     const [updateCategory] = useUpdateCategoryMutation();
 
-    useEffect(() => {
-        if (data) {
-            setName(data.name);
-        }
-    }, [data]);
-
-    const pickImage = async () => {
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            quality: 0.7,
-        });
-
-        if (!result.canceled) {
-            setIcon({
-                uri: result.assets[0].uri,
-                type: "image/jpeg",
-                name: "icon.jpg",
-            });
-        }
-    };
+    const [form, setForm] = useState<ICreateCategoryRequest>({
+        name: data?.name ?? "",
+        icon: undefined as any,
+    });
 
     const onSubmit = async () => {
         if (isEdit) {
-            await updateCategory({
+            const payload: IEditCategoryRequest = {
                 id: Number(id),
-                name,
-                icon,
-            });
+                name: form.name,
+                icon: form.icon,
+            };
+
+            await updateCategory(payload);
         } else {
-            await createCategory({
-                name,
-                icon,
-            });
+            await createCategory(form);
         }
 
         router.back();
@@ -80,28 +61,29 @@ export default function CategoryModal() {
             </Text>
 
             <TextInput
-                value={name}
-                onChangeText={setName}
+                value={form.name}
+                onChangeText={(value) =>
+                    setForm((prev) => ({
+                        ...prev,
+                        name: value,
+                    }))
+                }
                 placeholder="Назва"
                 placeholderTextColor="#9CA3AF"
                 className="border border-gray-600 p-4 rounded-xl text-white"
             />
 
-            <TouchableOpacity
-                onPress={pickImage}
-                className="border border-gray-500 p-4 rounded-xl items-center"
-            >
-                <Text className="text-white opacity-80">
-                    Обрати іконку
-                </Text>
-            </TouchableOpacity>
-
-            {icon && (
-                <Image
-                    source={{ uri: icon.uri }}
-                    className="w-20 h-20 rounded-full"
-                />
-            )}
+            <SquareImagePicker
+                imageUri={form.icon?.uri ?? null}
+                onChange={(file) =>
+                    setForm((prev) => ({
+                        ...prev,
+                        icon: file,
+                    }))
+                }
+                size={160}
+                label="Обрати іконку"
+            />
 
             <TouchableOpacity
                 onPress={onSubmit}
