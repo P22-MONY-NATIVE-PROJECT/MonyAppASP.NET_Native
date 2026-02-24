@@ -16,7 +16,7 @@ public class GetCategoryByIdHandler(IGenericRepository<CategoryEntity, long> rep
         GetCategoryByIdQuery request,
         CancellationToken cancellationToken)
     {
-        var entity = await repo.GetByIdAsync(request.Id);
+        var entity = await repo.GetByIdAsync(request.id);
 
         return mapper.Map<CategoryDto>(entity);
     }

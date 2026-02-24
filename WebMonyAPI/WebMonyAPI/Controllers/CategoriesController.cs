@@ -15,7 +15,7 @@ public class CategoriesController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> Get(int typeId)
         => Ok(await mediator.Send(new GetCategoriesQuery(typeId)));
 
-    [HttpGet("by-id/{id:long}")]
+    [HttpGet("{id:long}")]
     public async Task<IActionResult> Get(long id)
         => Ok(await mediator.Send(new GetCategoryByIdQuery(id)));
 
