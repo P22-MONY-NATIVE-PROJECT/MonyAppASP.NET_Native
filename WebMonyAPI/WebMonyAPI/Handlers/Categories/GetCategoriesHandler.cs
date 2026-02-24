@@ -7,7 +7,7 @@ using WebMonyAPI.Entities.Categories;
 using WebMonyAPI.Interfaces;
 using WebMonyAPI.Queries.Categories;
 
-namespace WebMonyAPI.Handlers.Categories.Saving;
+namespace WebMonyAPI.Handlers.Categories;
 
 public class GetCategoriesHandler(AppDbContext appDbContext, IMapper mapper)
     : IRequestHandler<GetCategoriesQuery, IEnumerable<CategoryDto>>
