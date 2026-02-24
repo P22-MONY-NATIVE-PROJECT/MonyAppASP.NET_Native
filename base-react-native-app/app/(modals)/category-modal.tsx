@@ -1,18 +1,20 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
-import { useEffect, useState } from "react";
-import * as ImagePicker from "expo-image-picker";
-
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { useState, useEffect } from "react";
+import { SquareImagePicker } from "@/components/form/SquareImagePicker";
 import {
     useCreateCategoryMutation,
     useUpdateCategoryMutation,
     useGetCategoryByIdQuery,
 } from "@/services/categoriesService";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { ICreateCategoryRequest } from "@/types/category/ICreateCategoryRequest";
+import { IEditCategoryRequest } from "@/types/category/IEditCategoryRequest";
+import {ThemedView} from "@/components/themed-view";
 
 export default function CategoryModal() {
     const { id } = useLocalSearchParams();
     const router = useRouter();
-
     const isEdit = !!id;
 
     const { data, isLoading } = useGetCategoryByIdQuery(
@@ -20,93 +22,90 @@ export default function CategoryModal() {
         { skip: !isEdit }
     );
 
-    const [name, setName] = useState("");
-    const [icon, setIcon] = useState<any>(null);
-
     const [createCategory] = useCreateCategoryMutation();
     const [updateCategory] = useUpdateCategoryMutation();
 
+    const [form, setForm] = useState<ICreateCategoryRequest>({
+        name: "",
+        icon: undefined as any,
+    });
+
     useEffect(() => {
         if (data) {
-            setName(data.name);
+            setForm({
+                name: data.name,
+                icon: data.icon ? { uri: data.icon } : undefined as any,
+            });
         }
     }, [data]);
 
-    const pickImage = async () => {
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            quality: 0.7,
-        });
-
-        if (!result.canceled) {
-            setIcon({
-                uri: result.assets[0].uri,
-                type: "image/jpeg",
-                name: "icon.jpg",
-            });
-        }
-    };
-
     const onSubmit = async () => {
-        if (isEdit) {
-            await updateCategory({
-                id: Number(id),
-                name,
-                icon,
-            });
-        } else {
-            await createCategory({
-                name,
-                icon,
-            });
+        try {
+            if (isEdit) {
+                const payload: IEditCategoryRequest = {
+                    id: Number(id),
+                    name: form.name,
+                    icon: form.icon,
+                };
+                await updateCategory(payload).unwrap();
+            } else {
+                await createCategory(form).unwrap();
+            }
+            router.back();
+        } catch (error) {
+            console.error(error);
         }
-
-        router.back();
     };
 
     if (isEdit && isLoading) {
         return (
-            <View className="flex-1 items-center justify-center">
-                <Text>Loading...</Text>
+            <View className="flex-1 items-center justify-center bg-black">
+                <Text className="text-white">Loading...</Text>
             </View>
         );
     }
 
     return (
-        <View className="flex-1 bg-white p-6 gap-6">
-            <Text className="text-2xl font-bold">
-                {isEdit ? "Редагувати" : "Створити"}
-            </Text>
-
-            <TextInput
-                value={name}
-                onChangeText={setName}
-                placeholder="Назва"
-                className="border border-gray-300 p-4 rounded-xl"
-            />
-
-            <TouchableOpacity
-                onPress={pickImage}
-                className="bg-gray-200 p-4 rounded-xl items-center"
-            >
-                <Text>Обрати іконку</Text>
-            </TouchableOpacity>
-
-            {icon && (
-                <Image
-                    source={{ uri: icon.uri }}
-                    className="w-20 h-20 rounded-full"
-                />
-            )}
-
-            <TouchableOpacity
-                onPress={onSubmit}
-                className="bg-black p-4 rounded-xl items-center"
-            >
-                <Text className="text-white">
-                    {isEdit ? "Зберегти" : "Створити"}
+        <ThemedView className="flex-1">
+            <SafeAreaView className="flex-1 p-6 gap-6">
+                <Text className="text-2xl font-bold text-white">
+                    {isEdit ? "Редагувати" : "Створити"}
                 </Text>
-            </TouchableOpacity>
-        </View>
+
+                <TextInput
+                    value={form.name}
+                    onChangeText={(value) =>
+                        setForm((prev) => ({
+                            ...prev,
+                            name: value,
+                        }))
+                    }
+                    placeholder="Назва"
+                    placeholderTextColor="#9CA3AF"
+                    className="border border-gray-600 p-4 rounded-xl text-white"
+                />
+
+                <SquareImagePicker
+                    imageUri={form.icon?.uri ?? null}
+                    onChange={(file) =>
+                        setForm((prev) => ({
+                            ...prev,
+                            icon: file,
+                        }))
+                    }
+                    size={160}
+                    label="Обрати іконку"
+                />
+
+                <TouchableOpacity
+                    onPress={onSubmit}
+                    className="bg-white p-4 rounded-xl items-center"
+                >
+                    <Text className="text-black font-semibold">
+                        {isEdit ? "Зберегти" : "Створити"}
+                    </Text>
+                </TouchableOpacity>
+            </SafeAreaView>
+        </ThemedView>
     );
 }

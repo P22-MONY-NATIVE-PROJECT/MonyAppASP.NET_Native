@@ -1,5 +1,5 @@
-import CategoriesScreen from "@/screens/CategoriesScreen";
+import CategoriesListScreen from "@/screens/Category/CategoriesListScreen";
 
 export default function Income() {
-    return <CategoriesScreen typeId={2} />;
+    return <CategoriesListScreen typeId={2} />;
 }
