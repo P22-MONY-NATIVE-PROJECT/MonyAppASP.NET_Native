@@ -25,8 +25,7 @@ export const categoriesService = createApi({
 
         getCategoryById: builder.query<ICategoryItemResponse, IGetCategoryByIdRequest>({
             query: params => ({
-                url: "",
-                params
+                url: `by-id/${params.id}`,
             }),
         }),
 

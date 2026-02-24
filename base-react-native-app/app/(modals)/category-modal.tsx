@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SquareImagePicker } from "@/components/form/SquareImagePicker";
 import {
     useCreateCategoryMutation,
@@ -8,13 +8,12 @@ import {
     useGetCategoryByIdQuery,
 } from "@/services/categoriesService";
 import { SafeAreaView } from "react-native-safe-area-context";
-import {ICreateCategoryRequest} from "@/types/category/ICreateCategoryRequest";
-import {IEditCategoryRequest} from "@/types/category/IEditCategoryRequest";
+import { ICreateCategoryRequest } from "@/types/category/ICreateCategoryRequest";
+import { IEditCategoryRequest } from "@/types/category/IEditCategoryRequest";
 
 export default function CategoryModal() {
     const { id } = useLocalSearchParams();
     const router = useRouter();
-
     const isEdit = !!id;
 
     const { data, isLoading } = useGetCategoryByIdQuery(
@@ -26,24 +25,35 @@ export default function CategoryModal() {
     const [updateCategory] = useUpdateCategoryMutation();
 
     const [form, setForm] = useState<ICreateCategoryRequest>({
-        name: data?.name ?? "",
+        name: "",
         icon: undefined as any,
     });
 
-    const onSubmit = async () => {
-        if (isEdit) {
-            const payload: IEditCategoryRequest = {
-                id: Number(id),
-                name: form.name,
-                icon: form.icon,
-            };
-
-            await updateCategory(payload);
-        } else {
-            await createCategory(form);
+    useEffect(() => {
+        if (data) {
+            setForm({
+                name: data.name,
+                icon: data.icon ? { uri: data.icon } : undefined as any,
+            });
         }
+    }, [data]);
 
-        router.back();
+    const onSubmit = async () => {
+        try {
+            if (isEdit) {
+                const payload: IEditCategoryRequest = {
+                    id: Number(id),
+                    name: form.name,
+                    icon: form.icon,
+                };
+                await updateCategory(payload).unwrap();
+            } else {
+                await createCategory(form).unwrap();
+            }
+            router.back();
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     if (isEdit && isLoading) {
