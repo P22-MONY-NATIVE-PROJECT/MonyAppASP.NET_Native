@@ -8,6 +8,7 @@ import {
     useUpdateCategoryMutation,
     useGetCategoryByIdQuery,
 } from "@/services/categoriesService";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 export default function CategoryModal() {
     const { id } = useLocalSearchParams();
@@ -73,7 +74,7 @@ export default function CategoryModal() {
     }
 
     return (
-        <View className="flex-1 bg-white p-6 gap-6">
+        <SafeAreaView className="flex-1 bg-white p-6 gap-6">
             <Text className="text-2xl font-bold">
                 {isEdit ? "Редагувати" : "Створити"}
             </Text>
@@ -107,6 +108,6 @@ export default function CategoryModal() {
                     {isEdit ? "Зберегти" : "Створити"}
                 </Text>
             </TouchableOpacity>
-        </View>
+        </SafeAreaView>
     );
 }
