@@ -13,7 +13,7 @@ interface Props {
     typeId: number;
 }
 
-export default function CategoriesScreen({ typeId }: Props) {
+export default function CategoriesListScreen({ typeId }: Props) {
     const router = useRouter();
     const { data, isLoading } = useGetCategoriesQuery({ typeId });
     const [deleteCategory] = useDeleteCategoryMutation();

@@ -8,7 +8,7 @@ import {
     useUpdateCategoryMutation,
     useGetCategoryByIdQuery,
 } from "@/services/categoriesService";
-import {SafeAreaView} from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CategoryModal() {
     const { id } = useLocalSearchParams();
@@ -67,15 +67,15 @@ export default function CategoryModal() {
 
     if (isEdit && isLoading) {
         return (
-            <View className="flex-1 items-center justify-center">
-                <Text>Loading...</Text>
+            <View className="flex-1 items-center justify-center bg-black">
+                <Text className="text-white">Loading...</Text>
             </View>
         );
     }
 
     return (
-        <SafeAreaView className="flex-1 bg-white p-6 gap-6">
-            <Text className="text-2xl font-bold">
+        <SafeAreaView className="flex-1 p-6 gap-6 bg-black">
+            <Text className="text-2xl font-bold text-white">
                 {isEdit ? "Редагувати" : "Створити"}
             </Text>
 
@@ -83,14 +83,17 @@ export default function CategoryModal() {
                 value={name}
                 onChangeText={setName}
                 placeholder="Назва"
-                className="border border-gray-300 p-4 rounded-xl"
+                placeholderTextColor="#9CA3AF"
+                className="border border-gray-600 p-4 rounded-xl text-white"
             />
 
             <TouchableOpacity
                 onPress={pickImage}
-                className="bg-gray-200 p-4 rounded-xl items-center"
+                className="border border-gray-500 p-4 rounded-xl items-center"
             >
-                <Text>Обрати іконку</Text>
+                <Text className="text-white opacity-80">
+                    Обрати іконку
+                </Text>
             </TouchableOpacity>
 
             {icon && (
@@ -102,9 +105,9 @@ export default function CategoryModal() {
 
             <TouchableOpacity
                 onPress={onSubmit}
-                className="bg-black p-4 rounded-xl items-center"
+                className="bg-white p-4 rounded-xl items-center"
             >
-                <Text className="text-white">
+                <Text className="text-black font-semibold">
                     {isEdit ? "Зберегти" : "Створити"}
                 </Text>
             </TouchableOpacity>
