@@ -20,10 +20,12 @@ public class GenericRepository<TEntity, TKey>(AppDbContext context, IMapper mapp
         return entity!.IsDeleted == isSoft ? entity : null;
     }
 
-    public async Task<IReadOnlyList<TEntity>> ListAllAsync()
+    public async Task<IReadOnlyList<TEntity>> ListAllAsync(bool isSoft = false)
     {
-        return await context.Set<TEntity>()
-            .Where(e => !e.IsDeleted)
+        var query = context.Set<TEntity>().AsQueryable();
+        if (!isSoft)
+            query = query.Where(e => !e.IsDeleted);
+        return await query
             .OrderBy(e => e.Id)
             .ToListAsync();
     }
@@ -80,6 +82,14 @@ public class GenericRepository<TEntity, TKey>(AppDbContext context, IMapper mapp
             await imageService.DeleteImageAsync(entity.ImageUrl);
 
         entity.ImageUrl = await imageService.SaveImageAsync(newFile);
+    }
+
+    public IQueryable<TEntity> AsQurable(bool isSoft = false)
+    {
+        var query = context.Set<TEntity>().AsQueryable();
+        if (!isSoft)
+            query = query.Where(e => !e.IsDeleted);
+        return query;
     }
 }
 // using Microsoft.EntityFrameworkCore;
