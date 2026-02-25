@@ -18,8 +18,14 @@ public class CreateCategoryHandler(IGenericRepository<CategoryEntity, long> repo
         var entity = new CategoryEntity
         {
             Name = request.Model.Name,
-            CategoryType = await categoryRepo.GetByIdAsync(request.Model.CategoryTypeId)
         };
+        var categoryType = await categoryRepo
+            .GetByIdAsync(request.Model.CategoryTypeId);
+
+        if (categoryType == null)
+            throw new Exception("CategoryType not found");
+
+        entity.CategoryType = categoryType;
 
         if (request.Model.Icon != null)
         {

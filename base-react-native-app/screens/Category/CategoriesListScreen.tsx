@@ -1,4 +1,4 @@
-import { FlatList, TouchableOpacity, View, Text, Image } from "react-native";
+import { FlatList, Alert, TouchableOpacity, View, Text, Image } from "react-native";
 import { useRouter } from "expo-router";
 import { ThemedView } from "@/components/themed-view";
 import { ThemedText } from "@/components/themed-text";
@@ -9,6 +9,10 @@ import {
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {APP_URLS} from "@/constants/Urls";
+import BalancesHeader from "@/components/balances/BalancesHeader";
+import ScrollingText from "@/components/ui/ScrollingText";
+import { ThemedMarqueeText } from "@/components/themed-marquee-text";
+import * as Haptics from "expo-haptics";
 
 interface Props {
     typeId: number;
@@ -18,6 +22,7 @@ export default function CategoriesListScreen({ typeId }: Props) {
     const router = useRouter();
     const { data, isLoading } = useGetCategoriesQuery({ typeId });
     const [deleteCategory] = useDeleteCategoryMutation();
+    const [deleteMode, setDeleteMode] = React.useState(false);
 
     if (isLoading) {
         return (
@@ -29,47 +34,87 @@ export default function CategoriesListScreen({ typeId }: Props) {
 
     return (
         <ThemedView className="flex-1 relative">
-            <SafeAreaView>
-                <FlatList
-                    data={data}
-                    keyExtractor={(item) => item.id.toString()}
-                    contentContainerStyle={{ padding: 16, gap: 12, paddingBottom: 100 }}
-                    showsVerticalScrollIndicator={false}
-                    renderItem={({ item }) => (
-                        <ThemedView className="flex-row items-center justify-between p-4 rounded-2xl">
-                            <View className="flex-row items-center gap-3">
-                                <Image
-                                    source={{ uri: APP_URLS.IMAGES_100_URL + item.icon }}
-                                    className="w-10 h-10 rounded-full"
-                                />
-                                <ThemedText type="defaultSemiBold">
-                                    {item.name}
-                                </ThemedText>
-                            </View>
+            <BalancesHeader />
+            <FlatList
+                data={data}
+                numColumns={3}
+                keyExtractor={(item) => item.id.toString()}
+                contentContainerStyle={{
+                    paddingHorizontal: 20,
+                    paddingTop: 20,
+                    paddingBottom: 140,
+                }}
+                columnWrapperStyle={{
+                    justifyContent: "flex-start",
+                    gap: 50,
+                    marginBottom: 20,
+                }}
+                showsVerticalScrollIndicator={false}
+                renderItem={({ item }) => (
+                    <TouchableOpacity
+                        className="items-center relative"
+                        onPress={() => {
+                            if (deleteMode) {
+                              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
-                            <View className="flex-row gap-4">
-                                <TouchableOpacity
-                                    onPress={() =>
-                                        router.push({
-                                            pathname: "/category-modal",
-                                            params: { id: item.id, typeId },
-                                        })
-                                    }
-                                >
-                                    <ThemedText type="link">Edit</ThemedText>
-                                </TouchableOpacity>
+                              Alert.alert(
+                                "Delete Category",
+                                `Delete "${item.name}"?`,
+                                [
+                                  { text: "Cancel", style: "cancel" },
+                                  {
+                                    text: "Delete",
+                                    style: "destructive",
+                                    onPress: () => deleteCategory(item.id),
+                                  },
+                                ]
+                              );
+                            } else {
+                                router.push({
+                                    pathname: "/category-modal",
+                                    params: { id: item.id, typeId },
+                                });
+                            }
+                        }}
+                    >
+                        <View className="bg-blue-400 w-24 h-24 rounded-3xl items-center justify-center relative">
 
-                                <TouchableOpacity
-                                    onPress={() => deleteCategory(item.id)}
-                                >
-                                    <ThemedText style={{ color: "red" }}>
-                                        Delete
-                                    </ThemedText>
-                                </TouchableOpacity>
-                            </View>
-                        </ThemedView>
-                    )}
-                />
+                            <Image
+                                source={{
+                                    uri: APP_URLS.IMAGES_100_URL + item.icon,
+                                }}
+                                className="w-10 h-10"
+                            />
+
+                            {deleteMode && (
+                                <View className="absolute inset-0 bg-black/40 rounded-3xl items-center justify-center">
+                                    <Text className="text-white text-2xl font-bold">×</Text>
+                                </View>
+                            )}
+                        </View>
+
+                        <ThemedMarqueeText
+                          text={item.name}
+                          width={90}
+                          type="defaultSemiBold"
+                          style={{ textAlign: "center", marginTop: 8 }}
+                        />
+                    </TouchableOpacity>
+                )}
+            />
+
+            <View className="absolute bottom-6 right-6 flex-row gap-3">
+    
+                <TouchableOpacity
+                    onPress={() => setDeleteMode(prev => !prev)}
+                    className={`px-5 py-3 rounded-full ${
+                        deleteMode ? "bg-red-600" : "bg-gray-800"
+                    }`}
+                >
+                    <Text className="text-white font-semibold">
+                        {deleteMode ? "Cancel" : "Delete"}
+                    </Text>
+                </TouchableOpacity>
 
                 <TouchableOpacity
                     onPress={() =>
@@ -78,13 +123,13 @@ export default function CategoriesListScreen({ typeId }: Props) {
                             params: { typeId },
                         })
                     }
-                    className="absolute bottom-6 right-6 bg-black px-6 py-3 rounded-full"
+                    className="bg-emerald-700 px-6 py-3 rounded-full"
                 >
                     <Text className="text-white font-semibold">
-                        + Додати
+                        + Add
                     </Text>
                 </TouchableOpacity>
-            </SafeAreaView>
+            </View>
         </ThemedView>
     );
 }

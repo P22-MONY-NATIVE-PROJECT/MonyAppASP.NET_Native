@@ -26,7 +26,7 @@ export default function CustomBottomTabs({ tabs, renderScene }: Props) {
 
             <SafeAreaView
                 edges={["bottom"]}
-                className="border-t border-gray-200 dark:border-gray-800"
+                className="border-t border-emerald-500"
             >
                 <ThemedView className="py-3">
                     <ScrollView
@@ -48,15 +48,15 @@ export default function CustomBottomTabs({ tabs, renderScene }: Props) {
                                     onPress={() => setActiveId(tab.id)}
                                     className={`px-6 py-3 mr-3 rounded-full ${
                                         isActive
-                                            ? "bg-black dark:bg-gray-400"
-                                            : "bg-gray-400 dark:bg-black"
+                                            ? "bg-emerald-500"
+                                            : "bg-black/40 dark:bg-white/20"
                                     }`}
                                 >
                                     <Text
                                         className={`text-base font-semibold ${
                                             isActive
-                                                ? "text-white dark:text-black"
-                                                : "text-black dark:text-white"
+                                                ? "text-white"
+                                                : "text-white"
                                         }`}
                                     >
                                         {tab.name}
