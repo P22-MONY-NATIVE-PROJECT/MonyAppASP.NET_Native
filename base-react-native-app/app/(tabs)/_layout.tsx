@@ -1,38 +1,26 @@
-import { Tabs } from "expo-router";
-import { IconSymbol } from "@/components/ui/icon-symbol";
-import { useColorScheme } from "@/hooks/use-color-scheme";
-import { Colors } from "@/constants/theme";
+import { useState } from "react";
+import CustomBottomTabs from "@/components/tabs/CustomBottomTabs";
+import CategoriesListScreen from "@/screens/Category/CategoriesListScreen";
 
 export default function TabLayout() {
-    const colorScheme = useColorScheme();
+    const [types, setTypes] = useState([
+        { id: 1, name: "Витрати" },
+        { id: 2, name: "Надходження" },
+        { id: 3, name: "Інвестиції" },
+        { id: 4, name: "Кредити" },
+        { id: 5, name: "Перекази" },
+        { id: 6, name: "Бізнес" },
+        { id: 7, name: "Інше" },
+    ]);
+
+    if (!types.length) return null;
 
     return (
-        <Tabs
-            initialRouteName="expenses"
-            screenOptions={{
-                headerShown: false,
-                tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-            }}
-        >
-            <Tabs.Screen
-                name="expenses"
-                options={{
-                    title: "Витрати",
-                    tabBarIcon: ({ color }) => (
-                        <IconSymbol name="arrow.down.circle.fill" size={26} color={color} />
-                    ),
-                }}
-            />
-
-            <Tabs.Screen
-                name="income"
-                options={{
-                    title: "Надходження",
-                    tabBarIcon: ({ color }) => (
-                        <IconSymbol name="arrow.up.circle.fill" size={26} color={color} />
-                    ),
-                }}
-            />
-        </Tabs>
+        <CustomBottomTabs
+            tabs={types}
+            renderScene={(typeId) => (
+                <CategoriesListScreen typeId={typeId} />
+            )}
+        />
     );
 }
