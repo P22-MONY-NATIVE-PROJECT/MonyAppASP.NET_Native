@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import {ScrollView, Pressable, View, Text} from "react-native";
+import { ScrollView, Pressable, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ThemedView } from "@/components/themed-view";
-import { ThemedText } from "@/components/themed-text";
 
 type TabItem = {
     id: number;
@@ -29,11 +28,16 @@ export default function CustomBottomTabs({ tabs, renderScene }: Props) {
                 edges={["bottom"]}
                 className="border-t border-gray-200 dark:border-gray-800"
             >
-                <ThemedView className="py-2">
+                <ThemedView className="py-3">
                     <ScrollView
                         horizontal
                         showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={{ paddingHorizontal: 12 }}
+                        contentContainerStyle={{
+                            paddingHorizontal: 12,
+                            flexGrow: 1,
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}
                     >
                         {tabs.map((tab) => {
                             const isActive = tab.id === activeId;
@@ -42,14 +46,14 @@ export default function CustomBottomTabs({ tabs, renderScene }: Props) {
                                 <Pressable
                                     key={tab.id}
                                     onPress={() => setActiveId(tab.id)}
-                                    className={`px-4 py-2 mr-2 rounded-full ${
+                                    className={`px-6 py-3 mr-3 rounded-full ${
                                         isActive
                                             ? "bg-black dark:bg-gray-400"
                                             : "bg-gray-400 dark:bg-black"
                                     }`}
                                 >
                                     <Text
-                                        className={`text-sm font-medium ${
+                                        className={`text-base font-semibold ${
                                             isActive
                                                 ? "text-white dark:text-black"
                                                 : "text-black dark:text-white"
