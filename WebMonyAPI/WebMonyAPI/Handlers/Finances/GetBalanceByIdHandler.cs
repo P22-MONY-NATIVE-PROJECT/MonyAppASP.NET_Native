@@ -16,7 +16,10 @@ public class GetBalanceByIdHandler(
         GetBalanceByIdQuery request,
         CancellationToken cancellationToken)
     {
-        var entity = await repo.GetByIdAsync(request.Id);
+        var spec = new BalanceWithCurrencySpecification(request.Id);
+
+        var result = await repo.ListAsync(spec);
+        var entity = result.FirstOrDefault();
 
         return entity == null
             ? null
