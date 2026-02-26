@@ -8,7 +8,7 @@ import {
     useGetCategoryByIdQuery,
 } from "@/services/categoriesService";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ICreateCategoryRequest } from "@/types/category/ICreateCategoryRequest";
+// import { ICreateCategoryRequest } from "@/types/category/ICreateCategoryRequest";
 import { IEditCategoryRequest } from "@/types/category/IEditCategoryRequest";
 import {ThemedView} from "@/components/themed-view";
 import {APP_URLS} from "@/constants/Urls";
