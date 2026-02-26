@@ -8,6 +8,7 @@ import { IEditCategoryRequest } from "@/types/category/IEditCategoryRequest";
 
 import { createBaseQuery } from "@/utilities/createBaseQuery";
 import {IGetCategoryByIdRequest} from "@/types/category/IGetCategoryByIdRequest";
+import {ICategoryTypeItemResponse} from "@/types/category/ICategoryTypeItemResponse";
 
 export const categoriesService = createApi({
     reducerPath: "api/categories",
@@ -25,7 +26,13 @@ export const categoriesService = createApi({
 
         getCategoryById: builder.query<ICategoryItemResponse, IGetCategoryByIdRequest>({
             query: params => ({
-                url: `by-id/${params.id}`,
+                url: `/${params.id}`,
+            }),
+        }),
+
+        getAllCategoryTypes: builder.query<ICategoryTypeItemResponse[], void>({
+            query: () => ({
+                url: `/all-category-types`,
             }),
         }),
 
@@ -59,6 +66,7 @@ export const categoriesService = createApi({
 
 export const {
     useGetCategoriesQuery,
+    useGetAllCategoryTypesQuery,
     useCreateCategoryMutation,
     useUpdateCategoryMutation,
     useDeleteCategoryMutation,
