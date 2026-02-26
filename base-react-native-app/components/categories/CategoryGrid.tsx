@@ -7,6 +7,7 @@ import {
 } from "@/services/categoriesService";
 import CategoryTile from "./CategoryTile";
 import CategoryActionModal from "./CategoryActionModal";
+import {AppLoader} from "@/components/ui/app-loader";
 
 interface Props {
     typeId: number;
@@ -15,7 +16,7 @@ interface Props {
 
 export default function CategoryGrid({ typeId }: Props) {
     const router = useRouter();
-    const { data } = useGetCategoriesQuery({ typeId });
+    const { data, isLoading} = useGetCategoriesQuery({ typeId });
     const [deleteCategory] = useDeleteCategoryMutation();
 
     const [selectedCategory, setSelectedCategory] = useState<any>(null);
@@ -27,6 +28,10 @@ export default function CategoryGrid({ typeId }: Props) {
 
     return (
         <>
+            <AppLoader
+                visible={isLoading}
+                message="Входимо в систему..."
+            />
             <FlatList
                 data={categoriesWithAdd}
                 numColumns={2}
