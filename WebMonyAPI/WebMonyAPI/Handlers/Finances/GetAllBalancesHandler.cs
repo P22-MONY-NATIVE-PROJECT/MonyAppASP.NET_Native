@@ -16,7 +16,10 @@ public class GetAllBalancesHandler(
         GetAllBalancesQuery request,
         CancellationToken cancellationToken)
     {
-        var entities = await repo.ListAllAsync();
+        var spec = new BalanceWithCurrencySpecification();
+
+        var entities = await repo.ListAsync(spec);
+
         return mapper.Map<IReadOnlyList<BalanceDto>>(entities);
     }
 }
