@@ -1,5 +1,4 @@
 import CustomBottomTabs from "@/components/tabs/CustomBottomTabs";
-import CategoriesListScreen from "@/screens/Category/CategoriesListScreen";
 import {useGetAllCategoryTypesQuery} from "@/services/categoriesService";
 import CategoriesOverviewScreen from "@/screens/Category/CategoriesOverviewScreen";
 
