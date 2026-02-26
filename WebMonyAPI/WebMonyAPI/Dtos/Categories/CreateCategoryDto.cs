@@ -7,4 +7,6 @@ public class CreateCategoryDto
     public string Name { get; set; } = string.Empty;
 
     public IFormFile? Icon { get; set; }
+
+    public long CategoryTypeId { get; set; }
 }
