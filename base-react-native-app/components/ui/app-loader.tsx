@@ -10,27 +10,35 @@ interface AppLoaderProps {
 export const AppLoader = ({ visible, message }: AppLoaderProps) => {
     return (
         <Modal transparent visible={visible} animationType="fade">
-            <View className="flex-1 items-center justify-center bg-black/80">
+            {/* Використовуємо flex-1 для центрування всього контенту */}
+            <View className="flex-1 items-center justify-center bg-black/60">
 
-                <LottieView
-                    autoPlay
-                    loop
-                    source={require('../../assets/animations/loader.json')}
-                    style={{
-                        position: 'absolute',
-                        width: '100%',
-                        height: '60%',
-                    }}
-                    resizeMode="cover"
-                />
+                {/* Контейнер для лоадера, щоб відокремити його від фону */}
+                <View className="items-center justify-center p-8 rounded-3xl">
 
-                {message && (
-                    <View className="absolute bottom-40">
-                        <Text className="text-white font-bold text-2xl text-center shadow-lg">
-                            {message}
-                        </Text>
-                    </View>
-                )}
+                    <LottieView
+                        autoPlay
+                        loop
+                        source={require('../../assets/animations/Growth profit.json')}
+                        style={{
+                            width: 200,
+                            height: 200,
+                        }}
+                        resizeMode="contain"
+                    />
+
+                    {message && (
+                        <View className="mt-4">
+                            <Text className="text-white text-lg font-semibold text-center tracking-wide">
+                                {message}
+                            </Text>
+                            {/* Додамо крапки, що біжать, або просто субтитл */}
+                            <Text className="text-gray-200 text-sm text-center mt-1">
+                                Будь ласка, зачекайте
+                            </Text>
+                        </View>
+                    )}
+                </View>
             </View>
         </Modal>
     );
