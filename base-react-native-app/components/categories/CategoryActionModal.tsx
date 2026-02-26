@@ -24,11 +24,11 @@ export default function CategoryActionModal({
             visible={!!category}
             onRequestClose={onClose}
         >
-            <View className="flex-1 bg-black/60 items-center justify-center">
+            <View className="flex-1 bg-black/50 dark:bg-black/70 items-center justify-center">
 
-                <View className="bg-white w-72 rounded-2xl p-6">
+                <View className="bg-white dark:bg-black w-72 rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
 
-                    <Text className="text-lg font-semibold mb-4">
+                    <Text className="text-lg font-semibold mb-4 text-black dark:text-white">
                         {category.name}
                     </Text>
 
@@ -36,7 +36,7 @@ export default function CategoryActionModal({
                         onPress={() => onEdit(category.id)}
                         className="mb-3"
                     >
-                        <Text className="text-blue-600 text-base">
+                        <Text className="text-black dark:text-white text-base">
                             Редагувати
                         </Text>
                     </TouchableOpacity>
@@ -44,7 +44,7 @@ export default function CategoryActionModal({
                     <TouchableOpacity
                         onPress={() => onDelete(category.id)}
                     >
-                        <Text className="text-red-600 text-base">
+                        <Text className="text-black dark:text-white text-base">
                             Видалити
                         </Text>
                     </TouchableOpacity>
@@ -53,7 +53,7 @@ export default function CategoryActionModal({
                         onPress={onClose}
                         className="mt-6"
                     >
-                        <Text className="text-center text-gray-500">
+                        <Text className="text-center text-gray-500 dark:text-gray-400">
                             Скасувати
                         </Text>
                     </TouchableOpacity>
