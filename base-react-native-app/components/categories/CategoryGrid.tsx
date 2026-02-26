@@ -7,6 +7,7 @@ import {
 } from "@/services/categoriesService";
 import CategoryTile from "./CategoryTile";
 import CategoryActionModal from "./CategoryActionModal";
+import {AppLoader} from "@/components/ui/app-loader";
 
 interface Props {
     typeId: number;
@@ -15,8 +16,19 @@ interface Props {
 
 export default function CategoryGrid({ typeId }: Props) {
     const router = useRouter();
-    const { data } = useGetCategoriesQuery({ typeId });
+    const { data, isLoading: apiLoading} = useGetCategoriesQuery({ typeId });
     const [deleteCategory] = useDeleteCategoryMutation();
+
+    const [testLoading, setTestLoading] = React.useState(true);
+
+    // 2. Вимикаємо його через 5 секунд
+    React.useEffect(() => {
+        const timer = setTimeout(() => setTestLoading(false), 5000);
+        return () => clearTimeout(timer);
+    }, []);
+
+    // 3. Об'єднуємо реальне завантаження та тестове
+    const isLoading = apiLoading || testLoading;
 
     const [selectedCategory, setSelectedCategory] = useState<any>(null);
 
@@ -27,6 +39,10 @@ export default function CategoryGrid({ typeId }: Props) {
 
     return (
         <>
+            <AppLoader
+                visible={isLoading}
+                message="Завантаження категорій..."
+            />
             <FlatList
                 data={categoriesWithAdd}
                 numColumns={2}
