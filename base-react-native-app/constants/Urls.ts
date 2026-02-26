@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://192.168.40.5:5159';
+export const BASE_URL = 'http://192.168.50.142:5159';
 
 const  IMAGE_URL = BASE_URL + "/images";
 const  IMAGES_50_URL = IMAGE_URL + "/50_";
