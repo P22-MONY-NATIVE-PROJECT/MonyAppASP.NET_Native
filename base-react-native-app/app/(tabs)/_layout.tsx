@@ -1,38 +1,18 @@
-import { Tabs } from "expo-router";
-import { IconSymbol } from "@/components/ui/icon-symbol";
-import { useColorScheme } from "@/hooks/use-color-scheme";
-import { Colors } from "@/constants/theme";
+import CustomBottomTabs from "@/components/tabs/CustomBottomTabs";
+import {useGetAllCategoryTypesQuery} from "@/services/categoriesService";
+import CategoriesOverviewScreen from "@/screens/Category/CategoriesOverviewScreen";
 
 export default function TabLayout() {
-    const colorScheme = useColorScheme();
+    const {data: types} = useGetAllCategoryTypesQuery();
+
+    if (!types) return null;
 
     return (
-        <Tabs
-            initialRouteName="expenses"
-            screenOptions={{
-                headerShown: false,
-                tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-            }}
-        >
-            <Tabs.Screen
-                name="expenses"
-                options={{
-                    title: "Витрати",
-                    tabBarIcon: ({ color }) => (
-                        <IconSymbol name="arrow.down.circle.fill" size={26} color={color} />
-                    ),
-                }}
-            />
-
-            <Tabs.Screen
-                name="income"
-                options={{
-                    title: "Надходження",
-                    tabBarIcon: ({ color }) => (
-                        <IconSymbol name="arrow.up.circle.fill" size={26} color={color} />
-                    ),
-                }}
-            />
-        </Tabs>
+        <CustomBottomTabs
+            tabs={types}
+            renderScene={(typeId) => (
+                <CategoriesOverviewScreen typeId={typeId} />
+            )}
+        />
     );
 }

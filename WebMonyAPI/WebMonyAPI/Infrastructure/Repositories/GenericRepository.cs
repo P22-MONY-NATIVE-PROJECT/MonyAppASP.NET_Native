@@ -17,7 +17,11 @@ public class GenericRepository<TEntity, TKey>(AppDbContext context, IMapper mapp
     public async Task<TEntity?> GetByIdAsync(TKey id, bool isSoft = false)
     {
         var entity = await context.Set<TEntity>().FindAsync(id);
-        return entity!.IsDeleted == isSoft ? entity : null;
+
+        if (entity == null)
+            return null;
+
+        return entity.IsDeleted == isSoft ? entity : null;
     }
 
     public async Task<IReadOnlyList<TEntity>> ListAllAsync(bool isSoft = false)

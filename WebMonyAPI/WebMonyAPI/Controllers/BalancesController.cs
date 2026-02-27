@@ -15,7 +15,7 @@ public class BalancesController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> GetAll()
         => Ok(await mediator.Send(new GetAllBalancesQuery()));
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:long}")]
     public async Task<IActionResult> GetById(long id)
         => Ok(await mediator.Send(new GetBalanceByIdQuery(id)));
 
@@ -31,7 +31,7 @@ public class BalancesController(IMediator mediator) : ControllerBase
         [FromForm] UpdateBalanceDto dto)
         => Ok(await mediator.Send(new UpdateBalanceCommand(dto)));
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:long}")]
     public async Task<IActionResult> Delete(long id)
     {
         await mediator.Send(new DeleteBalanceCommand(id));

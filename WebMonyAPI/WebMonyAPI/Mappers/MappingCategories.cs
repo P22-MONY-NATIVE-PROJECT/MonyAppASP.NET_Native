@@ -10,5 +10,6 @@ public class MappingCategories : Profile
         CreateMap<SavingCategoryEntity, CategoryDto>();
         CreateMap<IncomeCategoryEntity, CategoryDto>();
         CreateMap<CategoryEntity, CategoryDto>();
+        CreateMap<CategoryTypeEntity, CategoryTypeDto>();
     }
 }
