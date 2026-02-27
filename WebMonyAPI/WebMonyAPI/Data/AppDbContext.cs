@@ -17,30 +17,28 @@ public class AppDbContext : DbContext
     public DbSet<IncomeCategoryEntity> IncomeCategories { get; set; }
     public DbSet<CurrencyEntity> Currencies { get; set; }
     public DbSet<BalanceEntity> Balances { get; set; }
-    public DbSet<ExpenseOperationEntity> ExpenseOperations { get; set; }
-    public DbSet<IncomeOperationEntity> IncomeOperations { get; set; }
+    public DbSet<OperationEntity> Operations { get; set; }
+    public DbSet<OperationChargeEntity> OperationCharges { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
-        modelBuilder.Entity<ExpenseOperationEntity>()
-           .OwnsMany(o => o.Charges, cb =>
-           {
-               cb.ToTable("tbl_expense_operation_charges");
-               cb.WithOwner().HasForeignKey("OperationId");
-               cb.Property(c => c.Amount).HasPrecision(18, 4);
-               cb.Property(c => c.Percentage).HasPrecision(5, 2);
-           });
 
-        modelBuilder.Entity<IncomeOperationEntity>()
-            .OwnsMany(o => o.Charges, cb =>
-            {
-                cb.ToTable("tbl_income_operation_charges");
-                cb.WithOwner().HasForeignKey("OperationId");
-                cb.Property(c => c.Amount).HasPrecision(18, 4);
-                cb.Property(c => c.Percentage).HasPrecision(5, 2);
-            });
+        modelBuilder.Entity<OperationChargeEntity>()
+            .HasIndex(c => new { c.OperationId, c.Type })
+            .IsUnique();
+
+        modelBuilder.Entity<OperationEntity>()
+            .Property(x => x.Amount)
+            .HasPrecision(18, 2);
+
+        modelBuilder.Entity<OperationChargeEntity>()
+            .Property(x => x.Amount)
+            .HasPrecision(18, 2);
+
+        modelBuilder.Entity<OperationChargeEntity>()
+            .Property(x => x.Percentage)
+            .HasPrecision(5, 2);
     }
 
 }

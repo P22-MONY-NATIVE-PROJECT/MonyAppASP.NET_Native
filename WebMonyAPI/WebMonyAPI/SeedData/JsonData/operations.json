@@ -1,0 +1,56 @@
+[
+  {
+    "Amount": 120.50,
+    "Comment": "Grocery shopping",
+    "BalanceId": 1,
+    "CategoryId": 2,
+    "Charges": [
+      {
+        "Type": 1,
+        "ApplicationType": 2,
+        "Amount": 12.05
+      },
+      {
+        "Type": 2,
+        "ApplicationType": 1,
+        "Percentage": 5
+      }
+    ]
+  },
+  {
+    "Amount": 120.50,
+    "Comment": "Grocery shopping",
+    "BalanceId": 1,
+    "CategoryId": 2,
+    "Charges": [
+      {
+        "Type": 1,
+        "ApplicationType": 2,
+        "Amount": 12.05
+      },
+      {
+        "Type": 2,
+        "ApplicationType": 1,
+        "Percentage": 5
+      }
+    ]
+  },
+  {
+    "Amount": 120.50,
+    "Comment": "Grocery shopping",
+    "BalanceId": 1,
+    "CategoryId": 2,
+    "Charges": [
+      {
+        "Type": 1,
+        "ApplicationType": 2,
+        "Amount": 0
+      },
+      {
+        "Type": 2,
+        "ApplicationType": 1,
+        "Percentage": 0
+      }
+    ]
+  }
+]

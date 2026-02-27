@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using WebMonyAPI.Entities.Base;
+using WebMonyAPI.Entities.Operations;
 
 namespace WebMonyAPI.Entities.Finances;
 
@@ -28,4 +29,5 @@ public class BalanceEntity : BaseEntity<long>
 
     // Чи баланс для заощаджень? Якщо false, то ним можна користуватись для витрат. Якщо true, то це "скарбничка", куди можна додавати гроші, але не можна витрачати.
     public bool IsSaving { get; set; }
+    public ICollection<OperationEntity>? Operations { get; set; }
 }
