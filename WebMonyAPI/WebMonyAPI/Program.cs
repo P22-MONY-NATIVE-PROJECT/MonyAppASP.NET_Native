@@ -12,8 +12,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Додаємо сервіси
 
-builder.Services.AddControllers();
-builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(
+            new System.Text.Json.Serialization.JsonStringEnumConverter());
+    }); builder.Services.AddScoped<IImageService, ImageService>();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 

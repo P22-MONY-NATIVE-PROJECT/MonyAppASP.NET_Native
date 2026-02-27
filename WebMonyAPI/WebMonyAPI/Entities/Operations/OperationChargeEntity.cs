@@ -12,7 +12,7 @@ public enum ChargeType
 public enum ChargeApplicationType
 {
     Add = 1,
-    Substract = 2,
+    Subtract = 2,
     Included = 3
 }
 [Table("tbl_operation_charges")]
