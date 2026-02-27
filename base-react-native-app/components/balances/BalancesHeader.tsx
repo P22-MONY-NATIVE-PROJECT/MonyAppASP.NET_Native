@@ -7,10 +7,10 @@ export default function BalancesHeader() {
     const { data } = useGetBalancesQuery();
 
     const totalBalance =
-        data?.reduce((sum, b) => sum + (b.amount * b.currency.dollarExchangeRate), 0) ?? 0;
+        data?.reduce((sum, b) => sum + b.amount, 0) ?? 0;
 
     return (
-        <View className="bg-emerald-500 pb-6 rounded-b-[40px]">
+        <View className="bg-emerald-500 pb-6 mb-6 rounded-b-[40px]">
             <SafeAreaView edges={["top"]}>
                 <View className="px-6 pt-4">
                     <Text className="text-white text-lg font-semibold">
