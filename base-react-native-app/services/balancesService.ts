@@ -59,5 +59,6 @@ export const {
     useGetBalancesQuery,
     useCreateBalanceMutation,
     useDeleteBalanceMutation,
-    useGetBalanceByIdQuery
+    useGetBalanceByIdQuery,
+    useEditBalanceMutation
 } = balancesService;
