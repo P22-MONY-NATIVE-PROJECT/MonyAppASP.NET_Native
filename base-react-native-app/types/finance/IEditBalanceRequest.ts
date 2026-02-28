@@ -1,6 +1,7 @@
 import {IImageFile} from "@/types/common/IImageFile";
 
-export interface ICreateBalanceRequest {
+export interface IEditBalanceRequest {
+    id: number;
     name: string;
     icon?: IImageFile;
     currencyId: number;
