@@ -54,6 +54,13 @@ builder.Services.AddOpenApi(options =>
 
         document.SetReferenceHostDocument();
 
+        document.Servers = [
+            new OpenApiServer
+            {
+                Url = builder.Configuration["ServerRunUrl"]
+            }
+        ];
+
         return Task.CompletedTask;
     });
 });
