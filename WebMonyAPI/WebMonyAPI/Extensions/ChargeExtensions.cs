@@ -20,6 +20,7 @@ public static class ChargeExtensions
         {
             ChargeApplicationType.Add => "Додати",
             ChargeApplicationType.Subtract => "Відняти",
+            ChargeApplicationType.Included => "Вже включено в суму",
             _ => "Невідомо"
         };
     }

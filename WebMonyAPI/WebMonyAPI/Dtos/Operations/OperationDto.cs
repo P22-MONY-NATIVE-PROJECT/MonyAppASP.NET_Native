@@ -1,6 +1,4 @@
-﻿using WebMonyAPI.Dtos.Categories;
-using WebMonyAPI.Dtos.Finances;
-
+﻿
 namespace WebMonyAPI.Dtos.Operations;
 
 public class OperationDto

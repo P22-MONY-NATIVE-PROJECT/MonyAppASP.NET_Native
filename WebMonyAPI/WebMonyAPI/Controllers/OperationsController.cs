@@ -1,5 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using WebMonyAPI.Entities.Operations;
+using WebMonyAPI.Extensions;
 using WebMonyAPI.Queries.Operations;
 
 namespace WebMonyAPI.Controllers
@@ -11,5 +13,19 @@ namespace WebMonyAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         => Ok(await mediator.Send(new GetAllOperationsQuery()));
+
+        [HttpGet("charge-application-types")]
+        public IActionResult GetChargeApplicationTypes()
+        {
+            var values = Enum.GetValues(typeof(ChargeApplicationType))
+                .Cast<ChargeApplicationType>()
+                .Select(e => new
+                {
+                    Id = (int)e,
+                    Name = e.ToUkrainian()
+                });
+
+            return Ok(values);
+        }
     }
 }
