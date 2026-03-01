@@ -1,10 +1,21 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using WebMonyAPI.Entities.Categories;
 using WebMonyAPI.Entities.Finances;
+using WebMonyAPI.Entities.Identity;
 
 namespace WebMonyAPI.Data;
 
-public class AppDbContext : DbContext
+public class AppDbContext : IdentityDbContext<
+    UserEntity,
+    RoleEntity,
+    long,
+    IdentityUserClaim<long>,
+    UserRoleEntity,
+    IdentityUserLogin<long>,
+    IdentityRoleClaim<long>,
+    IdentityUserToken<long>>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options){}
 
@@ -20,5 +31,18 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<UserRoleEntity>(ur =>
+        {
+            ur.HasOne(ur => ur.Role)
+                .WithMany(r => r.UserRoles)
+                .HasForeignKey(r => r.RoleId)
+                .IsRequired();
+
+            ur.HasOne(ur => ur.User)
+                .WithMany(r => r.UserRoles)
+                .HasForeignKey(u => u.UserId)
+                .IsRequired();
+        });
     }
 }
