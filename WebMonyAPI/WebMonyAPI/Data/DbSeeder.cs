@@ -193,7 +193,11 @@ public static class DbSeeder
         // Сід для користувачів
         if (!userManager.Users.Any())
         {
-            var jsonFile = Path.Combine(Directory.GetCurrentDirectory(), "Helpers", "JsonData", "Users.json");
+            var jsonFile = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "SeedData",
+                "JsonData",
+                "users.json");
             if (File.Exists(jsonFile))
             {
                 var jsonData = await File.ReadAllTextAsync(jsonFile);
