@@ -1,5 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using WebMonyAPI.Commands.Finances;
+using WebMonyAPI.Commands.Operations;
+using WebMonyAPI.Dtos.Finances;
+using WebMonyAPI.Dtos.Operations;
 using WebMonyAPI.Entities.Operations;
 using WebMonyAPI.Extensions;
 using WebMonyAPI.Queries.Operations;
@@ -27,5 +31,9 @@ namespace WebMonyAPI.Controllers
 
             return Ok(values);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(CreateOperationDto dto)
+        => Ok(await mediator.Send(new CreateOperationCommand(dto)));
     }
 }
