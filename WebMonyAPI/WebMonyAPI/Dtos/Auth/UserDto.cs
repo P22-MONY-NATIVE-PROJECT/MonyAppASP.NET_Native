@@ -1,4 +1,4 @@
-﻿namespace WebMonyAPI.Dtos.Users;
+﻿namespace WebMonyAPI.Dtos.Auth;
 
 public class UserDto
 {
@@ -6,7 +6,6 @@ public class UserDto
     public string FirstName { get; set; } = default!;
     public string LastName { get; set; } = default!;
     public string Email { get; set; } = default!;
-    public string? Phone { get; set; }
-    public bool IsActive { get; set; }
+    public string? Image { get; set; }
     public DateTime CreatedAt { get; set; }
 }
