@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using WebMonyAPI.Dtos.Users;
+using WebMonyAPI.Dtos.Auth;
 
 namespace WebMonyAPI.Commands.User;
 
