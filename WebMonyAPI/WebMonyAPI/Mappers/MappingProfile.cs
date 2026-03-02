@@ -1,14 +1,14 @@
 using AutoMapper;
+using WebMonyAPI.Dtos.Auth;
 using WebMonyAPI.Entities;
-using WebMonyAPI.Dtos.Users;
+using WebMonyAPI.Entities.Identity;
 
-namespace WebMonyAPI.Mappers
+namespace WebMonyAPI.Mappers;
+
+public class MappingProfile : Profile
 {
-    public class MappingProfile : Profile
+    public MappingProfile()
     {
-        public MappingProfile()
-        {
-            CreateMap<User, UserDto>().ReverseMap();
-        }
+        CreateMap<UserEntity, UserDto>();
     }
 }

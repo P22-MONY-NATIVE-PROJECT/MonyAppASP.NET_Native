@@ -4,7 +4,7 @@ using WebMonyAPI.Commands.User;
 using WebMonyAPI.Entities.Identity;
 using WebMonyAPI.Interfaces;
 
-namespace WebMonyAPI.Handlers.Users;
+namespace WebMonyAPI.Handlers.Auth;
 
 public class LoginHandler(UserManager<UserEntity> userManager, IJWTTokenService tokenService) : IRequestHandler<LoginCommand, string>
 {

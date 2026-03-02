@@ -1,6 +1,8 @@
 ﻿
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using WebMonyAPI.Commands.User;
+using WebMonyAPI.Dtos.Auth;
 
 namespace WebMonyAPI.Controllers;
 
