@@ -43,19 +43,23 @@ public class UpdateOperationHandler(
             throw new Exception("Category not found");
 
         mapper.Map(request.Model, entity);
-        if(cat.CategoryType!.Name == "Витрати")
+
+        var maxAmount = Math.Max(entity.InitAmount, entity.CalcAmount);
+        var minAmount = Math.Min(entity.InitAmount, entity.CalcAmount);
+
+        switch (cat.CategoryType!.Name)
         {
-            if (entity.InitAmount > entity.CalcAmount)
-                bal.Amount += entity.InitAmount;
-            else
-                bal.Amount += entity.CalcAmount;
-        }
-        else if(cat.CategoryType!.Name == "Доходи")
-        {
-            if (entity.CalcAmount > entity.InitAmount)
-                bal.Amount -= entity.InitAmount;
-            else
-                bal.Amount -= entity.CalcAmount;
+            case "Витрати":
+                bal.Amount += entity.InitAmount > entity.CalcAmount
+                    ? entity.InitAmount
+                    : entity.CalcAmount;
+                break;
+
+            case "Доходи":
+                bal.Amount -= entity.CalcAmount > entity.InitAmount
+                    ? entity.InitAmount
+                    : entity.CalcAmount;
+                break;
         }
 
         entity.InitAmount = entity.CalcAmount = request.Model.Amount;
@@ -89,19 +93,19 @@ public class UpdateOperationHandler(
             entity.CalcAmount += amount;
 
         }
-        if (cat.CategoryType!.Name == "Витрати")
+        switch (cat.CategoryType!.Name)
         {
-            if (entity.InitAmount > entity.CalcAmount)
-                bal.Amount -= entity.InitAmount;
-            else
-                bal.Amount -= entity.CalcAmount;
-        }
-        else if (cat.CategoryType!.Name == "Доходи")
-        {
-            if (entity.CalcAmount > entity.InitAmount)
-                bal.Amount += entity.InitAmount;
-            else
-                bal.Amount += entity.CalcAmount;
+            case "Витрати":
+                bal.Amount -= entity.InitAmount > entity.CalcAmount
+                    ? entity.InitAmount
+                    : entity.CalcAmount;
+                break;
+
+            case "Доходи":
+                bal.Amount += entity.CalcAmount > entity.InitAmount
+                    ? entity.InitAmount
+                    : entity.CalcAmount;
+                break;
         }
 
         await repo.UpdateAsync(entity);

@@ -61,19 +61,19 @@ public class CreateOperationHandler(
                 ent.CalcAmount += amount;
                 
             }
-            if (cat.CategoryType!.Name == "Витрати")
+            switch (cat.CategoryType!.Name)
             {
-                if (ent.InitAmount > ent.CalcAmount)
-                    bal.Amount -= ent.InitAmount;
-                else
-                    bal.Amount -= ent.CalcAmount;
-            }
-            else if (cat.CategoryType!.Name == "Доходи")
-            {
-                if (ent.CalcAmount > ent.InitAmount)
-                    bal.Amount += ent.InitAmount;
-                else
-                    bal.Amount += ent.CalcAmount;
+                case "Витрати":
+                    bal.Amount -= ent.InitAmount > ent.CalcAmount
+                        ? ent.InitAmount
+                        : ent.CalcAmount;
+                    break;
+
+                case "Доходи":
+                    bal.Amount += ent.CalcAmount > ent.InitAmount
+                        ? ent.InitAmount
+                        : ent.CalcAmount;
+                    break;
             }
         }
         await repo.AddAsync(ent);

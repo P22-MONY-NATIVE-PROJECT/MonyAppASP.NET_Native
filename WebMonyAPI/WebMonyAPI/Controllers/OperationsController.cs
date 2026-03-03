@@ -43,5 +43,12 @@ namespace WebMonyAPI.Controllers
         [HttpPut]
         public async Task<IActionResult> Update(UpdateOperationDto dto)
         => Ok(await mediator.Send(new UpdateOperationCommand(dto)));
+
+        [HttpDelete("{id:long}")]
+        public async Task<IActionResult> Delete(long id)
+        {
+            await mediator.Send(new DeleteOperationCommand(id));
+            return NoContent();
+        }
     }
 }
