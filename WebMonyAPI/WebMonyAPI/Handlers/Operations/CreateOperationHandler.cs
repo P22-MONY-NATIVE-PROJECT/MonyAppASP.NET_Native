@@ -11,7 +11,6 @@ namespace WebMonyAPI.Handlers.Operations;
 
 public class CreateOperationHandler(
     IGenericRepository<OperationEntity, long> repo,
-    IGenericRepository<OperationChargeEntity, long> chargesRepo,
     IGenericRepository<BalanceEntity, long> balanceRepo,
     IMapper mapper)
     : IRequestHandler<CreateOperationCommand, OperationDto>
