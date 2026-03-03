@@ -20,5 +20,10 @@ public class MappingOperations : Profile
         CreateMap<CreateOperationDto, OperationEntity>()
             .ForMember(x => x.CalcAmount, opt => opt.MapFrom(x=>x.InitAmount));
         CreateMap<CreateOperationChargeDto, OperationChargeEntity>();
+
+        CreateMap<UpdateOperationChargeDto, OperationChargeEntity>();
+        CreateMap<UpdateOperationDto, OperationEntity>()
+            .ForMember(x => x.InitAmount, opt => opt.Ignore())
+            .ForMember(x => x.CalcAmount, opt => opt.Ignore());
     }
 }
