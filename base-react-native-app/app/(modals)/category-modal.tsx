@@ -92,7 +92,7 @@ export default function CategoryModal() {
                     {/* Title */}
                     <ThemedText
                         type="title"
-                        style={{ textAlign: "center", marginBottom: 40 }}
+                        style={{ textAlign: "center", marginBottom: 20 }}
                     >
                         {isEdit ? "Редагувати категорію" : "Нова категорія"}
                     </ThemedText>
@@ -112,7 +112,7 @@ export default function CategoryModal() {
                                 }
                                 placeholder="Назва категорії"
                                 placeholderTextColor="#9CA3AF"
-                                className="w-full text-center border border-gray-300 dark:border-gray-700 
+                                className="w-full border border-gray-300 dark:border-gray-700
                                            bg-gray-50 dark:bg-gray-800 
                                            text-black dark:text-white 
                                            p-4 rounded-2xl text-lg"
@@ -134,7 +134,7 @@ export default function CategoryModal() {
                                         newIcon: file,
                                     }))
                                 }
-                                size={150}
+                                size={160}
                                 label="Іконка (необов'язково)"
                             />
                         </View>

@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Image, TouchableOpacity, Text } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import {Ionicons} from "@expo/vector-icons";
 
 interface Props {
     imageUri?: string | null;
@@ -45,30 +46,44 @@ export const SquareImagePicker: React.FC<Props> = ({
     };
 
     return (
-        <View className="items-center gap-3">
+        <View className="items-center">
             <TouchableOpacity
-                activeOpacity={0.85}
+                activeOpacity={0.7}
                 onPress={pickImage}
                 style={{
                     width: size,
                     height: size,
                 }}
-                className="rounded-3xl bg-zinc-800 border border-zinc-700 items-center justify-center overflow-hidden"
+                // Додано border-dashed для порожнього стану
+                className={`rounded-[35px] items-center justify-center overflow-hidden bg-zinc-100 border-2 
+                    ${imageUri ? 'border-zinc-700' : 'border-dashed border-zinc-600'}`}
             >
                 {imageUri ? (
-                    <Image
-                        source={{ uri: imageUri }}
-                        style={{ width: size, height: size }}
-                    />
+                    <View className="w-full h-full relative">
+                        <Image
+                            source={{ uri: imageUri }}
+                            className="w-full h-full"
+                            resizeMode="cover"
+                        />
+                        {/* Шар затемнення при наявності фото */}
+                        <View className="absolute inset-0 bg-black/30 items-center justify-center">
+                            <Ionicons name="camera-reverse" size={25} color="white" />
+                        </View>
+                    </View>
                 ) : (
-                    <Text className="text-white opacity-60 text-center px-4">
-                        {label}
-                    </Text>
+                    <View className="items-center px-4">
+                        <View className="bg-zinc-800 p-3 rounded-full mb-2">
+                            <Ionicons name="image-outline" size={32} color="#a1a1aa" />
+                        </View>
+                        <Text className="text-zinc-800 text-sm font-medium mt-2 text-center">
+                            {label}
+                        </Text>
+                    </View>
                 )}
             </TouchableOpacity>
 
-            <Text className="text-zinc-400 text-sm">
-                Натисніть, щоб змінити
+            <Text className="text-zinc-500 text-[10px] uppercase tracking-[2px] mt-4 font-bold">
+                {imageUri ? "Натисніть, щоб змінити" : "Дозволені JPG або PNG"}
             </Text>
         </View>
     );
