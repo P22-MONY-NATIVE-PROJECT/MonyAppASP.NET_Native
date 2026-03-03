@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { SquareImagePicker } from "@/components/form/SquareImagePicker";
 import {
     useCreateCategoryMutation,
@@ -13,19 +13,22 @@ import { IEditCategoryRequest } from "@/types/category/IEditCategoryRequest";
 import {ThemedView} from "@/components/themed-view";
 import {APP_URLS} from "@/constants/Urls";
 import { ThemedText } from "@/components/themed-text";
+import {AppLoader} from "@/components/ui/app-loader";
 
 export default function CategoryModal() {
     const { id, typeId } = useLocalSearchParams();
     const router = useRouter();
     const isEdit = !!id;
 
-    const { data, isLoading } = useGetCategoryByIdQuery(
+    const { data, isLoading: isLoadingCategory } = useGetCategoryByIdQuery(
         { id: Number(id) },
         { skip: !isEdit }
     );
 
-    const [createCategory] = useCreateCategoryMutation();
-    const [updateCategory] = useUpdateCategoryMutation();
+    const [createCategory, {isLoading: isLoadingCreateCategory}] = useCreateCategoryMutation();
+    const [updateCategory, {isLoading: isLoadingUpdateCategory}] = useUpdateCategoryMutation();
+
+    const isLoading = isLoadingCategory || isLoadingCreateCategory || isLoadingUpdateCategory;
 
     // const [form, setForm] = useState<ICreateCategoryRequest>({
     //     name: "",
@@ -74,17 +77,22 @@ export default function CategoryModal() {
         }
     };
 
-    if (isEdit && isLoading) {
-        return (
-            <View className="flex-1 items-center justify-center bg-black">
-                <Text className="text-white">Loading...</Text>
-            </View>
-        );
-    }
+    // if (isEdit && isLoading) {
+    //     return (
+    //         <View className="flex-1 items-center justify-center bg-black">
+    //             <Text className="text-white">Loading...</Text>
+    //         </View>
+    //     );
+    // }
 
     return (
         <ThemedView className="flex-1">
             <SafeAreaView className="flex-1 px-6">
+
+                <AppLoader
+                    visible={isLoading}
+                    message="Завантаження категорій..."
+                />
 
                 {/* Centered Content */}
                 <View className="flex-1 justify-center">
