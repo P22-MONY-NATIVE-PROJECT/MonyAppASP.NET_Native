@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using MediatR;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using WebMonyAPI.Commands.Operations;
+using WebMonyAPI.Dtos.Helpers;
 using WebMonyAPI.Dtos.Operations;
+using WebMonyAPI.Entities.Categories;
 using WebMonyAPI.Entities.Finances;
 using WebMonyAPI.Entities.Operations;
 using WebMonyAPI.Interfaces;
@@ -12,6 +13,7 @@ namespace WebMonyAPI.Handlers.Operations;
 public class CreateOperationHandler(
     IGenericRepository<OperationEntity, long> repo,
     IGenericRepository<BalanceEntity, long> balanceRepo,
+    IGenericRepository<CategoryEntity, long> catRepo,
     IMapper mapper)
     : IRequestHandler<CreateOperationCommand, OperationDto>
 {
@@ -20,11 +22,15 @@ public class CreateOperationHandler(
         CancellationToken cancellationToken)
     {
         var ent = mapper.Map<OperationEntity>(request.Model);
-        var spec = new BalanceWithCurrencySpecification(request.Model.BalanceId);
-        var result = await balanceRepo.ListAsync(spec);
-        var bal = result.FirstOrDefault();
-        
-        if (bal != null)
+        var balSpec = new BalanceWithCurrencySpecification(request.Model.BalanceId);
+        var balResult = await balanceRepo.ListAsync(balSpec);
+        var bal = balResult.FirstOrDefault();
+
+        var catSpec = new CategoryWithTypeSpecification(request.Model.CategoryId);
+        var catResult = await catRepo.ListAsync(catSpec);
+        var cat = catResult.FirstOrDefault();
+
+        if (bal != null && cat != null)
         {
             foreach(var ch in ent.Charges!)
             {
@@ -53,10 +59,21 @@ public class CreateOperationHandler(
                 }
 
                 ent.CalcAmount += amount;
+                
+            }
+            if (cat.CategoryType!.Name == "Витрати")
+            {
                 if (ent.InitAmount > ent.CalcAmount)
                     bal.Amount -= ent.InitAmount;
                 else
                     bal.Amount -= ent.CalcAmount;
+            }
+            else if (cat.CategoryType!.Name == "Доходи")
+            {
+                if (ent.CalcAmount > ent.InitAmount)
+                    bal.Amount += ent.InitAmount;
+                else
+                    bal.Amount += ent.CalcAmount;
             }
         }
         await repo.AddAsync(ent);
