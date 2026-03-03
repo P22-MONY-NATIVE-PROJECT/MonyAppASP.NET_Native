@@ -51,8 +51,8 @@ services:
     entrypoint: >
       sh -c "
         while true; do
-          TIMESTAMP=$(date +'%Y%m%d%H%M%S')
-          pg_dump -h db -U ${POSTGRES_USER} ${POSTGRES_DB} | gzip > /backups/db_$TIMESTAMP.sql.gz
+          TIMESTAMP=$$(date +'%Y%m%d%H%M%S')
+          pg_dump -h db -U ${POSTGRES_USER} ${POSTGRES_DB} | gzip > /backups/db_$$TIMESTAMP.sql.gz
           
           sleep 86400
         done
