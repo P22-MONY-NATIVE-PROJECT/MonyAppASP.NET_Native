@@ -29,7 +29,11 @@ public class AppDbContext : DbContext
             .IsUnique();
 
         modelBuilder.Entity<OperationEntity>()
-            .Property(x => x.Amount)
+            .Property(x => x.InitAmount)
+            .HasPrecision(18, 2);
+
+        modelBuilder.Entity<OperationEntity>()
+            .Property(x => x.CalcAmount)
             .HasPrecision(18, 2);
 
         modelBuilder.Entity<OperationChargeEntity>()

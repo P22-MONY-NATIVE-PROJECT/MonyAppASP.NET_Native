@@ -8,7 +8,10 @@ namespace WebMonyAPI.Entities.Operations;
 [Table("tbl_operations")]
 public class OperationEntity : BaseEntity<long>
 {
-    public decimal Amount { get; set; }
+    //сума, що приходить від користувача
+    public decimal InitAmount { get; set; }
+    //сума, після комісії/податків
+    public decimal CalcAmount { get; set; }
     public string? Comment { get; set; }
     public long BalanceId { get; set; }
     public BalanceEntity? Balance { get; set; }

@@ -17,7 +17,8 @@ public class MappingOperations : Profile
             .ForMember(x => x.Type, opt => opt.MapFrom(src => src.Type.ToUkrainian()))
             .ForMember(x => x.ApplicationType, opt => opt.MapFrom(src => src.ApplicationType.ToUkrainian()));
 
-        CreateMap<CreateOperationDto, OperationEntity>();
+        CreateMap<CreateOperationDto, OperationEntity>()
+            .ForMember(x => x.CalcAmount, opt => opt.MapFrom(x=>x.InitAmount));
         CreateMap<CreateOperationChargeDto, OperationChargeEntity>();
     }
 }

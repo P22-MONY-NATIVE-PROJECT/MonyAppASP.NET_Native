@@ -1,6 +1,7 @@
 [
   {
-    "Amount": 120.50,
+    "InitAmount": 120.50,
+    "CalcAmount": 120.50,
     "Comment": "мінус мані в кармані",
     "BalanceId": 1,
     "CategoryId": 12,
@@ -18,7 +19,8 @@
     ]
   },
   {
-    "Amount": 320.00,
+    "InitAmount": 320.00,
+    "CalcAmount": 320.00,
     "Comment": "",
     "BalanceId": 1,
     "CategoryId": 13,
@@ -36,7 +38,8 @@
     ]
   },
   {
-    "Amount": 980.50,
+    "InitAmount": 980.50,
+    "CalcAmount": 980.50,
     "Comment": "",
     "BalanceId": 1,
     "CategoryId": 14,

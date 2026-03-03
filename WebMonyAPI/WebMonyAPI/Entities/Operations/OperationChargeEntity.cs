@@ -18,8 +18,8 @@ public enum ChargeApplicationType
 [Table("tbl_operation_charges")]
 public class OperationChargeEntity : BaseEntity<long>
 {
-    public decimal? Percentage { get; set; }
-    public decimal? Amount { get; set; }
+    public decimal Percentage { get; set; }
+    public decimal Amount { get; set; }
     public ChargeType Type { get; set; }
     public ChargeApplicationType ApplicationType { get; set; }
     public long OperationId { get; set; }
