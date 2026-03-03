@@ -12,7 +12,7 @@ import {ICategoryTypeItemResponse} from "@/types/category/ICategoryTypeItemRespo
 
 export const categoriesService = createApi({
     reducerPath: "api/categories",
-    tagTypes: ["Categories"],
+    tagTypes: ["Categories", "Category"],
     baseQuery: createBaseQuery("categories"),
     endpoints: builder => ({
 
@@ -28,6 +28,7 @@ export const categoriesService = createApi({
             query: params => ({
                 url: `/${params.id}`,
             }),
+            providesTags: ["Category"]
         }),
 
         getAllCategoryTypes: builder.query<ICategoryTypeItemResponse[], void>({
@@ -42,7 +43,7 @@ export const categoriesService = createApi({
                 method: "POST",
                 body: serialize(body)
             }),
-            invalidatesTags: ["Categories"]
+            invalidatesTags: ["Categories","Category"]
         }),
 
         updateCategory: builder.mutation<void, IEditCategoryRequest>({
@@ -51,7 +52,7 @@ export const categoriesService = createApi({
                 method: "PUT",
                 body: serialize(body)
             }),
-            invalidatesTags: ["Categories"]
+            invalidatesTags: ["Categories","Category"]
         }),
 
         deleteCategory: builder.mutation<void, number>({
@@ -59,7 +60,7 @@ export const categoriesService = createApi({
                 url: `/${id}`,
                 method: "DELETE"
             }),
-            invalidatesTags: ["Categories"]
+            invalidatesTags: ["Categories","Category"]
         }),
     }),
 });
