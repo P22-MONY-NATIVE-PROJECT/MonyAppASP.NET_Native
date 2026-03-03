@@ -41,7 +41,7 @@ namespace WebMonyAPI.Controllers
         => Ok(await mediator.Send(new GetOperationByIdQuery(id)));
 
         [HttpPut]
-        public async Task<IActionResult> Update(UpdateOperationeDto dto)
+        public async Task<IActionResult> Update(UpdateOperationDto dto)
         => Ok(await mediator.Send(new UpdateOperationCommand(dto)));
     }
 }
