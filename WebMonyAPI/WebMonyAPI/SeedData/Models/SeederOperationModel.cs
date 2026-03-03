@@ -2,7 +2,8 @@
 
 public class SeederOperationModel
 {
-    public decimal Amount { get; set; }
+    public decimal InitAmount { get; set; }
+    public decimal CalcAmount { get; set; }
     public long CategoryId { get; set; }
     public long BalanceId { get; set; }
     public string? Comment { get; set; } = "no comment";
