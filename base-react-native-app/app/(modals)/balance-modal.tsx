@@ -9,7 +9,7 @@ import {
     Platform,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { SquareImagePicker } from "@/components/form/SquareImagePicker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ThemedView } from "@/components/themed-view";
@@ -21,6 +21,7 @@ import {
     useGetBalanceByIdQuery,
 } from "@/services/balancesService";
 import { IImageFile } from "@/types/common/IImageFile";
+import {AppLoader} from "@/components/ui/app-loader";
 
 interface BalanceFormState {
     name: string;
@@ -36,13 +37,15 @@ export default function BalanceModal() {
     const router = useRouter();
     const isEdit = !!id;
 
-    const { data, isLoading } = useGetBalanceByIdQuery(
+    const { data, isLoading: isLoadingBalance } = useGetBalanceByIdQuery(
         { id: Number(id) },
         { skip: !isEdit }
     );
 
-    const [createBalance] = useCreateBalanceMutation();
-    const [updateBalance] = useEditBalanceMutation();
+    const [createBalance, {isLoading: isLoadingCreateBalance}] = useCreateBalanceMutation();
+    const [updateBalance, {isLoading: isLoadingUpdateBalance}] = useEditBalanceMutation();
+
+    const isLoading = isLoadingBalance || isLoadingCreateBalance || isLoadingUpdateBalance;
 
     const [form, setForm] = useState<BalanceFormState>({
         name: "",
@@ -95,13 +98,13 @@ export default function BalanceModal() {
         }
     };
 
-    if (isEdit && isLoading) {
-        return (
-            <View className="flex-1 items-center justify-center bg-black">
-                <Text className="text-white">Loading...</Text>
-            </View>
-        );
-    }
+    // if (isEdit && isLoading) {
+    //     return (
+    //         <View className="flex-1 items-center justify-center bg-black">
+    //             <Text className="text-white">Loading...</Text>
+    //         </View>
+    //     );
+    // }
 
     return (
         <ThemedView className="flex-1">
@@ -115,6 +118,12 @@ export default function BalanceModal() {
                         keyboardShouldPersistTaps="handled"
                         className="px-6"
                     >
+
+                        <AppLoader
+                            visible={isLoading}
+                            message="Завантаження категорій..."
+                        />
+
                         <View className="flex-1 justify-center py-10">
 
                             <ThemedText
