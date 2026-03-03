@@ -1,8 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using WebMonyAPI.Commands.Finances;
 using WebMonyAPI.Commands.Operations;
-using WebMonyAPI.Dtos.Finances;
 using WebMonyAPI.Dtos.Operations;
 using WebMonyAPI.Entities.Operations;
 using WebMonyAPI.Extensions;
@@ -35,5 +33,9 @@ namespace WebMonyAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateOperationDto dto)
         => Ok(await mediator.Send(new CreateOperationCommand(dto)));
+
+        [HttpGet("{id:long}")]
+        public async Task<IActionResult> GetById(long id)
+        => Ok(await mediator.Send(new GetOperationByIdQuery(id)));
     }
 }

@@ -17,8 +17,8 @@ public class OperationWithDetailsSpecification : ISpecification<OperationEntity>
         Includes.Add(x => x.Category!);
     }
 
-    public OperationWithDetailsSpecification(long balanceId) : this()
+    public OperationWithDetailsSpecification(long id) : this()
     {
-        Criteria = x => x.BalanceId == balanceId;
+        Criteria = x => x.Id == id;
     }
 }
