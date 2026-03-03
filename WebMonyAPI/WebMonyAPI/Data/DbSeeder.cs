@@ -203,7 +203,7 @@ public static class DbSeeder
                 }
             }
 
-        }
+        
         }
 
         // Сід для ролей
