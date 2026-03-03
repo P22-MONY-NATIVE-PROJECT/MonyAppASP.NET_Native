@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using WebMonyAPI.Constants;
 using WebMonyAPI.Entities.Categories;
 using WebMonyAPI.Entities.Finances;
+using WebMonyAPI.Entities.Identity;
 using WebMonyAPI.Interfaces;
 using WebMonyAPI.SeedData.Models;
 
@@ -17,6 +21,9 @@ public static class DbSeeder
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
         var imageService = scope.ServiceProvider.GetRequiredService<IImageService>();
+
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<UserEntity>>();
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<RoleEntity>>();
 
         context.Database.Migrate();
 
@@ -85,7 +92,6 @@ public static class DbSeeder
             }
         }
         
-
         // Сід для валют
         if (!context.Currencies.Any()) 
         {
@@ -167,6 +173,71 @@ public static class DbSeeder
 
             await context.Balances.AddRangeAsync(entities);
             await context.SaveChangesAsync();
+        }
+
+        // Сід для ролей
+        if (!roleManager.Roles.Any())
+        {
+            var roles = Roles.AllRoles.Select(r => new RoleEntity(r)).ToList();
+
+            foreach (var role in roles)
+            {
+                var result = await roleManager.CreateAsync(role);
+                if (!result.Succeeded)
+                {
+                    Console.WriteLine("Error Create Role {0}", role.Name);
+                }
+            }
+        }
+
+        // Сід для користувачів
+        if (!userManager.Users.Any())
+        {
+            var jsonFile = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "SeedData",
+                "JsonData",
+                "users.json");
+            if (File.Exists(jsonFile))
+            {
+                var jsonData = await File.ReadAllTextAsync(jsonFile);
+                try
+                {
+                    var users = JsonSerializer.Deserialize<List<SeederUserModel>>(jsonData);
+
+                    foreach (var user in users)
+                    {
+                        var entity = mapper.Map<UserEntity>(user);
+                        entity.Image = await imageService.SaveImageFromUrlAsync(user.Image);
+                        var result = await userManager.CreateAsync(entity, user.Password);
+                        if (!result.Succeeded)
+                        {
+                            Console.WriteLine("Error Create User {0}", user.Email);
+                            continue;
+                        }
+                        foreach (var role in user.Roles)
+                        {
+                            if (await roleManager.RoleExistsAsync(role))
+                            {
+                                await userManager.AddToRoleAsync(entity, role);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Role {0} not found", role);
+                            }
+                        }
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error Json Parse Data {0}", ex.Message);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Not Found File Categories.json");
+            }
         }
     }
 }
