@@ -1,12 +1,14 @@
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
-using WebMonyAPI.Data;
-using WebMonyAPI.Interfaces;
-using WebMonyAPI.Services;
-using Microsoft.AspNetCore.Http.Features;
-using WebMonyAPI.Infrastructure.Repositories;
 using Microsoft.OpenApi;
+using WebMonyAPI.Data;
+using WebMonyAPI.Entities.Identity;
+using WebMonyAPI.Infrastructure.Repositories;
+using WebMonyAPI.Interfaces;
 using WebMonyAPI.Mappers;
+using WebMonyAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<IJWTTokenService, JWTTokenService>();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
@@ -65,9 +68,22 @@ builder.Services.AddOpenApi(options =>
     });
 });
 
+builder.Services
+    .AddIdentity<UserEntity, RoleEntity>(options =>
+    {
+        options.Password.RequiredLength = 6;
+        options.Password.RequireDigit = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequireNonAlphanumeric = false;
+    })
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
 var app = builder.Build();
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
@@ -80,8 +96,6 @@ app.UseSwaggerUI(options =>
 });
 
 // Configure the HTTP request pipeline.
-
-app.UseAuthorization();
 
 app.MapControllers();
 

@@ -1,0 +1,162 @@
+[
+  {
+    "Email": "admin@example.com",
+    "FirstName": "Адмін",
+    "LastName": "Системний",
+    "Image": "https://thispersondoesnotexist.com",
+    "Password": "Admin123!",
+    "Roles": [ "Admin" ]
+  },
+  {
+    "Email": "ivan@example.com",
+    "FirstName": "Іван",
+    "LastName": "Борисюк",
+    "Image": "https://thispersondoesnotexist.com",
+    "Password": "bb123456",
+    "Roles": [ "User" ]
+  },
+  {
+    "Email": "olena@example.com",
+    "FirstName": "Олена",
+    "LastName": "Шаглінська",
+    "Image": "https://thispersondoesnotexist.com",
+    "Password": "password",
+    "Roles": [ "User" ]
+  },
+  {
+    "Email": "maria.k@example.com",
+    "FirstName": "Марія",
+    "LastName": "Коваль",
+    "Image": "https://thispersondoesnotexist.com",
+    "Password": "Maria2024!",
+    "Roles": [ "User" ]
+  },
+  {
+    "Email": "andriy.l@example.com",
+    "FirstName": "Андрій",
+    "LastName": "Литвин",
+    "Image": "https://thispersondoesnotexist.com",
+    "Password": "Andriy$123",
+    "Roles": [ "User" ]
+  },
+  {
+    "Email": "natalia.z@example.com",
+    "FirstName": "Наталія",
+    "LastName": "Заріцька",
+    "Image": "https://thispersondoesnotexist.com",
+    "Password": "NataPass1!",
+    "Roles": [ "User" ]
+  },
+  {
+    "Email": "dmytro.p@example.com",
+    "FirstName": "Дмитро",
+    "LastName": "Петренко",
+    "Image": "https://thispersondoesnotexist.com",
+    "Password": "Dmytro987#",
+    "Roles": [ "Admin" ]
+  },
+  {
+    "Email": "oksana.m@example.com",
+    "FirstName": "Оксана",
+    "LastName": "Мельник",
+    "Image": "https://thispersondoesnotexist.com",
+    "Password": "Oksana321*",
+    "Roles": [ "User" ]
+  },
+  {
+    "Email": "yuriy.k@example.com",
+    "FirstName": "Юрій",
+    "LastName": "Кравченко",
+    "Image": "https://thispersondoesnotexist.com",
+    "Password": "YuraK_2023",
+    "Roles": [ "User" ]
+  },
+  {
+    "Email": "iryna.v@example.com",
+    "FirstName": "Ірина",
+    "LastName": "Василенко",
+    "Image": "https://thispersondoesnotexist.com",
+    "Password": "Iryna*pass9",
+    "Roles": [ "User" ]
+  },
+  {
+    "Email": "taras.r@example.com",
+    "FirstName": "Тарас",
+    "LastName": "Романюк",
+    "Image": "https://thispersondoesnotexist.com",
+    "Password": "TarasR123",
+    "Roles": [ "Admin" ]
+  },
+  {
+    "Email": "halyna.b@example.com",
+    "FirstName": "Галина",
+    "LastName": "Білак",
+    "Image": "https://thispersondoesnotexist.com",
+    "Password": "Halyna#456",
+    "Roles": [ "User" ]
+  },
+  {
+    "Email": "serhiy.z@example.com",
+    "FirstName": "Сергій",
+    "LastName": "Захаренко",
+    "Image": "https://thispersondoesnotexist.com",
+    "Password": "Serhiy!789",
+    "Roles": [ "User" ]
+  },
+  {
+    "Email": "lyudmyla.h@example.com",
+    "FirstName": "Людмила",
+    "LastName": "Гордієнко",
+    "Image": "https://thispersondoesnotexist.com",
+    "Password": "Luda2022!",
+    "Roles": [ "User" ]
+  },
+  {
+    "Email": "oleksandr.d@example.com",
+    "FirstName": "Олександр",
+    "LastName": "Данилюк",
+    "Image": "https://thispersondoesnotexist.com",
+    "Password": "Olek1234@",
+    "Roles": [ "User" ]
+  },
+  {
+    "Email": "valentyna.s@example.com",
+    "FirstName": "Валентина",
+    "LastName": "Соловей",
+    "Image": "https://thispersondoesnotexist.com",
+    "Password": "Valya*pass",
+    "Roles": [ "User" ]
+  },
+  {
+    "Email": "roman.k@example.com",
+    "FirstName": "Роман",
+    "LastName": "Кучер",
+    "Image": "https://thispersondoesnotexist.com",
+    "Password": "Roman+321",
+    "Roles": [ "User" ]
+  },
+  {
+    "Email": "yana.t@example.com",
+    "FirstName": "Яна",
+    "LastName": "Тимошенко",
+    "Image": "https://thispersondoesnotexist.com",
+    "Password": "YanaTpass1",
+    "Roles": [ "User" ]
+  },
+  {
+    "Email": "oleksiy.n@example.com",
+    "FirstName": "Олексій",
+    "LastName": "Нікітін",
+    "Image": "https://thispersondoesnotexist.com",
+    "Password": "Oleksey77!",
+    "Roles": [ "User" ]
+  },
+  {
+    "Email": "kateryna.p@example.com",
+    "FirstName": "Катерина",
+    "LastName": "Пархоменко",
+    "Image": "https://thispersondoesnotexist.com",
+    "Password": "Katya#pass123",
+    "Roles": [ "User" ]
+  }
+]
