@@ -10,7 +10,7 @@ import {IEditBalanceRequest} from "@/types/finance/IEditBalanceRequest";
 
 export const balancesService = createApi({
     reducerPath: "api/balances",
-    tagTypes: ["Balances"],
+    tagTypes: ["Balances", "Balance"],
     baseQuery: createBaseQuery("balances"),
     endpoints: builder => ({
 
@@ -27,7 +27,7 @@ export const balancesService = createApi({
                 method: "POST",
                 body: serialize(body)
             }),
-            invalidatesTags: ["Balances"]
+            invalidatesTags: ["Balances","Balance"]
         }),
 
         editBalance: builder.mutation<void, IEditBalanceRequest>({
@@ -36,7 +36,7 @@ export const balancesService = createApi({
                 method: "PUT",
                 body: serialize(body)
             }),
-            invalidatesTags: ["Balances"]
+            invalidatesTags: ["Balances", "Balance"]
         }),
 
         deleteBalance: builder.mutation<void, number>({
@@ -44,13 +44,14 @@ export const balancesService = createApi({
                 url: `/${id}`,
                 method: "DELETE"
             }),
-            invalidatesTags: ["Balances"]
+            invalidatesTags: ["Balances","Balance"]
         }),
 
         getBalanceById: builder.query<IBalanceResponse, IBalanceGetByIdRequest>({
             query: params => ({
                 url: `/${params.id}`,
             }),
+            providesTags: ["Balance"]
         }),
     }),
 });
