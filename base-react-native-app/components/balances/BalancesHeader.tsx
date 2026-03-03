@@ -4,13 +4,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import {useDeleteBalanceMutation, useGetBalancesQuery} from "@/services/balancesService";
 import { useRouter } from "expo-router";
 import BalanceActionModal from "@/components/balances/BalanceActionModal";
+import {Ionicons} from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 
 export default function BalancesHeader() {
     const { data } = useGetBalancesQuery();
     const router = useRouter();
-
     const [selectedBalance, setSelectedBalance] = useState<any>(null);
-
     const [deleteBalance] = useDeleteBalanceMutation();
 
     const totalBalance =
@@ -19,13 +19,20 @@ export default function BalancesHeader() {
             0
         ) ?? 0;
 
+
+    const handleLongPress = (item: any) => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        setSelectedBalance(item);
+    };
+
+
     return (
         <>
-            <View className="bg-emerald-500 dark:bg-emerald-800 pb-6 mb-6 rounded-b-[40px]">
+            <View className="bg-emerald-500 dark:bg-emerald-800 pb-6 mb-6 rounded-b-[20px]">
                 <SafeAreaView edges={["top"]}>
                     <View className="px-6 pt-4">
                         <Text className="text-white text-lg font-semibold">
-                            Total Balance
+                            Загальний баланс
                         </Text>
 
                         <Text className="text-white text-3xl font-bold mt-2">
@@ -45,42 +52,35 @@ export default function BalancesHeader() {
                         }}
                         renderItem={({ item }) => (
                             <TouchableOpacity
-                                onLongPress={() => setSelectedBalance(item)}
+                                onLongPress={() => handleLongPress(item)}
+                                activeOpacity={0.9}
                                 className={`
-                                p-4 rounded-2xl w-40
-                                ${
-                                    item.isSaving
-                                        ? "bg-yellow-400 dark:bg-yellow-700"
-                                        : "bg-emerald-400 dark:bg-emerald-700"
-                                }
-                            `}
+                                    p-5 rounded-[32px] w-44 h-28 justify-between shadow-sm
+                                    ${item.isSaving ? "bg-amber-400" : "bg-emerald-400/90"}
+                                `}
                             >
-                                <Text className="text-white font-semibold">
-                                    {item.name}
-                                </Text>
+                                <View className="flex-row justify-between items-start">
+                                    <Text className="text-white/90 font-bold text-sm uppercase tracking-tighter" numberOfLines={1}>
+                                        {item.name}
+                                    </Text>
+                                    {item.isSaving && <Ionicons name="leaf" size={14} color="white" />}
+                                </View>
 
-                                <Text className="text-white text-xl font-bold mt-2">
-                                    {item.currency?.symbol}
-                                    {item.amount.toFixed(2)}
+                                <Text className="text-white  text-xl font-black">
+                                    <Text className="text-lg opacity-70  font-medium">{item.currency?.symbol}</Text>
+                                    {item.amount.toLocaleString("uk-UA", { minimumFractionDigits: 2 })}
                                 </Text>
                             </TouchableOpacity>
                         )}
                         ListFooterComponent={
                             <Pressable
-                                onPress={() =>
-                                    router.push({
-                                        pathname: "/balance-modal",
-                                    })
-                                }
-                                className="
-                                bg-emerald-400 dark:bg-emerald-700
-                                p-4 py-6 rounded-2xl w-40
-                                items-center justify-center
-                            "
+                                onPress={() => {
+                                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                    router.push("/balance-modal");
+                                }}
+                                className="bg-white/20 border-2 border-dashed border-white/30 p-4 rounded-[32px] w-24 h-28 items-center justify-center"
                             >
-                                <Text className="text-white text-4xl font-bold">
-                                    +
-                                </Text>
+                                <Ionicons name="add" size={32} color="white" />
                             </Pressable>
                         }
                     />
