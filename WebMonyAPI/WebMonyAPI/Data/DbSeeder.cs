@@ -7,6 +7,7 @@ using System.Text.Json;
 using WebMonyAPI.Constants;
 using WebMonyAPI.Entities.Categories;
 using WebMonyAPI.Entities.Finances;
+using WebMonyAPI.Entities.Operations;
 using WebMonyAPI.Entities.Identity;
 using WebMonyAPI.Interfaces;
 using WebMonyAPI.SeedData.Models;
@@ -173,6 +174,36 @@ public static class DbSeeder
 
             await context.Balances.AddRangeAsync(entities);
             await context.SaveChangesAsync();
+        }
+
+        //сід для запису транзакцій
+        if(!await context.Operations.AnyAsync())
+        {
+            var jsonPath = Path.Combine(Directory.GetCurrentDirectory(), "SeedData", "JsonData", "operations.json");
+            if (File.Exists(jsonPath))
+            {
+                var jsonData = await File.ReadAllTextAsync(jsonPath);
+                try
+                {
+                    var seedOperations = JsonSerializer.Deserialize<List<SeederOperationModel>>(jsonData);
+
+                    foreach (var seedOp in seedOperations)
+                    {
+
+                        var operation = mapper.Map<OperationEntity>(seedOp);
+                        operation.Charges = mapper.Map<List<OperationChargeEntity>>(seedOp.Charges);
+                        await context.Operations.AddAsync(operation);
+
+                    }
+                    await context.SaveChangesAsync();
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine("Seed operations fail", ex.Message);
+                }
+            }
+
+        
         }
 
         // Сід для ролей
