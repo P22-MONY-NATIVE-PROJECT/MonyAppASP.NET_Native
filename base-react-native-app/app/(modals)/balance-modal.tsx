@@ -119,7 +119,7 @@ export default function BalanceModal() {
 
                             <ThemedText
                                 type="title"
-                                style={{ textAlign: "center", marginBottom: 40 }}
+                                style={{ textAlign: "center", marginBottom: 20 }}
                             >
                                 {isEdit ? "Редагувати баланс" : "Новий баланс"}
                             </ThemedText>
@@ -133,7 +133,7 @@ export default function BalanceModal() {
                                     }
                                     placeholder="Назва балансу"
                                     placeholderTextColor="#9CA3AF"
-                                    className="w-full text-center border border-gray-300 dark:border-gray-700
+                                    className="w-full  border border-gray-300 dark:border-gray-700
                                                bg-gray-50 dark:bg-gray-800
                                                text-black dark:text-white
                                                p-4 rounded-2xl text-lg"

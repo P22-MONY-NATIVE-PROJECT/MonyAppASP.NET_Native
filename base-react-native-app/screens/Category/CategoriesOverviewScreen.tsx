@@ -14,7 +14,7 @@ export default function CategoriesOverviewScreen({ typeId }: Props) {
 
     return (
         <ThemedView className="flex-1">
-            <SafeAreaView className="flex-1 px-4">
+            <SafeAreaView className="flex-1 px-3">
 
                 <MonthSwitcher
                     date={currentDate}
