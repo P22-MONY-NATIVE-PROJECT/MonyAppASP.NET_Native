@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using WebMonyAPI.Entities.Base;
+using WebMonyAPI.Entities.Identity;
 using WebMonyAPI.Entities.Operations;
 
 namespace WebMonyAPI.Entities.Finances;
@@ -23,6 +24,10 @@ public class BalanceEntity : BaseEntity<long>
     [ForeignKey(nameof(Currency))]
     public long CurrencyId { get; set; }
     public CurrencyEntity? Currency { get; set; }
+
+    [ForeignKey(nameof(User))]
+    public long UserId { get; set; }
+    public UserEntity? User { get; set; }
 
     // Кількість грошей на балансі
     public decimal Amount { get; set; }
