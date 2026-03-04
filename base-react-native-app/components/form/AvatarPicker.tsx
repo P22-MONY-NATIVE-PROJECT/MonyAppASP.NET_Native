@@ -6,10 +6,11 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { useColorScheme } from "nativewind";
+import { IImageFile } from "@/types/common/IImageFile";
 
 type Props = {
     image: string | null;
-    onChange: (uri: string) => void;
+    onChange: (file: IImageFile) => void;
 };
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
@@ -41,14 +42,54 @@ export default function AvatarPicker({ image, onChange }: Props) {
         });
     };
 
+    const handleImageSelection = (result: ImagePicker.ImagePickerResult) => {
+        if (!result.canceled && result.assets && result.assets.length > 0) {
+            const asset = result.assets[0];
+
+            const fileData: IImageFile = {
+                uri: asset.uri,
+                name: asset.fileName || `avatar_${Date.now()}.jpg`,
+                type: asset.mimeType || "image/jpeg",
+            };
+
+            onChange(fileData);
+            closeModal();
+        }
+    };
+
+    const pickImage = async () => {
+        const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (!permission.granted) return;
+
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ['images'],
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
+        });
+
+        handleImageSelection(result);
+    };
+
+    const takePhoto = async () => {
+        const permission = await ImagePicker.requestCameraPermissionsAsync();
+        if (!permission.granted) return;
+
+        const result = await ImagePicker.launchCameraAsync({
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
+        });
+
+        handleImageSelection(result);
+    };
+
     const panResponder = useRef(
         PanResponder.create({
             onStartShouldSetPanResponder: () => true,
             onMoveShouldSetPanResponder: (_, gestureState) => gestureState.dy > 5,
             onPanResponderMove: (_, gestureState) => {
-                if (gestureState.dy > 0) {
-                    translateY.setValue(gestureState.dy);
-                }
+                if (gestureState.dy > 0) translateY.setValue(gestureState.dy);
             },
             onPanResponderRelease: (_, gestureState) => {
                 if (gestureState.dy > 100 || gestureState.vy > 0.5) {
@@ -64,35 +105,6 @@ export default function AvatarPicker({ image, onChange }: Props) {
         })
     ).current;
 
-    const pickImage = async () => {
-        const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (!permission.granted) return;
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ['images'],
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 1,
-        });
-        if (!result.canceled) {
-            onChange(result.assets[0].uri);
-            closeModal();
-        }
-    };
-
-    const takePhoto = async () => {
-        const permission = await ImagePicker.requestCameraPermissionsAsync();
-        if (!permission.granted) return;
-        const result = await ImagePicker.launchCameraAsync({
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 1,
-        });
-        if (!result.canceled) {
-            onChange(result.assets[0].uri);
-            closeModal();
-        }
-    };
-
     return (
         <View className="self-center mb-8">
             <Pressable onPress={openModal} className="active:opacity-80">
@@ -100,9 +112,9 @@ export default function AvatarPicker({ image, onChange }: Props) {
                     <View className="relative">
                         <Image
                             source={{ uri: image }}
-                            className="w-32 h-32 rounded-full border-4 border-white dark:bg-[#052224] shadow-sm"
+                            className="w-32 h-32 rounded-full border-4 border-white dark:border-[#0E3E3E] shadow-sm"
                         />
-                        <View className="absolute bottom-0 right-0 bg-[#00D09E] p-2 rounded-full border-2 border-white dark:bg-[#052224] shadow-lg">
+                        <View className="absolute bottom-0 right-0 bg-[#00D09E] p-2 rounded-full border-2 border-white dark:border-[#052224] shadow-lg">
                             <Ionicons name="camera" size={16} color="white" />
                         </View>
                     </View>
@@ -138,7 +150,7 @@ export default function AvatarPicker({ image, onChange }: Props) {
                         </View>
 
                         <View className="px-6">
-                            <Text className="text-xl font-bold dark:bg-[#052224] dark:text-white mb-8 mt-2 text-center">
+                            <Text className="text-xl font-poppins-bold dark:text-white mb-8 mt-2 text-center">
                                 Змінити фото профілю
                             </Text>
 
@@ -147,14 +159,14 @@ export default function AvatarPicker({ image, onChange }: Props) {
                                     <View className="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 rounded-3xl items-center justify-center mb-3">
                                         <Ionicons name="camera" size={32} color="#2563EB" />
                                     </View>
-                                    <Text className="text-gray-700 dark:text-gray-300 font-semibold text-base">Камера</Text>
+                                    <Text className="text-gray-700 dark:text-gray-300 font-poppins-semibold text-base">Камера</Text>
                                 </Pressable>
 
                                 <Pressable onPress={pickImage} className="items-center active:opacity-60">
                                     <View className="w-16 h-16 bg-indigo-50 dark:bg-indigo-900/20 rounded-3xl items-center justify-center mb-3">
                                         <Ionicons name="images" size={32} color="#4F46E5" />
                                     </View>
-                                    <Text className="text-gray-700 dark:text-gray-300 font-semibold text-base">Галерея</Text>
+                                    <Text className="text-gray-700 dark:text-gray-300 font-poppins-semibold text-base">Галерея</Text>
                                 </Pressable>
                             </View>
                         </View>

@@ -1,23 +1,28 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import React, { useEffect } from 'react';
+import { View } from "react-native";
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
-import "../global.css";
-import { store } from "@/store";
-
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { Provider } from "react-redux";
+import { ThemeProvider, DarkTheme, DefaultTheme } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Provider, useDispatch, useSelector } from "react-redux";
+
+import "../global.css";
+import { store, RootState } from "@/store";
+import { useAppTheme } from "@/hooks/useAppTheme";
+import { getToken } from "@/utilities/storage";
+import {setAuth} from "@/store/authSlice";
 
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
-    const colorScheme = useColorScheme();
+function AppContent() {
+    const { isDark } = useAppTheme();
+    const dispatch = useDispatch();
 
-    const [loaded, error] = useFonts({
+    const isAuthLoaded = useSelector((state: RootState) => state.auth.isLoaded);
+
+    const [fontsLoaded, fontError] = useFonts({
         'Poppins-Regular': require('../assets/fonts/Poppins-Regular.ttf'),
         'Poppins-Medium': require('../assets/fonts/Poppins-Medium.ttf'),
         'Poppins-SemiBold': require('../assets/fonts/Poppins-SemiBold.ttf'),
@@ -27,32 +32,58 @@ export default function RootLayout() {
     });
 
     useEffect(() => {
-        if (loaded || error) {
+        async function initializeAuth() {
+            try {
+                const token = await getToken();
+                if (token) {
+                    dispatch(setAuth(token));
+                } else {
+                    dispatch(setAuth(null));
+                }
+            } catch (e) {
+                console.error("Auth init error:", e);
+                dispatch(setAuth(null));
+            }
+        }
+        initializeAuth();
+    }, [dispatch]);
+
+    useEffect(() => {
+        if ((fontsLoaded || fontError) && isAuthLoaded) {
             SplashScreen.hideAsync();
         }
-    }, [loaded, error]);
+    }, [fontsLoaded, fontError, isAuthLoaded]);
 
-    if (!loaded && !error) {
+    if (!fontsLoaded && !fontError || !isAuthLoaded) {
         return null;
     }
 
     return (
-        <Provider store={store}>
-            <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-                <SafeAreaProvider>
+        <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
+            <SafeAreaProvider>
+                <View className="flex-1 bg-white dark:bg-[#020617]">
                     <Stack
-                        initialRouteName="index"
                         screenOptions={{
                             headerShown: false,
                             animation: 'fade',
                             contentStyle: {
-                                backgroundColor: colorScheme === "dark" ? "#020617" : "#ffffff"
+                                backgroundColor: isDark ? "#020617" : "#ffffff"
                             },
                         }}
-                    />
-                    <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
-                </SafeAreaProvider>
-            </ThemeProvider>
+                    >
+                        <Stack.Screen name="index" />
+                    </Stack>
+                    <StatusBar style={isDark ? "light" : "dark"} />
+                </View>
+            </SafeAreaProvider>
+        </ThemeProvider>
+    );
+}
+
+export default function RootLayout() {
+    return (
+        <Provider store={store}>
+            <AppContent />
         </Provider>
     );
 }
