@@ -10,10 +10,8 @@ interface AppLoaderProps {
 export const AppLoader = ({ visible, message }: AppLoaderProps) => {
     return (
         <Modal transparent visible={visible} animationType="fade">
-            {/* Використовуємо flex-1 для центрування всього контенту */}
             <View className="flex-1 items-center justify-center bg-black/60">
 
-                {/* Контейнер для лоадера, щоб відокремити його від фону */}
                 <View className="items-center justify-center p-8 rounded-3xl">
 
                     <LottieView
@@ -32,7 +30,6 @@ export const AppLoader = ({ visible, message }: AppLoaderProps) => {
                             <Text className="text-white text-lg font-semibold text-center tracking-wide">
                                 {message}
                             </Text>
-                            {/* Додамо крапки, що біжать, або просто субтитл */}
                             <Text className="text-gray-200 text-sm text-center mt-1">
                                 Будь ласка, зачекайте
                             </Text>

@@ -65,7 +65,6 @@ export const SquareImagePicker: React.FC<Props> = ({
                             className="w-full h-full"
                             resizeMode="cover"
                         />
-                        {/* Шар затемнення при наявності фото */}
                         <View className="absolute inset-0 bg-black/30 items-center justify-center">
                             <Ionicons name="camera-reverse" size={25} color="white" />
                         </View>

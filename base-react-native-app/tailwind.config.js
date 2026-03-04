@@ -11,8 +11,11 @@ module.exports = {
         'primary-button-light': '#E5F9F0',
       },
       fontFamily: {
+        'poppins-regular': ['Poppins-Regular'],
+        'poppins-medium': ['Poppins-Medium'],
         'poppins-semibold': ['Poppins-SemiBold'],
         'spartan-regular': ['LeagueSpartan-Regular'],
+        'spartan-light': ['LeagueSpartan-Light'],
         'spartan-semibold': ['LeagueSpartan-SemiBold'],
       },
     },

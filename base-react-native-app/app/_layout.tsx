@@ -17,11 +17,13 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
     const colorScheme = useColorScheme();
 
-    // Завантаження кастомних шрифтів
     const [loaded, error] = useFonts({
-        'LeagueSpartan-Regular': require('../assets/fonts/LeagueSpartan-Regular.ttf'),
-        'LeagueSpartan-SemiBold': require('../assets/fonts/LeagueSpartan-SemiBold.ttf'),
+        'Poppins-Regular': require('../assets/fonts/Poppins-Regular.ttf'),
+        'Poppins-Medium': require('../assets/fonts/Poppins-Medium.ttf'),
         'Poppins-SemiBold': require('../assets/fonts/Poppins-SemiBold.ttf'),
+        'LeagueSpartan-Regular': require('../assets/fonts/LeagueSpartan-Regular.ttf'),
+        'LeagueSpartan-Light': require('../assets/fonts/LeagueSpartan-Light.ttf'),
+        'LeagueSpartan-SemiBold': require('../assets/fonts/LeagueSpartan-SemiBold.ttf'),
     });
 
     useEffect(() => {
@@ -42,10 +44,13 @@ export default function RootLayout() {
                         initialRouteName="index"
                         screenOptions={{
                             headerShown: false,
-                            animation: 'fade'
+                            animation: 'fade',
+                            contentStyle: {
+                                backgroundColor: colorScheme === "dark" ? "#020617" : "#ffffff"
+                            },
                         }}
                     />
-                    <StatusBar style="auto" />
+                    <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
                 </SafeAreaProvider>
             </ThemeProvider>
         </Provider>
