@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using WebMonyAPI.Commands.Finances;
 using WebMonyAPI.Dtos.Finances;
 using WebMonyAPI.Queries.Finances;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebMonyAPI.Controllers;
 
@@ -12,6 +13,7 @@ namespace WebMonyAPI.Controllers;
 public class BalancesController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> GetAll()
         => Ok(await mediator.Send(new GetAllBalancesQuery()));
 
