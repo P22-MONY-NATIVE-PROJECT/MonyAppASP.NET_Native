@@ -9,9 +9,9 @@ namespace WebMonyAPI.Handlers.Finances;
 
 public class UpdateBalanceHandler(
     IGenericRepository<BalanceEntity, long> repo,
-    IGenericRepository<CurrencyEntity, long> currencyRepo,
     IMapper mapper,
-    IImageService imageService)
+    IImageService imageService,
+    IIdentityService identityService)
     : IRequestHandler<UpdateBalanceCommand, BalanceDto>
 {
     public async Task<BalanceDto> Handle(
@@ -19,13 +19,12 @@ public class UpdateBalanceHandler(
         CancellationToken cancellationToken)
     {
         var entity = await repo.GetByIdAsync(request.Model.Id);
+        long userId = await identityService.GetUserIdAsync();
 
-        if (entity == null)
+        if (entity == null || entity.UserId != userId)
             throw new Exception("Balance not found");
 
-        entity.Name = request.Model.Name;
-        entity.Amount = request.Model.Amount;
-        entity.IsSaving = request.Model.IsSaving;
+        mapper.Map(request.Model, entity);
         entity.CurrencyId = request.Model.CurrencyId;
 
         if (request.Model.Icon != null)

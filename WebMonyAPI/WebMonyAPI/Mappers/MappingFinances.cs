@@ -7,6 +7,8 @@ public class MappingFinances : Profile
     public MappingFinances()
     {
         CreateMap<BalanceEntity, BalanceDto>();
+        CreateMap<CreateBalanceDto, BalanceEntity>();
+        CreateMap<UpdateBalanceDto, BalanceEntity>();
         CreateMap<CurrencyEntity, CurrencyDto>();
     }
 }
