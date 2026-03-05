@@ -20,7 +20,7 @@ public class UpdateCategoryHandler(IGenericRepository<CategoryEntity, long> repo
         var entity = await repo.GetByIdAsync(request.Model.Id);
         long userId = await identityService.GetUserIdAsync();
 
-        if (entity == null || entity.IsDeleted || entity.UserId == userId)
+        if (entity == null || entity.IsDeleted || entity.UserId != userId)
             throw new KeyNotFoundException("Category not found");
 
         entity.Name = request.Model.Name;

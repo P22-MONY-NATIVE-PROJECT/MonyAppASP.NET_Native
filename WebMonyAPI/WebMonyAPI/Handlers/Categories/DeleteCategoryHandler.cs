@@ -18,7 +18,7 @@ public class DeleteCategoryHandler(IGenericRepository<CategoryEntity,
     {
         long userId = await identityService.GetUserIdAsync();
         var entity = await repo.GetByIdAsync(request.Id);
-        if (entity != null)
+        if (entity == null || entity.UserId != userId)
             throw new Exception("Category not found");
 
         await repo.DeleteAsync(request.Id);
