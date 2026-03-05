@@ -28,71 +28,6 @@ public static class DbSeeder
 
         context.Database.Migrate();
 
-        if (!context.CategoryTypes.Any())
-        {
-            var jsonFile = Path.Combine(Directory.GetCurrentDirectory(), "SeedData", "JsonData", "typeCategories.json");
-
-            if (File.Exists(jsonFile))
-            {
-                var jsonData = await File.ReadAllTextAsync(jsonFile);
-                try
-                {
-                    var catTypes= JsonSerializer.Deserialize<List<SeederCategoryModel>>(jsonData);
-                    foreach(var catType in catTypes)
-                    {
-                        var entityType = new CategoryTypeEntity { Name = catType.Name };
-                        try
-                        {
-                            var imagePath = Path.Combine(Directory.GetCurrentDirectory(), catType.Icon.TrimStart('/'));
-
-                            if (File.Exists(imagePath))
-                            {
-                                var bytes = await File.ReadAllBytesAsync(imagePath);
-                                entityType.Icon = await imageService.SaveImageAsync(bytes);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Image not found: {ex.Message}");
-                        }
-                        
-                        await context.CategoryTypes.AddRangeAsync(entityType);
-                        await context.SaveChangesAsync();
-
-                        foreach(var cat in catType.Categories)
-                        {
-                            var entityCat = new CategoryEntity { Name = cat.Name, CategoryTypeId = entityType.Id, UserId = cat.UserId };
-                            try
-                            {
-                                var imagePath = Path.Combine(Directory.GetCurrentDirectory(), cat.Icon.TrimStart('/'));
-                                if (File.Exists(imagePath))
-                                {
-                                    var bytes = await File.ReadAllBytesAsync(imagePath);
-                                    entityCat.Icon = await imageService.SaveImageAsync(bytes);
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"Image not found: {ex.Message}");
-                            }
-                            await context.Categories.AddRangeAsync(entityCat);
-                            await context.SaveChangesAsync();
-                        }
-
-                    }
-                    
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Error Json Parse Data", ex.Message);
-                }
-            }
-            else
-            {
-                Console.WriteLine("Not found file expenseCategories.json");
-            }
-        }
-
         // Сід для ролей
         if (!roleManager.Roles.Any())
         {
@@ -155,6 +90,72 @@ public static class DbSeeder
             else
             {
                 Console.WriteLine("Not Found File Categories.json");
+            }
+        }
+
+        // сід категорій
+        if (!context.CategoryTypes.Any())
+        {
+            var jsonFile = Path.Combine(Directory.GetCurrentDirectory(), "SeedData", "JsonData", "typeCategories.json");
+
+            if (File.Exists(jsonFile))
+            {
+                var jsonData = await File.ReadAllTextAsync(jsonFile);
+                try
+                {
+                    var catTypes = JsonSerializer.Deserialize<List<SeederCategoryModel>>(jsonData);
+                    foreach (var catType in catTypes)
+                    {
+                        var entityType = new CategoryTypeEntity { Name = catType.Name };
+                        try
+                        {
+                            var imagePath = Path.Combine(Directory.GetCurrentDirectory(), catType.Icon.TrimStart('/'));
+
+                            if (File.Exists(imagePath))
+                            {
+                                var bytes = await File.ReadAllBytesAsync(imagePath);
+                                entityType.Icon = await imageService.SaveImageAsync(bytes);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Image not found: {ex.Message}");
+                        }
+
+                        await context.CategoryTypes.AddRangeAsync(entityType);
+                        await context.SaveChangesAsync();
+
+                        foreach (var cat in catType.Categories)
+                        {
+                            var entityCat = new CategoryEntity { Name = cat.Name, CategoryTypeId = entityType.Id, UserId = cat.UserId };
+                            try
+                            {
+                                var imagePath = Path.Combine(Directory.GetCurrentDirectory(), cat.Icon.TrimStart('/'));
+                                if (File.Exists(imagePath))
+                                {
+                                    var bytes = await File.ReadAllBytesAsync(imagePath);
+                                    entityCat.Icon = await imageService.SaveImageAsync(bytes);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Image not found: {ex.Message}");
+                            }
+                            await context.Categories.AddRangeAsync(entityCat);
+                            await context.SaveChangesAsync();
+                        }
+
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error Json Parse Data", ex.Message);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Not found file expenseCategories.json");
             }
         }
 
