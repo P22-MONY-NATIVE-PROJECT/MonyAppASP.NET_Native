@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using WebMonyAPI.Entities.Categories;
 using WebMonyAPI.Entities.Finances;
 
 namespace WebMonyAPI.Entities.Identity;
@@ -12,4 +13,5 @@ public class UserEntity : IdentityUser<long>
     public string? Image { get; set; } = string.Empty;
     public virtual ICollection<UserRoleEntity>? UserRoles { get; set; }
     public virtual ICollection<BalanceEntity>? Balances { get; set; }
+    public virtual ICollection<CategoryEntity>? Categories { get; set; }
 }
