@@ -10,9 +10,6 @@ public class SeederMapper : Profile
 {
     public SeederMapper()
     {
-        CreateMap<SeederBaseCategoryModel, ExpenseCategoryEntity>();
-        CreateMap<SeederBaseCategoryModel, IncomeCategoryEntity>();
-        CreateMap<SeederBaseCategoryModel, SavingCategoryEntity>();
         CreateMap<SeederCurrencyModel, CurrencyEntity>();
         CreateMap<SeederBalanceModel, BalanceEntity>();
         CreateMap<SeederOperationChargeModel, OperationChargeEntity>();

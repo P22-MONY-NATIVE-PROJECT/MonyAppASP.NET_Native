@@ -22,10 +22,6 @@ public class AppDbContext : IdentityDbContext<
 
     public DbSet<CategoryTypeEntity> CategoryTypes { get; set; }
     public DbSet<CategoryEntity> Categories { get; set; }
-
-    public DbSet<ExpenseCategoryEntity> ExpenseCategories { get; set; }
-    public DbSet<SavingCategoryEntity> SavingCategories { get; set; }
-    public DbSet<IncomeCategoryEntity> IncomeCategories { get; set; }
     public DbSet<CurrencyEntity> Currencies { get; set; }
     public DbSet<BalanceEntity> Balances { get; set; }
     public DbSet<OperationEntity> Operations { get; set; }

@@ -9,14 +9,16 @@ namespace WebMonyAPI.Handlers.Finances;
 
 public class GetBalanceByIdHandler(
     IGenericRepository<BalanceEntity, long> repo,
-    IMapper mapper)
+    IMapper mapper,
+    IIdentityService identityService)
     : IRequestHandler<GetBalanceByIdQuery, BalanceDto?>
 {
     public async Task<BalanceDto?> Handle(
         GetBalanceByIdQuery request,
         CancellationToken cancellationToken)
     {
-        var spec = new BalanceWithCurrencySpecification(request.Id);
+        long userId = await identityService.GetUserIdAsync();
+        var spec = new BalanceWithCurrencySpecification(request.Id, userId);
 
         var result = await repo.ListAsync(spec);
         var entity = result.FirstOrDefault();
