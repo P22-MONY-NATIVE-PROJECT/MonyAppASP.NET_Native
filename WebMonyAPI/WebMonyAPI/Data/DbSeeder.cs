@@ -61,7 +61,7 @@ public static class DbSeeder
 
                         foreach(var cat in catType.Categories)
                         {
-                            var entityCat = new CategoryEntity { Name = cat.Name, CategoryTypeId = entityType.Id };
+                            var entityCat = new CategoryEntity { Name = cat.Name, CategoryTypeId = entityType.Id, UserId = cat.UserId };
                             try
                             {
                                 var imagePath = Path.Combine(Directory.GetCurrentDirectory(), cat.Icon.TrimStart('/'));

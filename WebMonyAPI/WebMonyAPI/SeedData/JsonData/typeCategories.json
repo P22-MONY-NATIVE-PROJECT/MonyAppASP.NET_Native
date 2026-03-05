@@ -5,67 +5,83 @@
     "Categories": [
       {
         "Name": "Комунальні послуги",
-        "Icon": "/SeedData/images/utilities.png"
+        "Icon": "/SeedData/images/utilities.png",
+        "UserId":  1
       },
       {
         "Name": "Пальне",
-        "Icon": "/SeedData/images/petrol.png"
+        "Icon": "/SeedData/images/petrol.png",
+        "UserId": 1
       },
       {
         "Name": "Телефон",
-        "Icon": "/SeedData/images/phone.png"
+        "Icon": "/SeedData/images/phone.png",
+        "UserId": 1
       },
       {
         "Name": "Інтернет",
-        "Icon": "/SeedData/images/internet.png"
+        "Icon": "/SeedData/images/internet.png",
+        "UserId": 1
       },
       {
         "Name": "Освіта",
-        "Icon": "/SeedData/images/education.png"
+        "Icon": "/SeedData/images/education.png",
+        "UserId": 1
       },
       {
         "Name": "Дитина",
-        "Icon": "/SeedData/images/child.png"
+        "Icon": "/SeedData/images/child.png",
+        "UserId": 1
       },
       {
         "Name": "День народження",
-        "Icon": "/SeedData/images/birthday.png"
+        "Icon": "/SeedData/images/birthday.png",
+        "UserId": 1
       },
       {
         "Name": "Одяг",
-        "Icon": "/SeedData/images/clothes.png"
+        "Icon": "/SeedData/images/clothes.png",
+        "UserId": 1
       },
       {
         "Name": "Транспорт",
-        "Icon": "/SeedData/images/transport.png"
+        "Icon": "/SeedData/images/transport.png",
+        "UserId": 1
       },
       {
         "Name": "Домашні тварини",
-        "Icon": "/SeedData/images/pets.png"
+        "Icon": "/SeedData/images/pets.png",
+        "UserId": 1
       },
       {
         "Name": "Здоров'я",
-        "Icon": "/SeedData/images/health.png"
+        "Icon": "/SeedData/images/health.png",
+        "UserId": 1
       },
       {
         "Name": "Кафе",
-        "Icon": "/SeedData/images/cafe.png"
+        "Icon": "/SeedData/images/cafe.png",
+        "UserId": 1
       },
       {
         "Name": "Розваги",
-        "Icon": "/SeedData/images/entertainment.png"
+        "Icon": "/SeedData/images/entertainment.png",
+        "UserId": 1
       },
       {
         "Name": "Їжа",
-        "Icon": "/SeedData/images/food.png"
+        "Icon": "/SeedData/images/food.png",
+        "UserId": 1
       },
       {
         "Name": "Книги",
-        "Icon": "/SeedData/images/books.png"
+        "Icon": "/SeedData/images/books.png",
+        "UserId": 1
       },
       {
         "Name": "Сім'я'",
-        "Icon": "/SeedData/images/family.png"
+        "Icon": "/SeedData/images/family.png",
+        "UserId": 1
       }
     ]
   },
@@ -75,23 +91,28 @@
     "Categories": [
       {
         "Name": "Відпустка",
-        "Icon": "/SeedData/images/vacation.png"
+        "Icon": "/SeedData/images/vacation.png",
+        "UserId": 1
       },
       {
         "Name": "Фінансова подушка",
-        "Icon": "/SeedData/images/emergency.png"
+        "Icon": "/SeedData/images/emergency.png",
+        "UserId": 1
       },
       {
         "Name": "Дитина",
-        "Icon": "/SeedData/images/child.png"
+        "Icon": "/SeedData/images/child.png",
+        "UserId": 1
       },
       {
         "Name": "Весілля",
-        "Icon": "/SeedData/images/wedding.png"
+        "Icon": "/SeedData/images/wedding.png",
+        "UserId": 1
       },
       {
         "Name": "Майбутній бізнес",
-        "Icon": "/SeedData/images/business.png"
+        "Icon": "/SeedData/images/business.png",
+        "UserId": 1
       }
     ]
   },
@@ -101,19 +122,23 @@
     "Categories": [
       {
         "Name": "Криптовалюта",
-        "Icon": "/SeedData/images/cryptocurrency.png"
+        "Icon": "/SeedData/images/cryptocurrency.png",
+        "UserId": 1
       },
       {
         "Name": "Зарплата",
-        "Icon": "/SeedData/images/salary.png"
+        "Icon": "/SeedData/images/salary.png",
+        "UserId": 1
       },
       {
         "Name": "День народження",
-        "Icon": "/SeedData/images/birthday.png"
+        "Icon": "/SeedData/images/birthday.png",
+        "UserId": 1
       },
       {
         "Name": "Спадок",
-        "Icon": "/SeedData/images/spadok.png"
+        "Icon": "/SeedData/images/spadok.png",
+        "UserId": 1
       }
     ]
   }
