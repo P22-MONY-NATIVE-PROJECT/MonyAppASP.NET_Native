@@ -4,7 +4,7 @@ using WebMonyAPI.Entities.Base;
 
 namespace WebMonyAPI.Entities.Categories;
 
-[Table("tblCategoryTypes")]
+[Table("tbl_category_types")]
 public class CategoryTypeEntity : BaseEntity<long>
 {
     [StringLength(100)]

@@ -4,5 +4,6 @@ public class SeederCategoryModel
 {
     public string Name { get; set; } = string.Empty;
     public string Icon { get; set; } = string.Empty;
+    public long UserId { get; set; }
     public List<SeederCategoryModel>? Categories { get; set; }
 }

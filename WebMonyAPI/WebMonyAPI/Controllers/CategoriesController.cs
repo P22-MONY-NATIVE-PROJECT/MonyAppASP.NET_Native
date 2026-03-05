@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using WebMonyAPI.Commands.Category;
 using WebMonyAPI.Dtos.Categories;
 using WebMonyAPI.Queries.Categories;
@@ -12,39 +13,94 @@ namespace WebMonyAPI.Controllers;
 public class CategoriesController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> Get(int typeId)
-        => Ok(await mediator.Send(new GetCategoriesQuery(typeId)));
+    {
+        try
+        {
+            var result = await mediator.Send(new GetCategoriesQuery(typeId));
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
 
     [HttpGet("all-category-types")]
+    [Authorize]
     public async Task<IActionResult> GetAllTypes()
-        => Ok(await mediator.Send(new GetAllCategoryTypesQuery()));
+    {
+        try
+        {
+            var result = await mediator.Send(new GetAllCategoryTypesQuery());
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
 
     [HttpGet("{id:long}")]
+    [Authorize]
     public async Task<IActionResult> Get(long id)
-        => Ok(await mediator.Send(new GetCategoryByIdQuery(id)));
+    {
+        try
+        {
+            var result = await mediator.Send(new GetCategoryByIdQuery(id));
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+    }
 
     [HttpPost]
     [Consumes("multipart/form-data")]
-    public async Task<IActionResult> Create(
-        [FromForm] CreateCategoryDto dto)
+    [Authorize]
+    public async Task<IActionResult> Create([FromForm] CreateCategoryDto dto)
     {
-        return Ok(await mediator
-            .Send(new CreateCategoryCommand(dto)));
+        try
+        {
+            var result = await mediator.Send(new CreateCategoryCommand(dto));
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
     [HttpPut]
     [Consumes("multipart/form-data")]
-    public async Task<IActionResult> Update(
-        [FromForm] UpdateCategoryDto dto)
+    [Authorize]
+    public async Task<IActionResult> Update([FromForm] UpdateCategoryDto dto)
     {
-        return Ok(await mediator
-            .Send(new UpdateCategoryCommand(dto)));
+        try
+        {
+            var result = await mediator.Send(new UpdateCategoryCommand(dto));
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
     [HttpDelete("{id:long}")]
+    [Authorize]
     public async Task<IActionResult> Delete(long id)
     {
-        await mediator.Send(new DeleteCategoryCommand(id));
-        return Ok();
+        try
+        {
+            await mediator.Send(new DeleteCategoryCommand(id));
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
     }
 }

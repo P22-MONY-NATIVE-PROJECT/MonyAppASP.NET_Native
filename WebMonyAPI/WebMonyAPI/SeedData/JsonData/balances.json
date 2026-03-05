@@ -4,20 +4,23 @@
     "Icon": "/SeedData/images/cash.png",
     "Amount": 5000,
     "IsSaving": false,
-    "CurrencyCode": "UAH"
+    "CurrencyCode": "UAH",
+    "UserId": 1
   },
   {
     "Name": "Картка",
     "Icon": "/SeedData/images/card.png",
     "Amount": 9800,
     "IsSaving": false,
-    "CurrencyCode": "UAH"
+    "CurrencyCode": "UAH",
+    "UserId": 1
   },
   {
     "Name": "На авто",
     "Icon": "/SeedData/images/car.png",
     "Amount": 18500,
     "IsSaving": true,
-    "CurrencyCode": "USD"
+    "CurrencyCode": "USD",
+    "UserId": 1
   }
 ]

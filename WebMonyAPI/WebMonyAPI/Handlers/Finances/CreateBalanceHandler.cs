@@ -11,7 +11,8 @@ public class CreateBalanceHandler(
     IGenericRepository<BalanceEntity, long> repo,
     IGenericRepository<CurrencyEntity, long> currencyRepo,
     IMapper mapper,
-    IImageService imageService)
+    IImageService imageService,
+    IIdentityService identityService)
     : IRequestHandler<CreateBalanceCommand, BalanceDto>
 {
     public async Task<BalanceDto> Handle(
@@ -24,13 +25,10 @@ public class CreateBalanceHandler(
         if (currency == null)
             throw new Exception("Currency not found");
 
-        var entity = new BalanceEntity
-        {
-            Name = request.Model.Name,
-            CurrencyId = currency.Id,
-            Amount = request.Model.Amount,
-            IsSaving = request.Model.IsSaving
-        };
+        var entity = mapper.Map<BalanceEntity>(request.Model);
+
+        entity.CurrencyId = currency.Id;
+        entity.UserId = await identityService.GetUserIdAsync();
 
         if (request.Model.Icon != null)
         {
