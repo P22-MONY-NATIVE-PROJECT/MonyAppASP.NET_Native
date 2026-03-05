@@ -94,10 +94,8 @@ export default function CategoryModal() {
                     message="Завантаження категорій..."
                 />
 
-                {/* Centered Content */}
                 <View className="flex-1 justify-center">
 
-                    {/* Title */}
                     <ThemedText
                         type="title"
                         style={{ textAlign: "center", marginBottom: 20 }}
@@ -105,10 +103,8 @@ export default function CategoryModal() {
                         {isEdit ? "Редагувати категорію" : "Нова категорія"}
                     </ThemedText>
 
-                    {/* Card */}
                     <View className="bg-white dark:bg-gray-900 p-8 rounded-3xl gap-8 shadow-sm">
 
-                        {/* Name Input */}
                         <View className="items-center">
                             <TextInput
                                 value={form.name}
@@ -127,7 +123,6 @@ export default function CategoryModal() {
                             />
                         </View>
 
-                        {/* Image Picker */}
                         <View className="items-center">
                             <SquareImagePicker
                                 imageUri={
@@ -150,7 +145,6 @@ export default function CategoryModal() {
                     </View>
                 </View>
 
-                {/* Bottom Button */}
                 <View className="pb-8">
                     <TouchableOpacity
                         onPress={onSubmit}
