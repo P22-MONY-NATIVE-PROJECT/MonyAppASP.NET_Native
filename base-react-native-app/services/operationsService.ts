@@ -22,7 +22,7 @@ export const operationsService = createApi({
             query: body => ({
                 url: "",
                 method: "POST",
-                body: serialize(body)
+                body: body //serialize(body)
             }),
             invalidatesTags: ["Operations","Operation"]
         }),

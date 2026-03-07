@@ -54,10 +54,18 @@ export default function OperationCreateSheet({
             categoryId: category.id,
             balanceId: balanceId
         };
+        console.log("----send server data----", request);
+        try {
+            await createOperation(request).unwrap();
+            onClose();
+        }
+        catch (error) {
+            console.error("Error creating operation:", error);
+        }
 
-        await createOperation(request);
+        // await createOperation(request).unwrap();
 
-        onClose();
+
     };
 
     return (
