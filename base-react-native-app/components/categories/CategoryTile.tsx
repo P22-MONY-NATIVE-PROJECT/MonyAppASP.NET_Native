@@ -50,7 +50,7 @@ export default function CategoryTile({
             className={`w-[47%] h-28 rounded-xl px-3 py-2 items-center justify-center ${colorClass}`}
         >
             <Image
-                source={{ uri: APP_URLS.IMAGES_100_URL + category.icon }}
+                source={{ uri: APP_URLS.IMAGES_400_URL + category.icon }}
                 className="w-7 h-7 mb-1"
                 resizeMode="contain"
             />

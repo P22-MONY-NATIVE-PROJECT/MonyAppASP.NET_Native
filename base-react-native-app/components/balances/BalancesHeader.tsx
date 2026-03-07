@@ -56,7 +56,7 @@ export default function BalancesHeader() {
                         >
                             {user?.image ? (
                                 <Image
-                                    source={{ uri: APP_URLS.IMAGES_100_URL + user.image }}
+                                    source={{ uri: APP_URLS.IMAGES_400_URL + user.image }}
                                     style={{ width: '100%', height: '100%' }}
                                 />
                             ) : (
