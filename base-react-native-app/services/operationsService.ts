@@ -5,7 +5,7 @@ import { createBaseQuery } from "@/utilities/createBaseQuery";
 import {IOperationItemResponse} from "@/types/operation/IOperationItemResponse";
 import {ICreateOperationRequest} from "@/types/operation/ICreateOperationRequest";
 
-export const categoriesService = createApi({
+export const operationsService = createApi({
     reducerPath: "api/operations",
     tagTypes: ["Operations", "Operation"],
     baseQuery: createBaseQuery("operations"),
@@ -32,4 +32,4 @@ export const categoriesService = createApi({
 export const {
     useGetOperationsQuery,
     useCreateOperationMutation,
-} = categoriesService;
+} = operationsService;
