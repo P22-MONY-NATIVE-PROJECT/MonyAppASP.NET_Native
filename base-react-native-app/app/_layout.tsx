@@ -35,11 +35,10 @@ function AppContent() {
         async function initializeAuth() {
             try {
                 const token = await getToken();
-                if (token) {
-                    dispatch(setAuth(token));
-                } else {
-                    dispatch(setAuth(null));
-                }
+                console.log("Token found:", !!token);
+                console.log("setAuth dispatching...");
+                dispatch(setAuth(token ?? null));
+                console.log("setAuth done");
             } catch (e) {
                 console.error("Auth init error:", e);
                 dispatch(setAuth(null));
@@ -48,13 +47,33 @@ function AppContent() {
         initializeAuth();
     }, [dispatch]);
 
+    // useEffect(() => {
+    //     async function initializeAuth() {
+    //         try {
+    //             const token = await getToken();
+    //             if (token) {
+    //                 dispatch(setAuth(token));
+    //             } else {
+    //                 dispatch(setAuth(null));
+    //             }
+    //         } catch (e) {
+    //             console.error("Auth init error:", e);
+    //             dispatch(setAuth(null));
+    //         }
+    //     }
+    //     initializeAuth();
+    // }, [dispatch]);
+
     useEffect(() => {
         if ((fontsLoaded || fontError) && isAuthLoaded) {
             SplashScreen.hideAsync();
         }
     }, [fontsLoaded, fontError, isAuthLoaded]);
 
-    if (!fontsLoaded && !fontError || !isAuthLoaded) {
+    // if (!fontsLoaded && !fontError || !isAuthLoaded) {
+    //     return null;
+    // }
+    if ((!fontsLoaded && !fontError) || !isAuthLoaded) {
         return null;
     }
 
