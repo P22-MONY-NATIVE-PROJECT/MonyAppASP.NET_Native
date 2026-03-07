@@ -34,20 +34,10 @@ export default function OperationCreateSheet({
     const [comment, setComment] = useState("");
     const [balanceId, setBalanceId] = useState<number | null>(null);
 
-    const [taxAmount, setTaxAmount] = useState("");
-    const [taxPercent, setTaxPercent] = useState("");
-
-    const [commissionAmount, setCommissionAmount] = useState("");
-    const [commissionPercent, setCommissionPercent] = useState("");
-
     useEffect(() => {
         if (visible) {
             setAmount("");
             setComment("");
-            setTaxAmount("");
-            setTaxPercent("");
-            setCommissionAmount("");
-            setCommissionPercent("");
 
             if (balances?.length) {
                 setBalanceId(balances[0].id);
