@@ -44,6 +44,7 @@ export default function CategoryTile({
 
     return (
         <TouchableOpacity
+            onPress={onPress}
             onLongPress={onLongPress}
             activeOpacity={0.85}
             className={`w-[47%] h-28 rounded-xl px-3 py-2 items-center justify-center ${colorClass}`}
