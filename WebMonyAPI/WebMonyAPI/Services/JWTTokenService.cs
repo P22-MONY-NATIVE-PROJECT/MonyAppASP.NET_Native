@@ -33,7 +33,7 @@ public class JWTTokenService(IConfiguration configuration,
 
         var sec = new JwtSecurityToken(
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(60),
+            expires: DateTime.UtcNow.AddDays(60),
             signingCredentials: signingCredentials
         );
 
