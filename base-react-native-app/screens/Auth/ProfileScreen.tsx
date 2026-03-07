@@ -62,7 +62,7 @@ export default function ProfileScreen() {
 
         {/* ── Avatar + Name ── */}
         <View style={styles.heroSection}>
-          <Avatar uri={ APP_URLS.IMAGES_200_URL + user.image || undefined} name={user.name} theme={theme} />
+          <Avatar uri={ APP_URLS.IMAGES_400_URL + user.image || undefined} name={user.name} theme={theme} />
 
           <Text style={[styles.userName, { color: theme.text }]}>
             {user.name}
