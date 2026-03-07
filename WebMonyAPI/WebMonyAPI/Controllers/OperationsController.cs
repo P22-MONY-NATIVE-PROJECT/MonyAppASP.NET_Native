@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebMonyAPI.Commands.Finances;
 using WebMonyAPI.Commands.Operations;
@@ -15,6 +16,7 @@ namespace WebMonyAPI.Controllers
     public class OperationsController(IMediator mediator) : ControllerBase
     {
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAll()
         => Ok(await mediator.Send(new GetAllOperationsQuery()));
 
@@ -33,18 +35,22 @@ namespace WebMonyAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Create(CreateOperationDto dto)
         => Ok(await mediator.Send(new CreateOperationCommand(dto)));
 
         [HttpGet("{id:long}")]
+        [Authorize]
         public async Task<IActionResult> GetById(long id)
         => Ok(await mediator.Send(new GetOperationByIdQuery(id)));
 
         [HttpPut]
+        [Authorize]
         public async Task<IActionResult> Update(UpdateOperationDto dto)
         => Ok(await mediator.Send(new UpdateOperationCommand(dto)));
 
         [HttpDelete("{id:long}")]
+        [Authorize]
         public async Task<IActionResult> Delete(long id)
         {
             await mediator.Send(new DeleteOperationCommand(id));
