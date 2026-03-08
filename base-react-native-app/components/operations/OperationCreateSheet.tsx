@@ -30,6 +30,7 @@ export default function OperationCreateSheet({
                                              }: Props) {
     const { data: balances } = useGetBalancesQuery();
     const [createOperation, { isLoading }] = useCreateOperationMutation();
+    const { refetch } = useGetBalancesQuery();
 
     const { control, handleSubmit, reset, watch, setValue } =
         useForm<ICreateOperationRequest>({
@@ -68,6 +69,7 @@ export default function OperationCreateSheet({
 
         try {
             await createOperation(request).unwrap();
+            refetch();
             onClose();
         } catch (error) {
             console.error("Error creating operation:", error);
@@ -95,6 +97,13 @@ export default function OperationCreateSheet({
     return (
         <Modal visible={visible} transparent animationType="slide">
             <View className="flex-1 justify-end bg-black/40">
+
+                <TouchableOpacity
+                    className="absolute inset-0"
+                    activeOpacity={1}
+                    onPress={onClose}
+                />
+
                 <View className="bg-white dark:bg-neutral-900 rounded-t-3xl p-5 max-h-[85%]">
 
                     <View className="items-center mb-4">
@@ -105,7 +114,10 @@ export default function OperationCreateSheet({
                         {category?.name}
                     </Text>
 
-                    <ScrollView showsVerticalScrollIndicator={false}>
+                    <ScrollView
+                        showsVerticalScrollIndicator={false}
+                        keyboardShouldPersistTaps="handled"
+                    >
 
                         <Text className="mb-1 text-black dark:text-white">
                             Amount
