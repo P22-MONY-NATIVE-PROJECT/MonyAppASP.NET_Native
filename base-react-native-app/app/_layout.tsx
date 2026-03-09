@@ -1,26 +1,26 @@
 import React, { useEffect } from 'react';
 import { View } from "react-native";
-import { Stack } from 'expo-router';
+import { Redirect, Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 import { ThemeProvider, DarkTheme, DefaultTheme } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider, useDispatch, useSelector } from "react-redux";
-
 import "../global.css";
 import { store, RootState } from "@/store";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { getToken } from "@/utilities/storage";
-import {setAuth} from "@/store/authSlice";
+import { setAuth } from "@/store/authSlice";
+import { Colors } from "@/constants/theme";
 
 SplashScreen.preventAutoHideAsync();
 
 function AppContent() {
     const { isDark } = useAppTheme();
     const dispatch = useDispatch();
-
     const isAuthLoaded = useSelector((state: RootState) => state.auth.isLoaded);
+    const user = useSelector((state: RootState) => state.auth.user); // drives <Redirect> below
 
     const [fontsLoaded, fontError] = useFonts({
         'Poppins-Regular': require('../assets/fonts/Poppins-Regular.ttf'),
@@ -35,10 +35,7 @@ function AppContent() {
         async function initializeAuth() {
             try {
                 const token = await getToken();
-                console.log("Token found:", !!token);
-                console.log("setAuth dispatching...");
                 dispatch(setAuth(token ?? null));
-                console.log("setAuth done");
             } catch (e) {
                 console.error("Auth init error:", e);
                 dispatch(setAuth(null));
@@ -47,32 +44,12 @@ function AppContent() {
         initializeAuth();
     }, [dispatch]);
 
-    // useEffect(() => {
-    //     async function initializeAuth() {
-    //         try {
-    //             const token = await getToken();
-    //             if (token) {
-    //                 dispatch(setAuth(token));
-    //             } else {
-    //                 dispatch(setAuth(null));
-    //             }
-    //         } catch (e) {
-    //             console.error("Auth init error:", e);
-    //             dispatch(setAuth(null));
-    //         }
-    //     }
-    //     initializeAuth();
-    // }, [dispatch]);
-
     useEffect(() => {
         if ((fontsLoaded || fontError) && isAuthLoaded) {
             SplashScreen.hideAsync();
         }
     }, [fontsLoaded, fontError, isAuthLoaded]);
 
-    // if (!fontsLoaded && !fontError || !isAuthLoaded) {
-    //     return null;
-    // }
     if ((!fontsLoaded && !fontError) || !isAuthLoaded) {
         return null;
     }
@@ -80,13 +57,16 @@ function AppContent() {
     return (
         <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
             <SafeAreaProvider>
-                <View className="flex-1 bg-white dark:bg-[#020617]">
+                <View
+                    style={{ flex: 1, backgroundColor: isDark ? Colors.dark.background : Colors.light.background }}
+                >
+                    {!user && <Redirect href="/login" />}
                     <Stack
                         screenOptions={{
                             headerShown: false,
                             animation: 'fade',
                             contentStyle: {
-                                backgroundColor: isDark ? "#020617" : "#ffffff"
+                                backgroundColor: isDark ? Colors.dark.background : Colors.light.background,
                             },
                         }}
                     >
