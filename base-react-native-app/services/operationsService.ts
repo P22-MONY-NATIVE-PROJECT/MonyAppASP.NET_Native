@@ -4,8 +4,8 @@ import { createBaseQuery } from "@/utilities/createBaseQuery";
 import {IOperationItemResponse} from "@/types/operation/IOperationItemResponse";
 import {ICreateOperationRequest} from "@/types/operation/ICreateOperationRequest";
 import {IDeleteOperationRequest} from "@/types/operation/IDeleteOperationRequest";
-import {IEditOperationChargeRequest} from "@/types/operation/IEditOperationChargeRequest";
 import {IGetOperationByIdRequest} from "@/types/operation/IGetOperationByIdRequest";
+import {IEditOperationRequest} from "@/types/operation/IEditOperationRequest";
 
 export const operationsService = createApi({
     reducerPath: "api/operations",
