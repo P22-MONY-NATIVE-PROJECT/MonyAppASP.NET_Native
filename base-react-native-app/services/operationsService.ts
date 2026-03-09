@@ -30,7 +30,7 @@ export const operationsService = createApi({
                 invalidatesTags: ["Operations", "Operation"]
             }),
 
-            editOperation: builder.mutation<void, IEditOperationChargeRequest>({
+            editOperation: builder.mutation<void, IEditOperationRequest>({
                 query: body => ({
                     url: "",
                     method: "PUT",

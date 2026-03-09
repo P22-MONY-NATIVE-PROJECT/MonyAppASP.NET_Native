@@ -1,12 +1,20 @@
 import React, { useState } from "react";
 import { FlatList, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ThemedView } from "@/components/themed-view";
 import { useRouter } from "expo-router";
 
+import { ThemedView } from "@/components/themed-view";
 import { useGetOperationsQuery, useDeleteOperationMutation } from "@/services/operationsService";
 import MonthSwitcher from "@/components/categories/MonthSwitcher";
 import { AppLoader } from "@/components/ui/app-loader";
+
+interface Operation {
+    id: number;
+    categoryName: string;
+    comment?: string;
+    calcAmount?: number;
+    initAmount: number;
+}
 
 export default function OperationsArchiveScreen() {
     const router = useRouter();
@@ -15,12 +23,23 @@ export default function OperationsArchiveScreen() {
     const [deleteOperation] = useDeleteOperationMutation();
 
     const [currentDate, setCurrentDate] = useState(new Date());
-    const [actionOperation, setActionOperation] = useState<any>(null);
+    const [actionOperation, setActionOperation] = useState<Operation | null>(null);
 
-    const operations = data ?? [];
+    const operations: Operation[] = data ?? [];
 
     const handleDelete = async (id: number) => {
-        await deleteOperation({ id });
+        try {
+            await deleteOperation({ id }).unwrap();
+        } catch (error) {
+            console.error("Delete failed:", error);
+        }
+    };
+
+    const openOperation = (id: number) => {
+        router.push({
+            pathname: "/operation-modal",
+            params: { operationId: id },
+        });
     };
 
     return (
@@ -38,7 +57,7 @@ export default function OperationsArchiveScreen() {
                     contentContainerStyle={{ paddingTop: 20, paddingBottom: 20 }}
                     renderItem={({ item }) => (
                         <Pressable
-                            onPress={() => router.push({ pathname: "/operation-modal", params: { id: item.id } })}
+                            onPress={() => openOperation(item.id)}
                             onLongPress={() => setActionOperation(item)}
                             className="mb-3 p-4 rounded-2xl
                                        bg-white dark:bg-gray-900
@@ -49,14 +68,19 @@ export default function OperationsArchiveScreen() {
                                 <Text className="text-base font-semibold text-black dark:text-white">
                                     {item.categoryName}
                                 </Text>
+
                                 {item.comment && (
                                     <Text className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                                         {item.comment}
                                     </Text>
                                 )}
                             </View>
+
                             <Text className="text-lg font-bold text-black dark:text-white">
-                                {Number(item.calcAmount ?? item.initAmount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                {Number(item.calcAmount ?? item.initAmount).toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                })}
                             </Text>
                         </Pressable>
                     )}
@@ -64,16 +88,21 @@ export default function OperationsArchiveScreen() {
 
                 {actionOperation && (
                     <View
-                        className="absolute bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 p-6 rounded-t-3xl"
+                        className="absolute bottom-0 left-0 right-0
+                                   bg-white dark:bg-gray-900
+                                   border-t border-gray-200 dark:border-gray-800
+                                   p-6 rounded-t-3xl"
                     >
                         <Pressable
                             className="py-4"
                             onPress={() => {
-                                router.push({ pathname: "/operation-modal", params: { id: actionOperation.id } });
+                                openOperation(actionOperation.id);
                                 setActionOperation(null);
                             }}
                         >
-                            <Text className="text-lg text-blue-500 text-center">Редагувати</Text>
+                            <Text className="text-lg text-blue-500 text-center">
+                                Редагувати
+                            </Text>
                         </Pressable>
 
                         <Pressable
@@ -83,11 +112,18 @@ export default function OperationsArchiveScreen() {
                                 setActionOperation(null);
                             }}
                         >
-                            <Text className="text-lg text-red-500 text-center">Видалити</Text>
+                            <Text className="text-lg text-red-500 text-center">
+                                Видалити
+                            </Text>
                         </Pressable>
 
-                        <Pressable className="py-4" onPress={() => setActionOperation(null)}>
-                            <Text className="text-lg text-gray-500 text-center">Скасувати</Text>
+                        <Pressable
+                            className="py-4"
+                            onPress={() => setActionOperation(null)}
+                        >
+                            <Text className="text-lg text-gray-500 text-center">
+                                Скасувати
+                            </Text>
                         </Pressable>
                     </View>
                 )}

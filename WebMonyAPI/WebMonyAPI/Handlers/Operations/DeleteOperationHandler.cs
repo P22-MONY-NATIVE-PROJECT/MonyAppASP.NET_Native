@@ -13,14 +13,22 @@ namespace WebMonyAPI.Handlers.Operations;
 public class DeleteOperationHandler(
     IGenericRepository<OperationEntity, long> repo,
     IGenericRepository<BalanceEntity, long> balanceRepo,
-    IGenericRepository<CategoryEntity, long> categoryRepo)
+    IGenericRepository<CategoryEntity, long> categoryRepo,
+    IIdentityService identityService
+    )
     : IRequestHandler<DeleteOperationCommand,Unit>
 {
     public async Task<Unit> Handle(
         DeleteOperationCommand request,
         CancellationToken cancellationToken)
     {
-        var spec = new OperationWithDetailsSpecification(request.id);
+        long userId = await identityService.GetUserIdAsync();
+
+        var balancesSpec = new BalanceWithCurrencySpecification(userId);
+        var balances = await balanceRepo.ListAsync(balancesSpec);
+        var balancesIds = balances.Select(b => b.Id).ToArray();
+
+        var spec = new OperationWithDetailsSpecification(request.id, balancesIds);
         var res = await repo.ListAsync(spec);
         var operation = res.FirstOrDefault();
         if (operation == null)

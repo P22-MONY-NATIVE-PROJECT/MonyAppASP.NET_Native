@@ -11,26 +11,30 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Controller, useForm, useFieldArray } from "react-hook-form";
+import { useLocalSearchParams, useRouter } from "expo-router";
 
 import { useGetBalancesQuery } from "@/services/balancesService";
 import { useEditOperationMutation, useGetOperationByIdQuery } from "@/services/operationsService";
 import { EChargeApplicationType } from "@/types/operation/EChargeApplicationType";
 import { EChargeType } from "@/types/operation/EChargeType";
-import {IEditOperationRequest} from "@/types/operation/IEditOperationRequest";
+import { IEditOperationRequest } from "@/types/operation/IEditOperationRequest";
 
-interface Props {
-    operationId: number;
-    onClose: () => void;
-}
+export default function OperationEditForm() {
+    const router = useRouter();
 
-export default function OperationEditForm({ operationId, onClose }: Props) {
-    const { data: operation, isLoading: isDataLoading } = useGetOperationByIdQuery({ id: operationId });
+    const { operationId } = useLocalSearchParams<{ operationId: string }>();
+
+    const id = Number(operationId);
+
+    const { data: operation, isLoading: isDataLoading } =
+        useGetOperationByIdQuery({ id }, { skip: !id });
+
     const { data: balances } = useGetBalancesQuery();
     const [editOperation, { isLoading: isUpdating }] = useEditOperationMutation();
 
     const { control, handleSubmit, reset, watch, setValue } = useForm<IEditOperationRequest>({
         defaultValues: {
-            id: operationId,
+            id: id,
             comment: "",
             amount: 0,
             categoryId: 0,
@@ -49,6 +53,7 @@ export default function OperationEditForm({ operationId, onClose }: Props) {
     useEffect(() => {
         if (operation) {
             console.log("Данні отримано:", operation);
+
             reset({
                 id: operation.id,
                 comment: operation.comment ?? "",
@@ -69,7 +74,7 @@ export default function OperationEditForm({ operationId, onClose }: Props) {
     const onSubmit = async (data: IEditOperationRequest) => {
         try {
             await editOperation(data).unwrap();
-            onClose();
+            router.back();
         } catch (error) {
             console.error("Failed to update operation:", error);
         }
@@ -83,8 +88,11 @@ export default function OperationEditForm({ operationId, onClose }: Props) {
         );
     }
 
+    console.log("Id:", id);
+    console.log("Operation data:", operation);
+
     return (
-        <SafeAreaView className="flex-1 bg-white dark:bg-gray-900" edges={['bottom']}>
+        <SafeAreaView className="flex-1 bg-white dark:bg-gray-900">
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : undefined}
                 className="flex-1"
@@ -94,7 +102,6 @@ export default function OperationEditForm({ operationId, onClose }: Props) {
                         Редагувати операцію
                     </Text>
 
-                    {/* Amount */}
                     <Text className="text-black dark:text-white mb-1 font-medium">Сума</Text>
                     <Controller
                         control={control}
@@ -125,79 +132,37 @@ export default function OperationEditForm({ operationId, onClose }: Props) {
                     />
 
                     <Text className="text-black dark:text-white mb-2 font-medium">Баланс</Text>
+
                     <View className="flex-row flex-wrap mb-4">
                         {balances?.map((b) => (
                             <TouchableOpacity
                                 key={b.id}
                                 onPress={() => setValue("balanceId", b.id)}
                                 className={`px-4 py-2 mr-2 mb-2 rounded-xl ${
-                                    selectedBalanceId === b.id ? "bg-blue-500" : "bg-gray-200 dark:bg-gray-700"
+                                    selectedBalanceId === b.id
+                                        ? "bg-blue-500"
+                                        : "bg-gray-200 dark:bg-gray-700"
                                 }`}
                             >
-                                <Text className={selectedBalanceId === b.id ? "text-white" : "text-black dark:text-white"}>
+                                <Text
+                                    className={
+                                        selectedBalanceId === b.id
+                                            ? "text-white"
+                                            : "text-black dark:text-white"
+                                    }
+                                >
                                     {b.name}
                                 </Text>
                             </TouchableOpacity>
                         ))}
                     </View>
 
-                    <Text className="text-xl font-bold text-black dark:text-white mt-4 mb-2">Збори / Податки</Text>
-
-                    {fields.map((field, index) => (
-                        <View key={field.id} className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-2xl mb-4 border border-gray-200 dark:border-gray-700">
-                            <View className="flex-row gap-2 mb-2">
-                                <View className="flex-1">
-                                    <Text className="text-xs text-gray-500 mb-1">Сума</Text>
-                                    <Controller
-                                        control={control}
-                                        name={`charges.${index}.amount`}
-                                        render={({ field: { onChange, value } }) => (
-                                            <TextInput
-                                                value={String(value)}
-                                                onChangeText={(v) => onChange(Number(v))}
-                                                keyboardType="decimal-pad"
-                                                className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white p-2 rounded-lg"
-                                            />
-                                        )}
-                                    />
-                                </View>
-                                <View className="w-20">
-                                    <Text className="text-xs text-gray-500 mb-1">%</Text>
-                                    <Controller
-                                        control={control}
-                                        name={`charges.${index}.percentage`}
-                                        render={({ field: { onChange, value } }) => (
-                                            <TextInput
-                                                value={String(value)}
-                                                onChangeText={(v) => onChange(Number(v))}
-                                                keyboardType="decimal-pad"
-                                                className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white p-2 rounded-lg"
-                                            />
-                                        )}
-                                    />
-                                </View>
-                            </View>
-
-                            <TouchableOpacity
-                                onPress={() => remove(index)}
-                                className="mt-2 py-2"
-                            >
-                                <Text className="text-red-500 text-center font-medium">Видалити збір</Text>
-                            </TouchableOpacity>
-                        </View>
-                    ))}
-
-                    <TouchableOpacity
-                        onPress={() => append({ id: Date.now(), amount: 0, percentage: 0, type: EChargeType.Tax, applicationType: EChargeApplicationType.Add })}
-                        className="bg-gray-200 dark:bg-gray-700 py-3 rounded-xl mb-6"
-                    >
-                        <Text className="text-center text-black dark:text-white">+ Додати збір</Text>
-                    </TouchableOpacity>
-
                     <TouchableOpacity
                         onPress={handleSubmit(onSubmit)}
                         disabled={isUpdating}
-                        className={`py-4 rounded-xl mb-10 ${isUpdating ? 'bg-emerald-800' : 'bg-emerald-600'}`}
+                        className={`py-4 rounded-xl mb-10 ${
+                            isUpdating ? "bg-emerald-800" : "bg-emerald-600"
+                        }`}
                     >
                         <Text className="text-white text-center font-bold text-lg">
                             {isUpdating ? "Збереження..." : "Зберегти зміни"}

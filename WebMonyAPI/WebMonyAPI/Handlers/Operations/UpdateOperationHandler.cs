@@ -14,14 +14,22 @@ public class UpdateOperationHandler(
     IGenericRepository<OperationEntity, long> repo,
     IGenericRepository<BalanceEntity, long> balanceRepo,
     IGenericRepository<CategoryEntity, long> categoryRepo,
-    IMapper mapper)
+    IMapper mapper,
+    IIdentityService identityService
+    )
     : IRequestHandler<UpdateOperationCommand, OperationDto>
 {
     public async Task<OperationDto> Handle(
         UpdateOperationCommand request,
         CancellationToken cancellationToken)
     {
-        var spec = new OperationWithDetailsSpecification(request.Model.Id);
+        long userId = await identityService.GetUserIdAsync();
+
+        var balancesSpec = new BalanceWithCurrencySpecification(userId);
+        var balances = await balanceRepo.ListAsync(balancesSpec);
+        var balancesIds = balances.Select(b => b.Id).ToArray();
+
+        var spec = new OperationWithDetailsSpecification(request.Model.Id, balancesIds);
         var res = await repo.ListAsync(spec);
         var entity = res.FirstOrDefault();
         if (entity == null)
