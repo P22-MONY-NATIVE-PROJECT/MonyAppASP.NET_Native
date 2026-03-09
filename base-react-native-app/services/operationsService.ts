@@ -57,4 +57,7 @@ export const operationsService = createApi({
 export const {
     useGetOperationsQuery,
     useCreateOperationMutation,
+    useEditOperationMutation,
+    useDeleteOperationMutation,
+    useGetOperationByIdQuery
 } = operationsService;
