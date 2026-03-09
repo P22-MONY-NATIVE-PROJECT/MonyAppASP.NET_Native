@@ -1,6 +1,6 @@
-import { IEditOperationChargeRequest } from "./IEditOperationChargeRequest";
+import {IEditOperationChargeRequest} from "@/types/operation/IEditOperationChargeRequest";
 
-interface IEditOperationRequest {
+export interface IEditOperationRequest {
     id: number;
     comment: string;
     amount: number;

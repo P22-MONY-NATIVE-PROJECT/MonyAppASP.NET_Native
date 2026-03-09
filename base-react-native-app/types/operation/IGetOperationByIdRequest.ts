@@ -1,3 +1,3 @@
-interface IGetOperationByIdRequest {
+export interface IGetOperationByIdRequest {
     id: number;
 }

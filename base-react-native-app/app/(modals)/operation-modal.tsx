@@ -14,9 +14,9 @@ import { Controller, useForm, useFieldArray } from "react-hook-form";
 
 import { useGetBalancesQuery } from "@/services/balancesService";
 import { useEditOperationMutation, useGetOperationByIdQuery } from "@/services/operationsService";
-import { IEditOperationRequest } from "@/types/operation/IEditOperationRequest";
 import { EChargeApplicationType } from "@/types/operation/EChargeApplicationType";
 import { EChargeType } from "@/types/operation/EChargeType";
+import {IEditOperationRequest} from "@/types/operation/IEditOperationRequest";
 
 interface Props {
     operationId: number;
@@ -24,7 +24,6 @@ interface Props {
 }
 
 export default function OperationEditForm({ operationId, onClose }: Props) {
-    // 1. Отримуємо дані
     const { data: operation, isLoading: isDataLoading } = useGetOperationByIdQuery({ id: operationId });
     const { data: balances } = useGetBalancesQuery();
     const [editOperation, { isLoading: isUpdating }] = useEditOperationMutation();
@@ -40,7 +39,6 @@ export default function OperationEditForm({ operationId, onClose }: Props) {
         },
     });
 
-    // 2. Використовуємо useFieldArray для керування динамічним списком
     const { fields, append, remove } = useFieldArray({
         control,
         name: "charges",
@@ -48,10 +46,9 @@ export default function OperationEditForm({ operationId, onClose }: Props) {
 
     const selectedBalanceId = watch("balanceId");
 
-    // 3. Синхронізація даних при отриманні
     useEffect(() => {
         if (operation) {
-            console.log("Данні отримано:", operation); // Для дебагу
+            console.log("Данні отримано:", operation);
             reset({
                 id: operation.id,
                 comment: operation.comment ?? "",
@@ -78,7 +75,6 @@ export default function OperationEditForm({ operationId, onClose }: Props) {
         }
     };
 
-    // Якщо дані ще вантажаться — показуємо лоадер
     if (isDataLoading) {
         return (
             <View className="flex-1 justify-center items-center bg-white dark:bg-gray-900">
@@ -113,7 +109,6 @@ export default function OperationEditForm({ operationId, onClose }: Props) {
                         )}
                     />
 
-                    {/* Comment */}
                     <Text className="text-black dark:text-white mb-1 font-medium">Коментар</Text>
                     <Controller
                         control={control}
@@ -129,7 +124,6 @@ export default function OperationEditForm({ operationId, onClose }: Props) {
                         )}
                     />
 
-                    {/* Balance Selection */}
                     <Text className="text-black dark:text-white mb-2 font-medium">Баланс</Text>
                     <View className="flex-row flex-wrap mb-4">
                         {balances?.map((b) => (
@@ -147,7 +141,6 @@ export default function OperationEditForm({ operationId, onClose }: Props) {
                         ))}
                     </View>
 
-                    {/* Charges Section */}
                     <Text className="text-xl font-bold text-black dark:text-white mt-4 mb-2">Збори / Податки</Text>
 
                     {fields.map((field, index) => (

@@ -10,14 +10,15 @@ public class OperationWithDetailsSpecification : ISpecification<OperationEntity>
 
     public List<Expression<Func<OperationEntity, object>>> Includes { get; } =  new();
 
-    public OperationWithDetailsSpecification()
+    public OperationWithDetailsSpecification(long[] balancesIds)
     {
         Includes.Add(x => x.Charges!);
         Includes.Add(x => x.Balance!);
         Includes.Add(x => x.Category!);
+        Criteria = x => balancesIds.Contains(x.BalanceId);
     }
 
-    public OperationWithDetailsSpecification(long id) : this()
+    public OperationWithDetailsSpecification(long id, long[] balancesIds) : this(balancesIds)
     {
         Criteria = x => x.Id == id;
     }
