@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import {
     View,
     Text,
@@ -5,186 +6,212 @@ import {
     TouchableOpacity,
     ScrollView,
     KeyboardAvoidingView,
-    Platform
+    Platform,
+    ActivityIndicator
 } from "react-native";
-
-import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Controller, useForm, useFieldArray } from "react-hook-form";
 
-import { ThemedView } from "@/components/themed-view";
-import { ThemedText } from "@/components/themed-text";
-import { AppLoader } from "@/components/ui/app-loader";
+import { useGetBalancesQuery } from "@/services/balancesService";
+import { useEditOperationMutation, useGetOperationByIdQuery } from "@/services/operationsService";
+import { IEditOperationRequest } from "@/types/operation/IEditOperationRequest";
+import { EChargeApplicationType } from "@/types/operation/EChargeApplicationType";
+import { EChargeType } from "@/types/operation/EChargeType";
 
-import {
-    useCreateOperationMutation,
-    useEditOperationMutation,
-    useGetOperationByIdQuery
-} from "@/services/operationsService";
-
-interface OperationFormState {
-    categoryId: number | null;
-    amount: number;
-    description: string;
+interface Props {
+    operationId: number;
+    onClose: () => void;
 }
 
-export default function OperationModal() {
+export default function OperationEditForm({ operationId, onClose }: Props) {
+    // 1. Отримуємо дані
+    const { data: operation, isLoading: isDataLoading } = useGetOperationByIdQuery({ id: operationId });
+    const { data: balances } = useGetBalancesQuery();
+    const [editOperation, { isLoading: isUpdating }] = useEditOperationMutation();
 
-    const router = useRouter();
-    const { id, categoryId } = useLocalSearchParams();
-
-    const isEdit = !!id;
-
-    const { data, isLoading: isLoadingOperation } = useGetOperationByIdQuery(
-        { id: Number(id) },
-        { skip: !isEdit }
-    );
-
-    const [createOperation, { isLoading: isCreating }] =
-        useCreateOperationMutation();
-
-    const [editOperation, { isLoading: isUpdating }] =
-        useEditOperationMutation();
-
-    const isLoading = isLoadingOperation || isCreating || isUpdating;
-
-    const [form, setForm] = useState<OperationFormState>({
-        categoryId: categoryId ? Number(categoryId) : null,
-        amount: 0,
-        description: ""
+    const { control, handleSubmit, reset, watch, setValue } = useForm<IEditOperationRequest>({
+        defaultValues: {
+            id: operationId,
+            comment: "",
+            amount: 0,
+            categoryId: 0,
+            balanceId: 0,
+            charges: [],
+        },
     });
 
+    // 2. Використовуємо useFieldArray для керування динамічним списком
+    const { fields, append, remove } = useFieldArray({
+        control,
+        name: "charges",
+    });
+
+    const selectedBalanceId = watch("balanceId");
+
+    // 3. Синхронізація даних при отриманні
     useEffect(() => {
-        if (data) {
-            setForm({
-                categoryId: data.categoryId,
-                amount: data.amount,
-                description: data.description ?? ""
+        if (operation) {
+            console.log("Данні отримано:", operation); // Для дебагу
+            reset({
+                id: operation.id,
+                comment: operation.comment ?? "",
+                amount: operation.calcAmount ?? operation.initAmount,
+                categoryId: operation.categoryId,
+                balanceId: operation.balanceId,
+                charges: operation.charges.map((c) => ({
+                    id: c.id,
+                    amount: c.amount,
+                    percentage: c.percentage,
+                    type: c.type as unknown as EChargeType,
+                    applicationType: c.applicationType as unknown as EChargeApplicationType,
+                })),
             });
         }
-    }, [data]);
+    }, [operation, reset]);
 
-    const onSubmit = async () => {
-
-        if (!form.categoryId) return;
-
+    const onSubmit = async (data: IEditOperationRequest) => {
         try {
-
-            if (isEdit) {
-
-                await editOperation({
-                    id: Number(id),
-                    categoryId: form.categoryId,
-                    amount: form.amount,
-                    description: form.description
-                }).unwrap();
-
-            } else {
-
-                await createOperation({
-                    categoryId: form.categoryId,
-                    amount: form.amount,
-                    description: form.description
-                }).unwrap();
-
-            }
-
-            router.back();
-
+            await editOperation(data).unwrap();
+            onClose();
         } catch (error) {
-            console.error(error);
+            console.error("Failed to update operation:", error);
         }
     };
 
+    // Якщо дані ще вантажаться — показуємо лоадер
+    if (isDataLoading) {
+        return (
+            <View className="flex-1 justify-center items-center bg-white dark:bg-gray-900">
+                <ActivityIndicator size="large" color="#10b981" />
+            </View>
+        );
+    }
+
     return (
-        <ThemedView className="flex-1">
-            <SafeAreaView className="flex-1">
+        <SafeAreaView className="flex-1 bg-white dark:bg-gray-900" edges={['bottom']}>
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : undefined}
+                className="flex-1"
+            >
+                <ScrollView contentContainerStyle={{ padding: 16 }}>
+                    <Text className="text-2xl font-bold text-center text-black dark:text-white mb-6">
+                        Редагувати операцію
+                    </Text>
 
-                <KeyboardAvoidingView
-                    behavior={Platform.OS === "ios" ? "padding" : undefined}
-                    className="flex-1"
-                >
+                    {/* Amount */}
+                    <Text className="text-black dark:text-white mb-1 font-medium">Сума</Text>
+                    <Controller
+                        control={control}
+                        name="amount"
+                        render={({ field: { onChange, value } }) => (
+                            <TextInput
+                                value={value ? String(value) : ""}
+                                onChangeText={(v) => onChange(Number(v))}
+                                keyboardType="decimal-pad"
+                                className="bg-gray-100 dark:bg-gray-800 text-black dark:text-white p-4 rounded-xl mb-4 border border-gray-300 dark:border-gray-700"
+                            />
+                        )}
+                    />
 
-                    <ScrollView
-                        contentContainerStyle={{ flexGrow: 1 }}
-                        keyboardShouldPersistTaps="handled"
-                        className="px-6"
-                    >
+                    {/* Comment */}
+                    <Text className="text-black dark:text-white mb-1 font-medium">Коментар</Text>
+                    <Controller
+                        control={control}
+                        name="comment"
+                        render={({ field: { onChange, value } }) => (
+                            <TextInput
+                                value={value}
+                                onChangeText={onChange}
+                                placeholder="Введіть коментар..."
+                                placeholderTextColor="#888"
+                                className="bg-gray-100 dark:bg-gray-800 text-black dark:text-white p-4 rounded-xl mb-4 border border-gray-300 dark:border-gray-700"
+                            />
+                        )}
+                    />
 
-                        <AppLoader
-                            visible={isLoading}
-                            message="Завантаження операції..."
-                        />
-
-                        <View className="flex-1 justify-center py-10">
-
-                            <ThemedText
-                                type="title"
-                                style={{ textAlign: "center", marginBottom: 20 }}
+                    {/* Balance Selection */}
+                    <Text className="text-black dark:text-white mb-2 font-medium">Баланс</Text>
+                    <View className="flex-row flex-wrap mb-4">
+                        {balances?.map((b) => (
+                            <TouchableOpacity
+                                key={b.id}
+                                onPress={() => setValue("balanceId", b.id)}
+                                className={`px-4 py-2 mr-2 mb-2 rounded-xl ${
+                                    selectedBalanceId === b.id ? "bg-blue-500" : "bg-gray-200 dark:bg-gray-700"
+                                }`}
                             >
-                                {isEdit ? "Редагувати операцію" : "Нова операція"}
-                            </ThemedText>
+                                <Text className={selectedBalanceId === b.id ? "text-white" : "text-black dark:text-white"}>
+                                    {b.name}
+                                </Text>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
 
-                            <View className="bg-white dark:bg-gray-900 p-8 rounded-3xl gap-8 shadow-sm">
+                    {/* Charges Section */}
+                    <Text className="text-xl font-bold text-black dark:text-white mt-4 mb-2">Збори / Податки</Text>
 
-                                <TextInput
-                                    value={form.amount.toString()}
-                                    onChangeText={(value) =>
-                                        setForm(prev => ({
-                                            ...prev,
-                                            amount: Number(value.replace(",", ".")) || 0
-                                        }))
-                                    }
-                                    keyboardType="decimal-pad"
-                                    placeholder="Сума"
-                                    placeholderTextColor="#9CA3AF"
-                                    className="w-full text-center border border-gray-300
-                                               dark:border-gray-700
-                                               bg-gray-50 dark:bg-gray-800
-                                               text-black dark:text-white
-                                               p-4 rounded-2xl text-lg"
-                                />
-
-                                <TextInput
-                                    value={form.description}
-                                    onChangeText={(value) =>
-                                        setForm(prev => ({
-                                            ...prev,
-                                            description: value
-                                        }))
-                                    }
-                                    placeholder="Опис"
-                                    placeholderTextColor="#9CA3AF"
-                                    className="w-full border border-gray-300
-                                               dark:border-gray-700
-                                               bg-gray-50 dark:bg-gray-800
-                                               text-black dark:text-white
-                                               p-4 rounded-2xl text-lg"
-                                />
-
+                    {fields.map((field, index) => (
+                        <View key={field.id} className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-2xl mb-4 border border-gray-200 dark:border-gray-700">
+                            <View className="flex-row gap-2 mb-2">
+                                <View className="flex-1">
+                                    <Text className="text-xs text-gray-500 mb-1">Сума</Text>
+                                    <Controller
+                                        control={control}
+                                        name={`charges.${index}.amount`}
+                                        render={({ field: { onChange, value } }) => (
+                                            <TextInput
+                                                value={String(value)}
+                                                onChangeText={(v) => onChange(Number(v))}
+                                                keyboardType="decimal-pad"
+                                                className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white p-2 rounded-lg"
+                                            />
+                                        )}
+                                    />
+                                </View>
+                                <View className="w-20">
+                                    <Text className="text-xs text-gray-500 mb-1">%</Text>
+                                    <Controller
+                                        control={control}
+                                        name={`charges.${index}.percentage`}
+                                        render={({ field: { onChange, value } }) => (
+                                            <TextInput
+                                                value={String(value)}
+                                                onChangeText={(v) => onChange(Number(v))}
+                                                keyboardType="decimal-pad"
+                                                className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white p-2 rounded-lg"
+                                            />
+                                        )}
+                                    />
+                                </View>
                             </View>
 
-                            <View className="mt-10">
-
-                                <TouchableOpacity
-                                    onPress={onSubmit}
-                                    activeOpacity={0.8}
-                                    className="bg-emerald-600 p-5 rounded-2xl items-center shadow-lg"
-                                >
-                                    <Text className="text-white font-semibold text-lg">
-                                        {isEdit ? "Зберегти" : "Створити"}
-                                    </Text>
-                                </TouchableOpacity>
-
-                            </View>
-
+                            <TouchableOpacity
+                                onPress={() => remove(index)}
+                                className="mt-2 py-2"
+                            >
+                                <Text className="text-red-500 text-center font-medium">Видалити збір</Text>
+                            </TouchableOpacity>
                         </View>
+                    ))}
 
-                    </ScrollView>
+                    <TouchableOpacity
+                        onPress={() => append({ id: Date.now(), amount: 0, percentage: 0, type: EChargeType.Tax, applicationType: EChargeApplicationType.Add })}
+                        className="bg-gray-200 dark:bg-gray-700 py-3 rounded-xl mb-6"
+                    >
+                        <Text className="text-center text-black dark:text-white">+ Додати збір</Text>
+                    </TouchableOpacity>
 
-                </KeyboardAvoidingView>
-
-            </SafeAreaView>
-        </ThemedView>
+                    <TouchableOpacity
+                        onPress={handleSubmit(onSubmit)}
+                        disabled={isUpdating}
+                        className={`py-4 rounded-xl mb-10 ${isUpdating ? 'bg-emerald-800' : 'bg-emerald-600'}`}
+                    >
+                        <Text className="text-white text-center font-bold text-lg">
+                            {isUpdating ? "Збереження..." : "Зберегти зміни"}
+                        </Text>
+                    </TouchableOpacity>
+                </ScrollView>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
     );
 }
