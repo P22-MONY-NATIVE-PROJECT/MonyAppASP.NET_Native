@@ -38,7 +38,7 @@ export default function LoginScreen() {
             router.replace('/onBoarding');
         } catch (error: any) {
             Alert.alert("Помилка", error?.data?.message || "Не вдалося увійти");
-            console.error("Login error:", error);
+            //console.error("Login error:", error);
         }
     };
 
