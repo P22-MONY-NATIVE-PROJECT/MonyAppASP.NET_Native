@@ -14,15 +14,18 @@ public class CreateOperationHandler(
     IGenericRepository<OperationEntity, long> repo,
     IGenericRepository<BalanceEntity, long> balanceRepo,
     IGenericRepository<CategoryEntity, long> catRepo,
-    IMapper mapper)
+    IMapper mapper,
+    IIdentityService identityService)
     : IRequestHandler<CreateOperationCommand, OperationDto>
 {
     public async Task<OperationDto> Handle(
         CreateOperationCommand request,
         CancellationToken cancellationToken)
     {
+        long userId = await identityService.GetUserIdAsync();
+
         var ent = mapper.Map<OperationEntity>(request.Model);
-        var balSpec = new BalanceWithCurrencySpecification(request.Model.BalanceId);
+        var balSpec = new BalanceWithCurrencySpecification(request.Model.BalanceId, userId);
         var balResult = await balanceRepo.ListAsync(balSpec);
         var bal = balResult.FirstOrDefault();
 
