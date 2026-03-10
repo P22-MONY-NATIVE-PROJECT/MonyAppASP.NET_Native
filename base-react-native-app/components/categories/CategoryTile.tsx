@@ -51,7 +51,7 @@ export default function CategoryTile({
         >
             <Image
                 source={{ uri: APP_URLS.IMAGES_400_URL + category.icon }}
-                className="w-7 h-7 mb-1"
+                className="w-12 h-12 mb-1"
                 resizeMode="contain"
             />
 
