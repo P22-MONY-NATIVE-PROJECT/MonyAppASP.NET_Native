@@ -15,6 +15,7 @@ public class OperationWithDetailsSpecification : ISpecification<OperationEntity>
         Includes.Add(x => x.Charges!);
         Includes.Add(x => x.Balance!);
         Includes.Add(x => x.Category!);
+        Includes.Add(x => x.Category!.CategoryType!);
         Criteria = x => balancesIds.Contains(x.BalanceId);
     }
 

@@ -42,7 +42,6 @@ public class UpdateOperationHandler(
         if (cat == null)
             throw new Exception("Category not found");
 
-        // Відкат старої операції
         switch (cat.CategoryType!.Name)
         {
             case "Витрати":
@@ -82,7 +81,6 @@ public class UpdateOperationHandler(
             }
         }
 
-        // застосування нової операції
         switch (cat.CategoryType!.Name)
         {
             case "Витрати":
