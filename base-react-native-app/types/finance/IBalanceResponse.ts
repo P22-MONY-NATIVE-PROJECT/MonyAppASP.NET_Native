@@ -8,6 +8,7 @@ export interface IBalanceResponse {
         name: string;
         code: string;
         symbol: string;
+        dollarExchangeRate: number;
     };
     amount: number;
     isSaving: boolean;

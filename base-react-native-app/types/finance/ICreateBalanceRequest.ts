@@ -1,6 +1,8 @@
+import {IImageFile} from "@/types/common/IImageFile";
+
 export interface ICreateBalanceRequest {
     name: string;
-    icon?: any;
+    icon?: IImageFile;
     currencyId: number;
     amount: number;
     isSaving: boolean;

@@ -1,0 +1,59 @@
+[
+  {
+    "InitAmount": 120.50,
+    "CalcAmount": 120.50,
+    "Comment": "мінус мані в кармані",
+    "BalanceId": 1,
+    "CategoryId": 12,
+    "Charges": [
+      {
+        "Type": 1,
+        "ApplicationType": 2,
+        "Amount": 0.0
+      },
+      {
+        "Type": 2,
+        "ApplicationType": 1,
+        "Percentage": 5
+      }
+    ]
+  },
+  {
+    "InitAmount": 320.00,
+    "CalcAmount": 320.00,
+    "Comment": "",
+    "BalanceId": 1,
+    "CategoryId": 13,
+    "Charges": [
+      {
+        "Type": 1,
+        "ApplicationType": 2,
+        "Amount": 12.05
+      },
+      {
+        "Type": 2,
+        "ApplicationType": 1,
+        "Percentage": 0.0
+      }
+    ]
+  },
+  {
+    "InitAmount": 980.50,
+    "CalcAmount": 980.50,
+    "Comment": "",
+    "BalanceId": 1,
+    "CategoryId": 14,
+    "Charges": [
+      {
+        "Type": 1,
+        "ApplicationType": 2,
+        "Amount": 0.0
+      },
+      {
+        "Type": 2,
+        "ApplicationType": 1,
+        "Percentage": 0.0
+      }
+    ]
+  }
+]

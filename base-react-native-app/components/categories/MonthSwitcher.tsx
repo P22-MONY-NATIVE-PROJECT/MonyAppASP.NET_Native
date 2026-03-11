@@ -1,5 +1,6 @@
 import React from "react";
 import { View, TouchableOpacity, Text } from "react-native";
+import {Ionicons} from "@expo/vector-icons";
 
 interface Props {
     date: Date;
@@ -19,19 +20,33 @@ export default function MonthSwitcher({ date, onChange }: Props) {
         year: "numeric",
     });
 
-    return (
-        <View className="flex-row items-center justify-between py-4 border-b border-gray-200 dark:border-gray-800">
+    const formattedMonth = date.toLocaleDateString("uk-UA", { month: "long" });
+    const formattedYear = date.toLocaleDateString("uk-UA", { year: "numeric" });
 
-            <TouchableOpacity onPress={() => changeMonth(-1)}>
-                <Text className="text-xl text-black dark:text-white">◀</Text>
+    return (
+        <View className="flex-row items-center justify-between py-2 px-1  ">
+
+            <TouchableOpacity
+                onPress={() => changeMonth(-1)}
+                className="p-3 active:opacity-50"
+            >
+                <Ionicons name="chevron-back" size={24} color="#71717a" />
             </TouchableOpacity>
 
-            <Text className="text-lg font-semibold capitalize text-black dark:text-white">
-                {formatted}
-            </Text>
+            <View className="items-center">
+                <Text className="text-sm text-zinc-500 dark:text-zinc-400 font-medium">
+                    {formattedYear}
+                </Text>
+                <Text className="text-lg font-bold capitalize text-black dark:text-white">
+                    {formattedMonth}
+                </Text>
+            </View>
 
-            <TouchableOpacity onPress={() => changeMonth(1)}>
-                <Text className="text-xl text-black dark:text-white">▶</Text>
+            <TouchableOpacity
+                onPress={() => changeMonth(1)}
+                className="p-3 active:opacity-50"
+            >
+                <Ionicons name="chevron-forward" size={24} color="#71717a" />
             </TouchableOpacity>
 
         </View>

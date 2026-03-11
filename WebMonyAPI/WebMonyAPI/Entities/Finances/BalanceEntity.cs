@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using WebMonyAPI.Entities.Base;
+using WebMonyAPI.Entities.Identity;
+using WebMonyAPI.Entities.Operations;
 
 namespace WebMonyAPI.Entities.Finances;
 
@@ -23,9 +25,14 @@ public class BalanceEntity : BaseEntity<long>
     public long CurrencyId { get; set; }
     public CurrencyEntity? Currency { get; set; }
 
+    [ForeignKey(nameof(User))]
+    public long UserId { get; set; }
+    public UserEntity? User { get; set; }
+
     // Кількість грошей на балансі
     public decimal Amount { get; set; }
 
     // Чи баланс для заощаджень? Якщо false, то ним можна користуватись для витрат. Якщо true, то це "скарбничка", куди можна додавати гроші, але не можна витрачати.
     public bool IsSaving { get; set; }
+    public ICollection<OperationEntity>? Operations { get; set; }
 }

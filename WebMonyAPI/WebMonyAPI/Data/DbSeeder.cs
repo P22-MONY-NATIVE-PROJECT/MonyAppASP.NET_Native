@@ -1,9 +1,14 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using WebMonyAPI.Constants;
 using WebMonyAPI.Entities.Categories;
 using WebMonyAPI.Entities.Finances;
+using WebMonyAPI.Entities.Operations;
+using WebMonyAPI.Entities.Identity;
 using WebMonyAPI.Interfaces;
 using WebMonyAPI.SeedData.Models;
 
@@ -18,8 +23,77 @@ public static class DbSeeder
         var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
         var imageService = scope.ServiceProvider.GetRequiredService<IImageService>();
 
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<UserEntity>>();
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<RoleEntity>>();
+
         context.Database.Migrate();
 
+        // Сід для ролей
+        if (!roleManager.Roles.Any())
+        {
+            var roles = Roles.AllRoles.Select(r => new RoleEntity(r)).ToList();
+
+            foreach (var role in roles)
+            {
+                var result = await roleManager.CreateAsync(role);
+                if (!result.Succeeded)
+                {
+                    Console.WriteLine("Error Create Role {0}", role.Name);
+                }
+            }
+        }
+
+        // Сід для користувачів
+        if (!userManager.Users.Any())
+        {
+            var jsonFile = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "SeedData",
+                "JsonData",
+                "users.json");
+            if (File.Exists(jsonFile))
+            {
+                var jsonData = await File.ReadAllTextAsync(jsonFile);
+                try
+                {
+                    var users = JsonSerializer.Deserialize<List<SeederUserModel>>(jsonData);
+
+                    foreach (var user in users)
+                    {
+                        var entity = mapper.Map<UserEntity>(user);
+                        entity.Image = await imageService.SaveImageFromUrlAsync(user.Image);
+                        var result = await userManager.CreateAsync(entity, user.Password);
+                        if (!result.Succeeded)
+                        {
+                            Console.WriteLine("Error Create User {0}", user.Email);
+                            continue;
+                        }
+                        foreach (var role in user.Roles)
+                        {
+                            if (await roleManager.RoleExistsAsync(role))
+                            {
+                                await userManager.AddToRoleAsync(entity, role);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Role {0} not found", role);
+                            }
+                        }
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error Json Parse Data {0}", ex.Message);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Not Found File Categories.json");
+            }
+        }
+
+        // сід категорій
         if (!context.CategoryTypes.Any())
         {
             var jsonFile = Path.Combine(Directory.GetCurrentDirectory(), "SeedData", "JsonData", "typeCategories.json");
@@ -29,8 +103,8 @@ public static class DbSeeder
                 var jsonData = await File.ReadAllTextAsync(jsonFile);
                 try
                 {
-                    var catTypes= JsonSerializer.Deserialize<List<SeederCategoryModel>>(jsonData);
-                    foreach(var catType in catTypes)
+                    var catTypes = JsonSerializer.Deserialize<List<SeederCategoryModel>>(jsonData);
+                    foreach (var catType in catTypes)
                     {
                         var entityType = new CategoryTypeEntity { Name = catType.Name };
                         try
@@ -47,13 +121,13 @@ public static class DbSeeder
                         {
                             Console.WriteLine($"Image not found: {ex.Message}");
                         }
-                        
+
                         await context.CategoryTypes.AddRangeAsync(entityType);
                         await context.SaveChangesAsync();
 
-                        foreach(var cat in catType.Categories)
+                        foreach (var cat in catType.Categories)
                         {
-                            var entityCat = new CategoryEntity { Name = cat.Name, CategoryTypeId = entityType.Id };
+                            var entityCat = new CategoryEntity { Name = cat.Name, CategoryTypeId = entityType.Id, UserId = cat.UserId };
                             try
                             {
                                 var imagePath = Path.Combine(Directory.GetCurrentDirectory(), cat.Icon.TrimStart('/'));
@@ -72,7 +146,7 @@ public static class DbSeeder
                         }
 
                     }
-                    
+
                 }
                 catch (Exception ex)
                 {
@@ -84,10 +158,9 @@ public static class DbSeeder
                 Console.WriteLine("Not found file expenseCategories.json");
             }
         }
-        
 
         // Сід для валют
-        if (!context.Currencies.Any()) 
+        if (!context.Currencies.Any())
         {
             var jsonFile = Path.Combine(Directory.GetCurrentDirectory(), "SeedData", "JsonData", "currencies.json");
 
@@ -98,7 +171,7 @@ public static class DbSeeder
                 {
                     var categories = JsonSerializer.Deserialize<List<SeederCurrencyModel>>(jsonData);
                     var entityItems = mapper.Map<List<CurrencyEntity>>(categories);
-                    
+
                     await context.Currencies.AddRangeAsync(entityItems);
                     await context.SaveChangesAsync();
                 }
@@ -167,6 +240,36 @@ public static class DbSeeder
 
             await context.Balances.AddRangeAsync(entities);
             await context.SaveChangesAsync();
+        }
+
+        //сід для запису транзакцій
+        if (!await context.Operations.AnyAsync())
+        {
+            var jsonPath = Path.Combine(Directory.GetCurrentDirectory(), "SeedData", "JsonData", "operations.json");
+            if (File.Exists(jsonPath))
+            {
+                var jsonData = await File.ReadAllTextAsync(jsonPath);
+                try
+                {
+                    var seedOperations = JsonSerializer.Deserialize<List<SeederOperationModel>>(jsonData);
+
+                    foreach (var seedOp in seedOperations)
+                    {
+
+                        var operation = mapper.Map<OperationEntity>(seedOp);
+                        operation.Charges = mapper.Map<List<OperationChargeEntity>>(seedOp.Charges);
+                        await context.Operations.AddAsync(operation);
+
+                    }
+                    await context.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Seed operations fail", ex.Message);
+                }
+            }
+
+
         }
     }
 }

@@ -1,0 +1,1 @@
+export interface IBalanceGetByIdRequest { id: number }

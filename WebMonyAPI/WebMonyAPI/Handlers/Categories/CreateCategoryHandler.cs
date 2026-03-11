@@ -7,7 +7,12 @@ using WebMonyAPI.Entities.Categories;
 
 namespace WebMonyAPI.Handlers.Categories;
 
-public class CreateCategoryHandler(IGenericRepository<CategoryEntity, long> repo, IGenericRepository<CategoryTypeEntity, long> categoryRepo, IMapper mapper, IImageService imageService)
+public class CreateCategoryHandler(IGenericRepository<CategoryEntity, 
+    long> repo, 
+    IGenericRepository<CategoryTypeEntity, long> categoryRepo, 
+    IMapper mapper, 
+    IImageService imageService,
+    IIdentityService identityService)
     : IRequestHandler<CreateCategoryCommand, CategoryDto>
 {
     public async Task<CategoryDto> Handle(
@@ -15,9 +20,13 @@ public class CreateCategoryHandler(IGenericRepository<CategoryEntity, long> repo
         CancellationToken cancellationToken)
     {
         Console.WriteLine($"request:{request}");
+
+        long userId = await identityService.GetUserIdAsync();
+
         var entity = new CategoryEntity
         {
             Name = request.Model.Name,
+            UserId = userId
         };
         var categoryType = await categoryRepo
             .GetByIdAsync(request.Model.CategoryTypeId);

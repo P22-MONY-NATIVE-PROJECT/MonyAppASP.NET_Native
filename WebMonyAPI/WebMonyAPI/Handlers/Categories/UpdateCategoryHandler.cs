@@ -7,7 +7,10 @@ using WebMonyAPI.Entities.Categories;
 
 namespace WebMonyAPI.Handlers.Categories;
 
-public class UpdateCategoryHandler(IGenericRepository<CategoryEntity, long> repo, IMapper mapper, IImageService imageService)
+public class UpdateCategoryHandler(IGenericRepository<CategoryEntity, long> repo, 
+    IMapper mapper, 
+    IImageService imageService,
+    IIdentityService identityService)
     : IRequestHandler<UpdateCategoryCommand, CategoryDto>
 {
     public async Task<CategoryDto> Handle(
@@ -15,8 +18,9 @@ public class UpdateCategoryHandler(IGenericRepository<CategoryEntity, long> repo
         CancellationToken cancellationToken)
     {
         var entity = await repo.GetByIdAsync(request.Model.Id);
+        long userId = await identityService.GetUserIdAsync();
 
-        if (entity == null || entity.IsDeleted)
+        if (entity == null || entity.IsDeleted || entity.UserId != userId)
             throw new KeyNotFoundException("Category not found");
 
         entity.Name = request.Model.Name;

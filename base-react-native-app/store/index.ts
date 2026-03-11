@@ -3,18 +3,27 @@ import {type TypedUseSelectorHook, useDispatch, useSelector} from 'react-redux';
 import {setupListeners} from "@reduxjs/toolkit/query";
 import {categoriesService} from "@/services/categoriesService";
 import { balancesService } from "@/services/balancesService";
+import authReducer from './authSlice';
+import {authService} from "@/services/authService";
+import {operationsService} from "@/services/operationsService";
 
 
 export const store = configureStore({
     reducer: {
+        auth: authReducer,
+
+        [authService.reducerPath]: authService.reducer,
         [categoriesService.reducerPath]: categoriesService.reducer,
         [balancesService.reducerPath]: balancesService.reducer,
+        [operationsService.reducerPath]: operationsService.reducer,
     },
 
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
+            authService.middleware,
             categoriesService.middleware,
-            balancesService.middleware
+            balancesService.middleware,
+            operationsService.middleware,
         )
 });
 

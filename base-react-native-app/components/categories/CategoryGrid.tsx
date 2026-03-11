@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FlatList } from "react-native";
+import { FlatList, Pressable, Text, View } from "react-native";
 import { useRouter } from "expo-router";
 import {
     useGetCategoriesQuery,
@@ -7,7 +7,8 @@ import {
 } from "@/services/categoriesService";
 import CategoryTile from "./CategoryTile";
 import CategoryActionModal from "./CategoryActionModal";
-import {AppLoader} from "@/components/ui/app-loader";
+import { AppLoader } from "@/components/ui/app-loader";
+import OperationCreateSheet from "@/components/operations/OperationCreateSheet";
 
 interface Props {
     typeId: number;
@@ -16,21 +17,14 @@ interface Props {
 
 export default function CategoryGrid({ typeId }: Props) {
     const router = useRouter();
-    const { data, isLoading: apiLoading} = useGetCategoriesQuery({ typeId });
+
+    const { data, isLoading: apiLoading } = useGetCategoriesQuery({ typeId });
     const [deleteCategory] = useDeleteCategoryMutation();
 
-    const [testLoading, setTestLoading] = React.useState(true);
+    const isLoading = apiLoading;
 
-    // 2. Вимикаємо його через 5 секунд
-    React.useEffect(() => {
-        const timer = setTimeout(() => setTestLoading(false), 5000);
-        return () => clearTimeout(timer);
-    }, []);
-
-    // 3. Об'єднуємо реальне завантаження та тестове
-    const isLoading = apiLoading || testLoading;
-
-    const [selectedCategory, setSelectedCategory] = useState<any>(null);
+    const [actionCategory, setActionCategory] = useState<any>(null);
+    const [createCategory, setCreateCategory] = useState<any>(null);
 
     const categoriesWithAdd = [
         ...(data || []),
@@ -43,14 +37,26 @@ export default function CategoryGrid({ typeId }: Props) {
                 visible={isLoading}
                 message="Завантаження категорій..."
             />
+
+            <Pressable
+                onPress={() => router.push("/operation")}
+                className="mb-4 bg-blue-500 p-3 rounded-xl items-center"
+            >
+                <Text className="text-white font-semibold">
+                    Архів операцій
+                </Text>
+            </Pressable>
+
             <FlatList
                 data={categoriesWithAdd}
                 numColumns={2}
                 keyExtractor={(item: any) => item.id.toString()}
-                columnWrapperStyle={{ justifyContent: "space-between", marginBottom: 16 }}
+                columnWrapperStyle={{
+                    justifyContent: "space-between",
+                    marginBottom: 16,
+                }}
                 showsVerticalScrollIndicator={false}
                 renderItem={({ item }: any) => {
-
                     if (item.isAdd) {
                         return (
                             <CategoryTile
@@ -68,17 +74,18 @@ export default function CategoryGrid({ typeId }: Props) {
                     return (
                         <CategoryTile
                             category={item}
-                            onLongPress={() => setSelectedCategory(item)}
+                            onPress={() => setCreateCategory(item)}
+                            onLongPress={() => setActionCategory(item)}
                         />
                     );
                 }}
             />
 
             <CategoryActionModal
-                category={selectedCategory}
-                onClose={() => setSelectedCategory(null)}
+                category={actionCategory}
+                onClose={() => setActionCategory(null)}
                 onEdit={(id) => {
-                    setSelectedCategory(null);
+                    setActionCategory(null);
                     router.push({
                         pathname: "/category-modal",
                         params: { id, typeId },
@@ -86,8 +93,14 @@ export default function CategoryGrid({ typeId }: Props) {
                 }}
                 onDelete={(id) => {
                     deleteCategory(id);
-                    setSelectedCategory(null);
+                    setActionCategory(null);
                 }}
+            />
+
+            <OperationCreateSheet
+                visible={!!createCategory}
+                category={createCategory}
+                onClose={() => setCreateCategory(null)}
             />
         </>
     );

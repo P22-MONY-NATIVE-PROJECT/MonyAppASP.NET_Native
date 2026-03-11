@@ -7,10 +7,8 @@ import {
     useDeleteCategoryMutation,
 } from "@/services/categoriesService";
 import React from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 import {APP_URLS} from "@/constants/Urls";
 import BalancesHeader from "@/components/balances/BalancesHeader";
-import ScrollingText from "@/components/ui/ScrollingText";
 import { ThemedMarqueeText } from "@/components/themed-marquee-text";
 import * as Haptics from "expo-haptics";
 

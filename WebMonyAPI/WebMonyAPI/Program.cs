@@ -1,12 +1,17 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
-using WebMonyAPI.Data;
-using WebMonyAPI.Interfaces;
-using WebMonyAPI.Services;
-using Microsoft.AspNetCore.Http.Features;
-using WebMonyAPI.Infrastructure.Repositories;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using System.Text;
+using WebMonyAPI.Data;
+using WebMonyAPI.Entities.Identity;
+using WebMonyAPI.Infrastructure.Repositories;
+using WebMonyAPI.Interfaces;
 using WebMonyAPI.Mappers;
+using WebMonyAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +19,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<IJWTTokenService, JWTTokenService>();
+builder.Services.AddScoped<IIdentityService, IdentityService>();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(
+            new System.Text.Json.Serialization.JsonStringEnumConverter());
+    }); builder.Services.AddScoped<IImageService, ImageService>();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
@@ -54,13 +67,72 @@ builder.Services.AddOpenApi(options =>
 
         document.SetReferenceHostDocument();
 
+        document.Servers = [
+            new OpenApiServer
+            {
+                Url = builder.Configuration["ServerRunUrl"]
+            }
+        ];
+
         return Task.CompletedTask;
     });
+});
+
+builder.Services
+    .AddIdentity<UserEntity, RoleEntity>(options =>
+    {
+        options.Password.RequiredLength = 6;
+        options.Password.RequireDigit = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequireNonAlphanumeric = false;
+    })
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateIssuerSigningKey = true,
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero,
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]!))
+    };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var accessToken = context.Request.Query["access_token"];
+            var path = context.HttpContext.Request.Path;
+
+            if (!string.IsNullOrEmpty(accessToken) &&
+                path.StartsWithSegments("/hubs/chat"))
+            {
+                context.Token = accessToken;
+            }
+
+            return Task.CompletedTask;
+        }
+    };
 });
 
 var app = builder.Build();
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
@@ -73,8 +145,6 @@ app.UseSwaggerUI(options =>
 });
 
 // Configure the HTTP request pipeline.
-
-app.UseAuthorization();
 
 app.MapControllers();
 

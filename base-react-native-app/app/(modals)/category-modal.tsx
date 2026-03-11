@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { SquareImagePicker } from "@/components/form/SquareImagePicker";
 import {
     useCreateCategoryMutation,
@@ -13,19 +13,22 @@ import { IEditCategoryRequest } from "@/types/category/IEditCategoryRequest";
 import {ThemedView} from "@/components/themed-view";
 import {APP_URLS} from "@/constants/Urls";
 import { ThemedText } from "@/components/themed-text";
+import {AppLoader} from "@/components/ui/app-loader";
 
 export default function CategoryModal() {
     const { id, typeId } = useLocalSearchParams();
     const router = useRouter();
     const isEdit = !!id;
 
-    const { data, isLoading } = useGetCategoryByIdQuery(
+    const { data, isLoading: isLoadingCategory } = useGetCategoryByIdQuery(
         { id: Number(id) },
         { skip: !isEdit }
     );
 
-    const [createCategory] = useCreateCategoryMutation();
-    const [updateCategory] = useUpdateCategoryMutation();
+    const [createCategory, {isLoading: isLoadingCreateCategory}] = useCreateCategoryMutation();
+    const [updateCategory, {isLoading: isLoadingUpdateCategory}] = useUpdateCategoryMutation();
+
+    const isLoading = isLoadingCategory || isLoadingCreateCategory || isLoadingUpdateCategory;
 
     // const [form, setForm] = useState<ICreateCategoryRequest>({
     //     name: "",
@@ -74,33 +77,34 @@ export default function CategoryModal() {
         }
     };
 
-    if (isEdit && isLoading) {
-        return (
-            <View className="flex-1 items-center justify-center bg-black">
-                <Text className="text-white">Loading...</Text>
-            </View>
-        );
-    }
+    // if (isEdit && isLoading) {
+    //     return (
+    //         <View className="flex-1 items-center justify-center bg-black">
+    //             <Text className="text-white">Loading...</Text>
+    //         </View>
+    //     );
+    // }
 
     return (
         <ThemedView className="flex-1">
             <SafeAreaView className="flex-1 px-6">
 
-                {/* Centered Content */}
+                <AppLoader
+                    visible={isLoading}
+                    message="Завантаження категорій..."
+                />
+
                 <View className="flex-1 justify-center">
 
-                    {/* Title */}
                     <ThemedText
                         type="title"
-                        style={{ textAlign: "center", marginBottom: 40 }}
+                        style={{ textAlign: "center", marginBottom: 20 }}
                     >
                         {isEdit ? "Редагувати категорію" : "Нова категорія"}
                     </ThemedText>
 
-                    {/* Card */}
                     <View className="bg-white dark:bg-gray-900 p-8 rounded-3xl gap-8 shadow-sm">
 
-                        {/* Name Input */}
                         <View className="items-center">
                             <TextInput
                                 value={form.name}
@@ -112,14 +116,13 @@ export default function CategoryModal() {
                                 }
                                 placeholder="Назва категорії"
                                 placeholderTextColor="#9CA3AF"
-                                className="w-full text-center border border-gray-300 dark:border-gray-700 
+                                className="w-full border border-gray-300 dark:border-gray-700
                                            bg-gray-50 dark:bg-gray-800 
                                            text-black dark:text-white 
                                            p-4 rounded-2xl text-lg"
                             />
                         </View>
 
-                        {/* Image Picker */}
                         <View className="items-center">
                             <SquareImagePicker
                                 imageUri={
@@ -134,7 +137,7 @@ export default function CategoryModal() {
                                         newIcon: file,
                                     }))
                                 }
-                                size={150}
+                                size={160}
                                 label="Іконка (необов'язково)"
                             />
                         </View>
@@ -142,7 +145,6 @@ export default function CategoryModal() {
                     </View>
                 </View>
 
-                {/* Bottom Button */}
                 <View className="pb-8">
                     <TouchableOpacity
                         onPress={onSubmit}
