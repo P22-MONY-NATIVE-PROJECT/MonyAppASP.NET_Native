@@ -11,6 +11,7 @@ public class OperationDto
     public long CategoryId { get; set; }
     public string CategoryName { get; set; } = string.Empty;
     public string BalanceName { get; set; } = string.Empty;
+    public string Sign { get; set; } = "";
     public DateTime DateCreated { get; set; }
     public List<OperationChargeDto>? Charges { get; set; }
 }
