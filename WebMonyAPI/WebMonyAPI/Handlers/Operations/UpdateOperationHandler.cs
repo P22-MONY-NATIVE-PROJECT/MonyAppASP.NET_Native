@@ -55,6 +55,11 @@ public class UpdateOperationHandler(
 
         mapper.Map(request.Model, entity);
 
+        if (entity.BalanceId != entity.Balance?.Id)
+        {
+            entity.Balance = balances.FirstOrDefault(b => b.Id == entity.BalanceId);
+        }
+
         entity.InitAmount = request.Model.Amount;
         entity.CalcAmount = request.Model.Amount;
 
@@ -84,11 +89,11 @@ public class UpdateOperationHandler(
         switch (cat.CategoryType!.Name)
         {
             case "Витрати":
-                bal.Amount -= Math.Max(entity.InitAmount, entity.CalcAmount);
+                entity.Balance.Amount -= Math.Max(entity.InitAmount, entity.CalcAmount);
                 break;
 
             case "Доходи":
-                bal.Amount += Math.Max(entity.InitAmount, entity.CalcAmount);
+                entity.Balance.Amount += Math.Max(entity.InitAmount, entity.CalcAmount);
                 break;
         }
 
