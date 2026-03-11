@@ -5,5 +5,5 @@ export interface ICreateOperationRequest {
     initAmount: number;
     categoryId: number;
     balanceId: number;
-    //charges: ICreateOperationChargeRequest[];
+    charges: ICreateOperationChargeRequest[];
 }

@@ -13,6 +13,8 @@ import { useAppTheme } from "@/hooks/useAppTheme";
 import { getToken } from "@/utilities/storage";
 import { setAuth } from "@/store/authSlice";
 import { Colors } from "@/constants/theme";
+import {NetworkProvider, useNetwork} from "@/context/NetworkContext";
+import OfflineScreen from "@/screens/Network/OfflineScreen";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -30,6 +32,8 @@ function AppContent() {
         'LeagueSpartan-Light': require('../assets/fonts/LeagueSpartan-Light.ttf'),
         'LeagueSpartan-SemiBold': require('../assets/fonts/LeagueSpartan-SemiBold.ttf'),
     });
+
+    const {isConnected} = useNetwork();
 
     useEffect(() => {
         async function initializeAuth() {
@@ -52,6 +56,10 @@ function AppContent() {
 
     if ((!fontsLoaded && !fontError) || !isAuthLoaded) {
         return null;
+    }
+
+    if(isConnected === false) {
+        return <OfflineScreen/>
     }
 
     return (
@@ -82,7 +90,9 @@ function AppContent() {
 export default function RootLayout() {
     return (
         <Provider store={store}>
-            <AppContent />
+            <NetworkProvider>
+                <AppContent />
+            </NetworkProvider>
         </Provider>
     );
 }

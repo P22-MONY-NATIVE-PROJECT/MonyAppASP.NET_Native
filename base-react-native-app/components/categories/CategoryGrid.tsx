@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FlatList } from "react-native";
+import { FlatList, Pressable, Text, View } from "react-native";
 import { useRouter } from "expo-router";
 import {
     useGetCategoriesQuery,
@@ -23,7 +23,6 @@ export default function CategoryGrid({ typeId }: Props) {
 
     const isLoading = apiLoading;
 
-    // окремі стани для модалок
     const [actionCategory, setActionCategory] = useState<any>(null);
     const [createCategory, setCreateCategory] = useState<any>(null);
 
@@ -38,6 +37,15 @@ export default function CategoryGrid({ typeId }: Props) {
                 visible={isLoading}
                 message="Завантаження категорій..."
             />
+
+            <Pressable
+                onPress={() => router.push("/operation")}
+                className="mb-4 bg-blue-500 p-3 rounded-xl items-center"
+            >
+                <Text className="text-white font-semibold">
+                    Архів операцій
+                </Text>
+            </Pressable>
 
             <FlatList
                 data={categoriesWithAdd}
