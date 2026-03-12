@@ -14,11 +14,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Controller, useForm, useFieldArray } from "react-hook-form";
 import { useLocalSearchParams, useRouter } from "expo-router";
 
-import { useGetBalancesQuery } from "@/services/balancesService";
+import {useGetBalancesBySavingQuery, useGetBalancesQuery} from "@/services/balancesService";
 import {
     useEditOperationMutation,
     useGetOperationByIdQuery,
 } from "@/services/operationsService";
+import { useGetCategoryByIdQuery } from "@/services/categoriesService";
 
 import { EChargeApplicationType } from "@/types/operation/EChargeApplicationType";
 import { EChargeType } from "@/types/operation/EChargeType";
@@ -28,12 +29,34 @@ export default function OperationEditForm() {
     const router = useRouter();
     const { operationId } = useLocalSearchParams<{ operationId: string }>();
     const id = Number(operationId);
-    const { refetch } = useGetBalancesQuery();
+
+    // const refetch = useGetBalancesQuery;
+    const { refetch: refetchBalances } = useGetBalancesQuery();
 
     const { data: operation, isLoading: isDataLoading } =
         useGetOperationByIdQuery({ id }, { skip: !id });
 
-    const { data: balances } = useGetBalancesQuery();
+    const { data: operationCategory } = useGetCategoryByIdQuery(
+        { id: operation?.categoryId ?? 0 },
+        { skip: !operation?.categoryId }
+    );
+
+    const SAVINGS_TYPE_ID = 2;
+    const isSavingsCategory = operationCategory?.categoryTypeId === SAVINGS_TYPE_ID;
+    const isRegularCategory = operationCategory?.categoryTypeId !== undefined
+        && operationCategory.categoryTypeId !== SAVINGS_TYPE_ID;
+
+    const { data: savingBalances } = useGetBalancesBySavingQuery(
+        { isSaving: true },
+        { skip: !isSavingsCategory }
+    );
+
+    const { data: regularBalances } = useGetBalancesBySavingQuery(
+        { isSaving: false },
+        { skip: !isRegularCategory }
+    );
+
+    const balances = isSavingsCategory ? savingBalances : regularBalances;
 
     const [editOperation, { isLoading: isUpdating }] =
         useEditOperationMutation();
@@ -104,7 +127,8 @@ export default function OperationEditForm() {
 
         try {
             await editOperation(data).unwrap();
-            refetch();
+
+            refetchBalances();
             router.back();
         } catch (error) {
             console.error("Failed to update operation:", error);

@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+using System;
+using AutoMapper;
 using WebMonyAPI.Dtos.Operations;
 using WebMonyAPI.Entities.Operations;
 using WebMonyAPI.Extensions;
@@ -11,7 +12,15 @@ public class MappingOperations : Profile
     {
         CreateMap<OperationEntity, OperationDto>()
             .ForMember(x => x.CategoryName, opt => opt.MapFrom(x => x.Category!.Name))
-            .ForMember(x => x.BalanceName, opt => opt.MapFrom(x => x.Balance!.Name));
+            .ForMember(x => x.BalanceName, opt => opt.MapFrom(x => x.Balance!.Name))
+            .ForMember(
+                x => x.Sign,
+                opt => opt.MapFrom(src =>
+                    src.Category != null
+                    && src.Category.CategoryType != null
+                    && src.Category.CategoryType.Name.Contains("витрати", StringComparison.OrdinalIgnoreCase)
+                        ? "-"
+                        : "+"));
 
         CreateMap<OperationChargeEntity, OperationChargeDto>()
             .ForMember(x => x.Type, opt => opt.MapFrom(src => src.Type.ToUkrainian()))

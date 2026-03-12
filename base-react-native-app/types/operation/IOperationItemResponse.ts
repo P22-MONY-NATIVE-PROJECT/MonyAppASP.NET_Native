@@ -9,6 +9,7 @@ export interface IOperationItemResponse {
     categoryId: number;
     categoryName: string;
     balanceName: string;
+    sign: string;
     dateCreated: string;
     charges: IChargeResponse[];
 }

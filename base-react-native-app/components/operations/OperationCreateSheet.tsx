@@ -11,7 +11,7 @@ import {
 import { Controller, useForm } from "react-hook-form";
 
 import { useCreateOperationMutation } from "@/services/operationsService";
-import { useGetBalancesQuery } from "@/services/balancesService";
+import { useGetBalancesBySavingQuery, useGetBalancesQuery } from "@/services/balancesService";
 
 import { ICreateOperationRequest } from "@/types/operation/ICreateOperationRequest";
 import { EChargeApplicationType } from "@/types/operation/EChargeApplicationType";
@@ -20,17 +20,35 @@ import { EChargeType } from "@/types/operation/EChargeType";
 interface Props {
     visible: boolean;
     category: any;
+    typeId: number;
     onClose: () => void;
 }
 
 export default function OperationCreateSheet({
                                                  visible,
                                                  category,
+                                                 typeId,
                                                  onClose,
                                              }: Props) {
-    const { data: balances } = useGetBalancesQuery();
+    const SAVINGS_TYPE_ID = 2;
+    const isSavingsCategory = typeId === SAVINGS_TYPE_ID;
+    const isRegularCategory = !isSavingsCategory;
+
+    const { data: savingBalances } = useGetBalancesBySavingQuery(
+        { isSaving: true },
+        { skip: !isSavingsCategory }
+    );
+
+    const { data: regularBalances } = useGetBalancesBySavingQuery(
+        { isSaving: false },
+        { skip: !isRegularCategory }
+    );
+
+    const balances = isSavingsCategory ? savingBalances : regularBalances;
+
+    const { refetch: refetchBalances } = useGetBalancesQuery();
+
     const [createOperation, { isLoading }] = useCreateOperationMutation();
-    const { refetch } = useGetBalancesQuery();
 
     const { control, handleSubmit, reset, watch, setValue } =
         useForm<ICreateOperationRequest>({
@@ -47,12 +65,12 @@ export default function OperationCreateSheet({
     const charges = watch("charges") || [];
 
     useEffect(() => {
-        if (visible) {
+        if (visible && balances && balances.length > 0) {
             reset({
                 initAmount: 0,
                 comment: "",
                 categoryId: category?.id,
-                balanceId: balances?.[0]?.id ?? 0,
+                balanceId: balances[0].id,
                 charges: [],
             });
         }
@@ -69,7 +87,8 @@ export default function OperationCreateSheet({
 
         try {
             await createOperation(request).unwrap();
-            refetch();
+            await refetchBalances();
+
             onClose();
         } catch (error) {
             console.error("Error creating operation:", error);

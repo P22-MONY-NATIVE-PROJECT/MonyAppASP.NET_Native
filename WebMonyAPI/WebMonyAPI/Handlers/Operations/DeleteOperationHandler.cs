@@ -55,6 +55,12 @@ public class DeleteOperationHandler(
                     ? operation.InitAmount
                     : operation.CalcAmount;
                 break;
+
+            case "Заощадження":
+                balance.Amount -= operation.CalcAmount > operation.InitAmount
+                    ? operation.InitAmount
+                    : operation.CalcAmount;
+                break;
         }
 
         await repo.DeleteAsync(request.id);

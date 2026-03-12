@@ -21,6 +21,14 @@ export const balancesService = createApi({
             providesTags: ["Balances"]
         }),
 
+        getBalancesBySaving: builder.query<IBalanceResponse[], { isSaving: boolean }>({
+            query: ({ isSaving }) => ({
+                url: "/by-saving",
+                params: { isSaving },
+            }),
+            providesTags: ["Balances"]
+        }),
+
         createBalance: builder.mutation<void, ICreateBalanceRequest>({
             query: body => ({
                 url: "",
@@ -61,5 +69,6 @@ export const {
     useCreateBalanceMutation,
     useDeleteBalanceMutation,
     useGetBalanceByIdQuery,
-    useEditBalanceMutation
+    useEditBalanceMutation,
+    useGetBalancesBySavingQuery
 } = balancesService;
