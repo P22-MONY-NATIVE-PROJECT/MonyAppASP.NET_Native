@@ -9,6 +9,7 @@ import MonthSwitcher from "@/components/categories/MonthSwitcher";
 import { AppLoader } from "@/components/ui/app-loader";
 
 import { IOperationItemResponse } from "@/types/operation/IOperationItemResponse";
+import {formatOperationDate} from "@/utilities/formatOperationDate";
 
 export default function OperationsArchiveScreen() {
     const router = useRouter();
@@ -20,8 +21,6 @@ export default function OperationsArchiveScreen() {
     const [actionOperation, setActionOperation] = useState<IOperationItemResponse | null>(null);
 
     const operations: IOperationItemResponse[] = data ?? [];
-
-    console.log(operations);
 
     const handleDelete = async (id: number) => {
         try {
@@ -79,10 +78,10 @@ export default function OperationsArchiveScreen() {
                             onPress={() => openOperation(item.id)}
                             onLongPress={() => setActionOperation(item)}
                             className="mb-3 p-4 rounded-2xl
-                                       bg-white dark:bg-gray-900
-                                       border border-gray-200 dark:border-gray-800
-                                       flex-row justify-between items-center"
-                        >
+                           bg-white dark:bg-gray-900
+                           border border-gray-200 dark:border-gray-800
+                           flex-row justify-between items-center"
+                                    >
                             <View className="flex-1 pr-4">
                                 <Text className="text-base font-semibold text-black dark:text-white">
                                     {item.categoryName}
@@ -99,9 +98,15 @@ export default function OperationsArchiveScreen() {
                                 </Text>
                             </View>
 
-                            <Text className={`text-lg font-bold ${getAmountColor(item)}`}>
-                                {formatAmount(item)}
-                            </Text>
+                            <View className="items-end">
+                                <Text className={`text-lg font-bold ${getAmountColor(item)}`}>
+                                    {formatAmount(item)}
+                                </Text>
+
+                                <Text className="text-xs text-gray-400 mt-1">
+                                    {formatOperationDate(item.dateCreated)}
+                                </Text>
+                            </View>
                         </Pressable>
                     )}
                 />

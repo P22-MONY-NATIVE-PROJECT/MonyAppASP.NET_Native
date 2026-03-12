@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using WebMonyAPI.Entities.Finances;
+using WebMonyAPI.Entities.Operations;
 using WebMonyAPI.Interfaces;
 
 public class BalanceWithCurrencySpecification : ISpecification<BalanceEntity>
@@ -9,10 +10,14 @@ public class BalanceWithCurrencySpecification : ISpecification<BalanceEntity>
     public List<Expression<Func<BalanceEntity, object>>> Includes { get; }
         = new();
 
+    public Expression<Func<BalanceEntity, object>>? OrderBy { get; private set; }
+    public Expression<Func<BalanceEntity, object>>? OrderByDescending { get; private set; }
+
     public BalanceWithCurrencySpecification(long userId)
     {
         Includes.Add(b => b.Currency!);
         Criteria = b => b.UserId == userId;
+        
     }
 
     public BalanceWithCurrencySpecification(long id, long userId)
