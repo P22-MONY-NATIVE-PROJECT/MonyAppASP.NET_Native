@@ -17,12 +17,17 @@ public class BalanceWithCurrencySpecification : ISpecification<BalanceEntity>
     {
         Includes.Add(b => b.Currency!);
         Criteria = b => b.UserId == userId;
-        
     }
 
     public BalanceWithCurrencySpecification(long id, long userId)
         : this(userId)
     {
         Criteria = b => b.Id == id && b.UserId == userId;
+    }
+
+    public BalanceWithCurrencySpecification(long userId, bool isSaving)
+    {
+        Includes.Add(b => b.Currency!);
+        Criteria = b => b.UserId == userId && b.IsSaving == isSaving;
     }
 }

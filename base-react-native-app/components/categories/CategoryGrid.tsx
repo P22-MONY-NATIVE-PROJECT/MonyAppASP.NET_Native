@@ -100,6 +100,7 @@ export default function CategoryGrid({ typeId }: Props) {
             <OperationCreateSheet
                 visible={!!createCategory}
                 category={createCategory}
+                typeId={typeId}
                 onClose={() => setCreateCategory(null)}
             />
         </>
