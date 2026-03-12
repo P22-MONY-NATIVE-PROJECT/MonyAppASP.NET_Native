@@ -29,7 +29,8 @@ export default function OperationEditForm() {
     const router = useRouter();
     const { operationId } = useLocalSearchParams<{ operationId: string }>();
     const id = Number(operationId);
-    const { operationId } = useLocalSearchParams<{ operationId: string }>();
+
+    const refetch = useGetBalancesQuery;
 
     const { data: operation, isLoading: isDataLoading } =
         useGetOperationByIdQuery({ id }, { skip: !id });
@@ -125,6 +126,7 @@ export default function OperationEditForm() {
 
         try {
             await editOperation(data).unwrap();
+
             refetch();
             router.back();
         } catch (error) {

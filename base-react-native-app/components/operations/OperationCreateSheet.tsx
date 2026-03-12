@@ -11,7 +11,7 @@ import {
 import { Controller, useForm } from "react-hook-form";
 
 import { useCreateOperationMutation } from "@/services/operationsService";
-import { useGetBalancesBySavingQuery } from "@/services/balancesService";
+import { useGetBalancesBySavingQuery, useGetBalancesQuery } from "@/services/balancesService";
 
 import { ICreateOperationRequest } from "@/types/operation/ICreateOperationRequest";
 import { EChargeApplicationType } from "@/types/operation/EChargeApplicationType";
@@ -45,6 +45,8 @@ export default function OperationCreateSheet({
     );
 
     const balances = isSavingsCategory ? savingBalances : regularBalances;
+
+    const { refetch: refetchBalances } = useGetBalancesQuery();
 
     const [createOperation, { isLoading }] = useCreateOperationMutation();
 
@@ -85,7 +87,8 @@ export default function OperationCreateSheet({
 
         try {
             await createOperation(request).unwrap();
-            refetch();
+            await refetchBalances();
+
             onClose();
         } catch (error) {
             console.error("Error creating operation:", error);
