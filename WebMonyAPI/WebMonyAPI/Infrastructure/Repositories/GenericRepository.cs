@@ -47,7 +47,18 @@ public class GenericRepository<TEntity, TKey>(AppDbContext context, IMapper mapp
 
         query = query.Where(e => !e.IsDeleted);
 
-        query = query.OrderBy(e => e.Id);
+        if (spec.OrderByDescending != null)
+        {
+            query = query.OrderByDescending(spec.OrderByDescending);
+        }
+        else if (spec.OrderBy != null)
+        {
+            query = query.OrderBy(spec.OrderBy);
+        }
+        else
+        {
+            query = query.OrderBy(e => e.Id);
+        }
 
         return await query.ToListAsync();
     }

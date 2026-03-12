@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using WebMonyAPI.Entities.Operations;
 using WebMonyAPI.Interfaces;
 
 namespace WebMonyAPI.Dtos.Helpers;
@@ -17,6 +18,9 @@ public class Specification<TEntity> : ISpecification<TEntity>
 
     public Expression<Func<TEntity, bool>>? Criteria { get; private set; }
     public List<Expression<Func<TEntity, object>>> Includes { get; }
+
+    public Expression<Func<TEntity, object>>? OrderBy { get; private set; }
+    public Expression<Func<TEntity, object>>? OrderByDescending { get; private set; }
 
     public IQueryable<TEntity> Queryable { get; set; }
 

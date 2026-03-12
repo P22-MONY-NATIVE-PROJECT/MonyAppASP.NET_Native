@@ -8,13 +8,8 @@ import { useGetOperationsQuery, useDeleteOperationMutation } from "@/services/op
 import MonthSwitcher from "@/components/categories/MonthSwitcher";
 import { AppLoader } from "@/components/ui/app-loader";
 
-interface Operation {
-    id: number;
-    categoryName: string;
-    comment?: string;
-    calcAmount?: number;
-    initAmount: number;
-}
+import { IOperationItemResponse } from "@/types/operation/IOperationItemResponse";
+import {formatOperationDate} from "@/utilities/formatOperationDate";
 
 export default function OperationsArchiveScreen() {
     const router = useRouter();
@@ -23,9 +18,9 @@ export default function OperationsArchiveScreen() {
     const [deleteOperation] = useDeleteOperationMutation();
 
     const [currentDate, setCurrentDate] = useState(new Date());
-    const [actionOperation, setActionOperation] = useState<Operation | null>(null);
+    const [actionOperation, setActionOperation] = useState<IOperationItemResponse | null>(null);
 
-    const operations: Operation[] = data ?? [];
+    const operations: IOperationItemResponse[] = data ?? [];
 
     const handleDelete = async (id: number) => {
         try {
@@ -40,6 +35,29 @@ export default function OperationsArchiveScreen() {
             pathname: "/operation-modal",
             params: { operationId: id },
         });
+    };
+
+    const getOperationSign = (operation: IOperationItemResponse) => {
+        return operation.sign ?? "";
+    };
+
+    const formatAmount = (operation: IOperationItemResponse) => {
+        const sign = getOperationSign(operation);
+        const amount = Number(operation.calcAmount ?? operation.initAmount);
+
+        return `${sign}${amount.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        })}`;
+    };
+
+    const getAmountColor = (operation: IOperationItemResponse) => {
+        const sign = getOperationSign(operation);
+
+        if (sign === "-") return "text-red-500";
+        if (sign === "+") return "text-green-500";
+
+        return "text-black dark:text-white";
     };
 
     return (
@@ -60,28 +78,35 @@ export default function OperationsArchiveScreen() {
                             onPress={() => openOperation(item.id)}
                             onLongPress={() => setActionOperation(item)}
                             className="mb-3 p-4 rounded-2xl
-                                       bg-white dark:bg-gray-900
-                                       border border-gray-200 dark:border-gray-800
-                                       flex-row justify-between items-center"
-                        >
-                            <View>
+                           bg-white dark:bg-gray-900
+                           border border-gray-200 dark:border-gray-800
+                           flex-row justify-between items-center"
+                                    >
+                            <View className="flex-1 pr-4">
                                 <Text className="text-base font-semibold text-black dark:text-white">
                                     {item.categoryName}
                                 </Text>
 
-                                {item.comment && (
+                                {item.comment ? (
                                     <Text className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                                         {item.comment}
                                     </Text>
-                                )}
+                                ) : null}
+
+                                <Text className="text-xs text-gray-400 mt-1">
+                                    {item.balanceName}
+                                </Text>
                             </View>
 
-                            <Text className="text-lg font-bold text-black dark:text-white">
-                                {Number(item.calcAmount ?? item.initAmount).toLocaleString(undefined, {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2,
-                                })}
-                            </Text>
+                            <View className="items-end">
+                                <Text className={`text-lg font-bold ${getAmountColor(item)}`}>
+                                    {formatAmount(item)}
+                                </Text>
+
+                                <Text className="text-xs text-gray-400 mt-1">
+                                    {formatOperationDate(item.dateCreated)}
+                                </Text>
+                            </View>
                         </Pressable>
                     )}
                 />

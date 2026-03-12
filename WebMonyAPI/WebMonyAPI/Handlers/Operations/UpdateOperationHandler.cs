@@ -51,6 +51,10 @@ public class UpdateOperationHandler(
             case "Доходи":
                 bal.Amount -= Math.Max(entity.InitAmount, entity.CalcAmount);
                 break;
+            
+            case "Заощадження":
+                bal.Amount -= Math.Max(entity.InitAmount, entity.CalcAmount);
+                break;
         }
 
         mapper.Map(request.Model, entity);
@@ -94,6 +98,10 @@ public class UpdateOperationHandler(
 
             case "Доходи":
                 entity.Balance.Amount += Math.Max(entity.InitAmount, entity.CalcAmount);
+                break;
+
+            case "Заощадження":
+                bal.Amount += Math.Max(entity.InitAmount, entity.CalcAmount);
                 break;
         }
 
