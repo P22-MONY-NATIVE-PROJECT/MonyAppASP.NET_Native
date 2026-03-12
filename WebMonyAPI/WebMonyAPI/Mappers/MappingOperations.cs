@@ -18,9 +18,9 @@ public class MappingOperations : Profile
                 opt => opt.MapFrom(src =>
                     src.Category != null
                     && src.Category.CategoryType != null
-                    && src.Category.CategoryType.Name.Contains("доход", StringComparison.OrdinalIgnoreCase)
-                        ? "+"
-                        : "-"));
+                    && src.Category.CategoryType.Name.Contains("витрати", StringComparison.OrdinalIgnoreCase)
+                        ? "-"
+                        : "+"));
 
         CreateMap<OperationChargeEntity, OperationChargeDto>()
             .ForMember(x => x.Type, opt => opt.MapFrom(src => src.Type.ToUkrainian()))
