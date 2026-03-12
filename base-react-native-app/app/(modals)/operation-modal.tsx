@@ -14,7 +14,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Controller, useForm, useFieldArray } from "react-hook-form";
 import { useLocalSearchParams, useRouter } from "expo-router";
 
-import {useGetBalancesBySavingQuery, useGetBalancesQuery} from "@/services/balancesService";
+import {useGetBalancesBySavingQuery} from "@/services/balancesService";
 import {
     useEditOperationMutation,
     useGetOperationByIdQuery,
@@ -31,7 +31,7 @@ export default function OperationEditForm() {
     const id = Number(operationId);
 
     // const refetch = useGetBalancesQuery;
-    const { refetch: refetchBalances } = useGetBalancesQuery();
+    // const { refetch: refetchBalances } = useGetBalancesQuery();
 
     const { data: operation, isLoading: isDataLoading } =
         useGetOperationByIdQuery({ id }, { skip: !id });
@@ -128,7 +128,7 @@ export default function OperationEditForm() {
         try {
             await editOperation(data).unwrap();
 
-            refetchBalances();
+            // refetchBalances();
             router.back();
         } catch (error) {
             console.error("Failed to update operation:", error);
