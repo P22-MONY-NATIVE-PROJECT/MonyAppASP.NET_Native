@@ -77,6 +77,12 @@ public class CreateOperationHandler(
                         ? ent.InitAmount
                         : ent.CalcAmount;
                     break;
+
+                case "Заощадження":
+                    bal.Amount += ent.CalcAmount > ent.InitAmount
+                        ? ent.InitAmount
+                        : ent.CalcAmount;
+                    break;
             }
         }
         await repo.AddAsync(ent);
