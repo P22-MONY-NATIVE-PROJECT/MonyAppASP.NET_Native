@@ -4,11 +4,15 @@ using Microsoft.EntityFrameworkCore;
 using System.Net.Mail;
 using WebMonyAPI.Commands.Auth;
 using WebMonyAPI.Commands.User;
+using WebMonyAPI.Dtos.Smtp;
 using WebMonyAPI.Entities.Identity;
+using WebMonyAPI.Interfaces;
 
 namespace WebMonyAPI.Handlers.Auth;
 
-public class ForgotPasswordHandler(UserManager<UserEntity> userManager, IConfiguration configuration) : IRequestHandler<ForgotPasswordCommand, bool>
+public class ForgotPasswordHandler(UserManager<UserEntity> userManager, 
+    IConfiguration configuration, 
+    ISmtpService smtpService) : IRequestHandler<ForgotPasswordCommand, bool>
 {
     public async Task<bool> Handle(ForgotPasswordCommand request, CancellationToken cancellationToken)
     {
@@ -20,9 +24,9 @@ public class ForgotPasswordHandler(UserManager<UserEntity> userManager, IConfigu
         }
 
         string token = await userManager.GeneratePasswordResetTokenAsync(user);
-        var resetLink = $"{configuration["ClientUrl"]}/reset-password?token={Uri.EscapeDataString(token)}&email={Uri.EscapeDataString(model.Email)}";
+        var resetLink = $"{configuration["ClientUrl"]}/reset-password?token={Uri.EscapeDataString(token)}&email={Uri.EscapeDataString(request.modal.Email)}";
 
-        var emailModel = new EmailMessage
+        var emailModel = new EmailMessageDto
         {
             To = request.modal.Email,
             Subject = "Password Reset",
@@ -37,7 +41,7 @@ public class ForgotPasswordHandler(UserManager<UserEntity> userManager, IConfigu
                     <div style=""max-width:600px; margin:0 auto; padding:40px 20px; text-align:center;"">
 
                         <h1 style=""font-size:28px; font-weight:bold; text-transform:uppercase; margin-bottom:16px;"">
-                            Відновлення <span style=""color:#ef4444;"">пароля</span>
+                            Відновлення <span style=""color:#22c55e;"">пароля</span>
                         </h1>
 
                         <p style=""font-size:16px; color:#d1d5db; margin-bottom:32px;"">
@@ -45,7 +49,7 @@ public class ForgotPasswordHandler(UserManager<UserEntity> userManager, IConfigu
                         </p>
 
                         <a href=""{resetLink}"" 
-                           style=""background-color:#ef4444; color:white; font-weight:bold; text-transform:uppercase; padding:16px 32px; border-radius:12px; text-decoration:none; display:inline-block; font-size:16px;"">
+                           style=""background-color:#22c55e; color:white; font-weight:bold; text-transform:uppercase; padding:16px 32px; border-radius:12px; text-decoration:none; display:inline-block; font-size:16px;"">
                             Reset Password
                         </a>
 
@@ -54,7 +58,7 @@ public class ForgotPasswordHandler(UserManager<UserEntity> userManager, IConfigu
                         </p>
 
                         <p style=""font-size:12px; color:#6b7280; margin-top:32px;"">
-                            © 2026 O.W.A.C.N. Всі права захищені.
+                            © 2026 F-track. Всі права захищені.
                         </p>
 
                     </div>
