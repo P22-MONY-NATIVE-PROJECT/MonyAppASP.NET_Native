@@ -42,6 +42,11 @@ public class UpdateOperationHandler(
         if (cat == null)
             throw new Exception("Category not found");
 
+        if (entity.BalanceId != entity.Balance?.Id)
+        {
+            entity.Balance = balances.FirstOrDefault(b => b.Id == entity.BalanceId);
+        }
+
         switch (cat.CategoryType!.Name)
         {
             case "Витрати":
@@ -51,9 +56,18 @@ public class UpdateOperationHandler(
             case "Доходи":
                 bal.Amount -= Math.Max(entity.InitAmount, entity.CalcAmount);
                 break;
+            
+            case "Заощадження":
+                bal.Amount -= Math.Max(entity.InitAmount, entity.CalcAmount);
+                break;
         }
 
         mapper.Map(request.Model, entity);
+
+        if (entity.BalanceId != entity.Balance?.Id)
+        {
+            entity.Balance = balances.FirstOrDefault(b => b.Id == entity.BalanceId);
+        }
 
         entity.InitAmount = request.Model.Amount;
         entity.CalcAmount = request.Model.Amount;
@@ -84,11 +98,15 @@ public class UpdateOperationHandler(
         switch (cat.CategoryType!.Name)
         {
             case "Витрати":
-                bal.Amount -= Math.Max(entity.InitAmount, entity.CalcAmount);
+                entity.Balance.Amount -= Math.Max(entity.InitAmount, entity.CalcAmount);
                 break;
 
             case "Доходи":
-                bal.Amount += Math.Max(entity.InitAmount, entity.CalcAmount);
+                entity.Balance.Amount += Math.Max(entity.InitAmount, entity.CalcAmount);
+                break;
+
+            case "Заощадження":
+                entity.Balance.Amount += Math.Max(entity.InitAmount, entity.CalcAmount);
                 break;
         }
 

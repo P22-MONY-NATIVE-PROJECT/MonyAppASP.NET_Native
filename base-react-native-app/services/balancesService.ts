@@ -7,6 +7,7 @@ import {ICategoryItemResponse} from "@/types/category/ICategoryItemResponse";
 import {IGetCategoryByIdRequest} from "@/types/category/IGetCategoryByIdRequest";
 import {IBalanceGetByIdRequest} from "@/types/finance/IBalanceGetByIdRequest";
 import {IEditBalanceRequest} from "@/types/finance/IEditBalanceRequest";
+import {operationsService} from "@/services/operationsService";
 
 export const balancesService = createApi({
     reducerPath: "api/balances",
@@ -17,6 +18,14 @@ export const balancesService = createApi({
         getBalances: builder.query<IBalanceResponse[], void>({
             query: () => ({
                 url: "",
+            }),
+            providesTags: ["Balances"]
+        }),
+
+        getBalancesBySaving: builder.query<IBalanceResponse[], { isSaving: boolean }>({
+            query: ({ isSaving }) => ({
+                url: "/by-saving",
+                params: { isSaving },
             }),
             providesTags: ["Balances"]
         }),
@@ -36,7 +45,18 @@ export const balancesService = createApi({
                 method: "PUT",
                 body: serialize(body)
             }),
-            invalidatesTags: ["Balances", "Balance"]
+            async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    //оновили баланси
+                    dispatch(balancesService.util.invalidateTags(['Balances','Balances']))
+                    //оновляємо операції по балансах
+                    dispatch(operationsService.util.invalidateTags(['Operation','Operations']))
+                } catch (error) {
+                    console.error('Create balans failed:', error);
+                }
+            },
+            // invalidatesTags: ["Balances", "Balances"]
         }),
 
         deleteBalance: builder.mutation<void, number>({
@@ -61,5 +81,6 @@ export const {
     useCreateBalanceMutation,
     useDeleteBalanceMutation,
     useGetBalanceByIdQuery,
-    useEditBalanceMutation
+    useEditBalanceMutation,
+    useGetBalancesBySavingQuery
 } = balancesService;

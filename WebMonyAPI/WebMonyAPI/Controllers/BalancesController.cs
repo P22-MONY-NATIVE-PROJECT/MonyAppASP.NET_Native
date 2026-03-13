@@ -13,7 +13,7 @@ public class BalancesController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
     [Authorize]
-    public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll()
     {
         try
         {
@@ -25,6 +25,21 @@ public class BalancesController(IMediator mediator) : ControllerBase
             return BadRequest(new { message = ex.Message });
         }
     }
+
+        [HttpGet("by-saving")]
+        [Authorize]
+        public async Task<IActionResult> GetBySaving([FromQuery] bool isSaving)
+        {
+            try
+            {
+                var result = await mediator.Send(new GetBalancesBySavingQuery(isSaving));
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
 
     [HttpGet("{id:long}")]
     [Authorize]

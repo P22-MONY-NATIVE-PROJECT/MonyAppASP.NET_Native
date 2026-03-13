@@ -6,6 +6,7 @@ import {ICreateOperationRequest} from "@/types/operation/ICreateOperationRequest
 import {IDeleteOperationRequest} from "@/types/operation/IDeleteOperationRequest";
 import {IGetOperationByIdRequest} from "@/types/operation/IGetOperationByIdRequest";
 import {IEditOperationRequest} from "@/types/operation/IEditOperationRequest";
+import {balancesService} from "@/services/balancesService";
 
 export const operationsService = createApi({
     reducerPath: "api/operations",
@@ -27,7 +28,17 @@ export const operationsService = createApi({
                     method: "POST",
                     body: body //serialize(body)
                 }),
-                invalidatesTags: ["Operations", "Operation"]
+                async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+                    try {
+                        await queryFulfilled;
+                        //оновляємо операції по балансах
+                        dispatch(operationsService.util.invalidateTags(['Operation','Operations']))
+                        //оновили баланси
+                        dispatch(balancesService.util.invalidateTags(['Balances','Balances']))
+                    } catch (error) {
+                        console.error('Create balans failed:', error);
+                    }
+                },
             }),
 
             editOperation: builder.mutation<void, IEditOperationRequest>({
@@ -36,7 +47,18 @@ export const operationsService = createApi({
                     method: "PUT",
                     body: body
                 }),
-                invalidatesTags: ["Operations", "Operation"]
+                async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+                    try {
+                        await queryFulfilled;
+                        //оновляємо операції по балансах
+                        dispatch(operationsService.util.invalidateTags(['Operation','Operations']))
+                        //оновили баланси
+                        dispatch(balancesService.util.invalidateTags(['Balances','Balances']))
+                    } catch (error) {
+                        console.error('Create balans failed:', error);
+                    }
+                },
+                // invalidatesTags: ["Operations", "Operation"]
             }),
 
             deleteOperation: builder.mutation<void, IDeleteOperationRequest>({
