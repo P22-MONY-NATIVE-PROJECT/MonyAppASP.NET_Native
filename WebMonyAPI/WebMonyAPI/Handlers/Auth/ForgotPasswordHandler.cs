@@ -1,6 +1,7 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
 using System.Net.Mail;
 using WebMonyAPI.Commands.Auth;
 using WebMonyAPI.Commands.User;
@@ -23,8 +24,16 @@ public class ForgotPasswordHandler(UserManager<UserEntity> userManager,
             return false;
         }
 
-        string token = await userManager.GeneratePasswordResetTokenAsync(user);
-        var resetLink = $"{configuration["ClientUrl"]}/reset-password?token={Uri.EscapeDataString(token)}&email={Uri.EscapeDataString(request.modal.Email)}";
+        var code = RandomNumberGenerator.GetInt32(100000, 1000000).ToString();
+
+        var expiresAtUtc = DateTime.UtcNow.AddMinutes(15);
+        var tokenValue = $"{code}:{expiresAtUtc:o}";
+
+        await userManager.SetAuthenticationTokenAsync(
+            user,
+            "PasswordReset",
+            "ResetCode",
+            tokenValue);
 
         var emailModel = new EmailMessageDto
         {
@@ -45,13 +54,13 @@ public class ForgotPasswordHandler(UserManager<UserEntity> userManager,
                         </h1>
 
                         <p style=""font-size:16px; color:#d1d5db; margin-bottom:32px;"">
-                            Ми отримали запит на відновлення пароля для вашого акаунта. Натисніть кнопку нижче, щоб створити новий пароль.
+                            Ми отримали запит на відновлення пароля для вашого акаунта.
+                            Використайте наведений нижче код для зміни пароля в застосунку.
                         </p>
 
-                        <a href=""{resetLink}"" 
-                           style=""background-color:#22c55e; color:white; font-weight:bold; text-transform:uppercase; padding:16px 32px; border-radius:12px; text-decoration:none; display:inline-block; font-size:16px;"">
-                            Reset Password
-                        </a>
+                        <div style=""font-size:32px; font-weight:bold; letter-spacing:8px; margin-bottom:24px;"">
+                            {code}
+                        </div>
 
                         <p style=""font-size:12px; color:#9ca3af; margin-top:24px;"">
                             Якщо ви не запитували відновлення пароля, просто ігноруйте цей лист.

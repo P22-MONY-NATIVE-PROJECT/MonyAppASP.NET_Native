@@ -1,4 +1,4 @@
-﻿
+
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -45,5 +45,23 @@ public class AuthController(IMediator mediator) : ControllerBase
                 IsValid = false,
                 Errors = new { Email = "Користувача з такою поштою не існує" }
             });
+    }
+
+    [HttpPost("reset-password")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ResetPassword([FromBody] AccountResetPasswordDto model)
+    {
+        var command = new ResetPasswordCommand(model);
+        var result = await mediator.Send(command);
+
+        if (result)
+            return Ok();
+
+        return BadRequest(new
+        {
+            Status = 400,
+            IsValid = false,
+            Errors = new { Code = "Невірний або прострочений код відновлення паролю" }
+        });
     }
 }
