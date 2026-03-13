@@ -4,10 +4,8 @@ import {ILogin} from "@/types/auth/ILogin";
 import {IRegister} from "@/types/auth/IRegister";
 import {serialize} from "object-to-formdata";
 import { createBaseQuery } from "@/utilities/createBaseQuery";
-
-interface IRefreshRequest {
-    refreshToken: string;
-}
+import {IRefreshRequest} from "@/types/auth/IRefreshRequest";
+import {IGoogleLoginRequest} from "@/types/auth/IGoogleLoginRequest";
 
 export const authService = createApi({
     reducerPath: 'api/auth',
@@ -37,6 +35,14 @@ export const authService = createApi({
         refresh: builder.mutation<IAuthResponse, IRefreshRequest>({
             query: (body) => ({
                 url: 'refresh',
+                method: 'POST',
+                body
+            })
+        }),
+
+        googleLogin: builder.mutation<IAuthResponse, IGoogleLoginRequest>({
+            query: (body) => ({
+                url: 'google',
                 method: 'POST',
                 body
             })
