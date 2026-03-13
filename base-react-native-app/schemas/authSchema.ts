@@ -17,5 +17,13 @@ export const registerSchema = z.object({
     path: ["confirmPassword"],
 });
 
+export const editProfileSchema = z.object({
+    firstName: z.string().min(1, 'First name is required'),
+    lastName: z.string().min(1, 'Last name is required'),
+    email: z.string().email('Invalid email address'),
+    imageFile: z.any().optional(),
+});
+ 
+export type EditProfileFormData = z.infer<typeof editProfileSchema>;
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type RegisterFormData = z.infer<typeof registerSchema>;
