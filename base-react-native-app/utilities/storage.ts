@@ -12,6 +12,32 @@ export const deleteToken = async () => {
     await SecureStore.deleteItemAsync('token');
 };
 
+export const saveRefreshToken = async (refreshToken: string) => {
+    await SecureStore.setItemAsync('refreshToken', refreshToken);
+};
+
+export const getRefreshToken = async () => {
+    return await SecureStore.getItemAsync('refreshToken');
+};
+
+export const deleteRefreshToken = async () => {
+    await SecureStore.deleteItemAsync('refreshToken');
+};
+
+export const saveAuthTokens = async (accessToken: string, refreshToken: string) => {
+    await Promise.all([
+        saveToken(accessToken),
+        saveRefreshToken(refreshToken),
+    ]);
+};
+
+export const deleteAuthTokens = async () => {
+    await Promise.all([
+        deleteToken(),
+        deleteRefreshToken(),
+    ]);
+};
+
 export const saveTheme = async (theme: 'light' | 'dark') => {
     await SecureStore.setItemAsync('theme', theme);
 };

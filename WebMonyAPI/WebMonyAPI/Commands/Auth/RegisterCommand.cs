@@ -3,4 +3,4 @@ using WebMonyAPI.Dtos.Auth;
 
 namespace WebMonyAPI.Commands.Auth;
 
-public record RegisterCommand(RegisterDto model) : IRequest<string>;
+public record RegisterCommand(RegisterDto model) : IRequest<TokenDto>;

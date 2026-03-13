@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { jwtDecode } from 'jwt-decode';
-import {deleteToken} from "@/utilities/storage";
+import {deleteAuthTokens} from "@/utilities/storage";
 
 interface User {
     id: number;
@@ -60,7 +60,7 @@ const authSlice = createSlice({
         logout: (state) => {
             state.user = null;
             state.isLoaded = true;
-            deleteToken();
+            deleteAuthTokens();
         },
     },
 });

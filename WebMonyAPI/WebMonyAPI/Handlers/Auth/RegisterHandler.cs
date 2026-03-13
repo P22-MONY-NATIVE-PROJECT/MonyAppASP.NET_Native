@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using WebMonyAPI.Commands.Auth;
 using WebMonyAPI.Data;
+using WebMonyAPI.Dtos.Auth;
 using WebMonyAPI.Entities.Categories;
 using WebMonyAPI.Entities.Finances;
 using WebMonyAPI.Entities.Identity;
@@ -21,9 +22,9 @@ public class RegisterHandler(
     IJWTTokenService tokenService,
     IImageService imageService,
     AppDbContext context
-    ) : IRequestHandler<RegisterCommand, string>
+    ) : IRequestHandler<RegisterCommand, TokenDto>
 {
-    public async Task<string> Handle(RegisterCommand request, CancellationToken cancellationToken)
+    public async Task<TokenDto> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
         var user = mapper.Map<UserEntity>(request.model);
 
@@ -34,7 +35,7 @@ public class RegisterHandler(
 
         var createResult = await userManager.CreateAsync(user, request.model.Password);
         if (!createResult.Succeeded)
-            return string.Empty;
+            return new TokenDto();
 
         if (!await roleManager.RoleExistsAsync("User"))
         {

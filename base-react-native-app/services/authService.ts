@@ -5,6 +5,10 @@ import {IRegister} from "@/types/auth/IRegister";
 import {serialize} from "object-to-formdata";
 import { createBaseQuery } from "@/utilities/createBaseQuery";
 
+interface IRefreshRequest {
+    refreshToken: string;
+}
+
 export const authService = createApi({
     reducerPath: 'api/auth',
     baseQuery: createBaseQuery('Auth'),
@@ -18,10 +22,9 @@ export const authService = createApi({
             })
         }),
 
-
         register: builder.mutation<IAuthResponse, IRegister>({
             query: (credentials) => {
-                const formData =  serialize(credentials);
+                const formData = serialize(credentials);
 
                 return {
                     url: 'register',
@@ -29,12 +32,20 @@ export const authService = createApi({
                     body: formData
                 };
             }
-        })
+        }),
 
+        refresh: builder.mutation<IAuthResponse, IRefreshRequest>({
+            query: (body) => ({
+                url: 'refresh',
+                method: 'POST',
+                body
+            })
+        })
     })
 });
 
 export const {
     useLoginMutation,
-    useRegisterMutation
+    useRegisterMutation,
+    useRefreshMutation
 } = authService;
