@@ -19,6 +19,14 @@ public class AuthController(IMediator mediator) : ControllerBase
         return result == string.Empty ? BadRequest() : Ok(new { token = result });
     }
 
+    [HttpPost("google-login")]
+    public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequestDto model)
+    {
+        var command = new GoogleLoginCommand(model.Token);
+        var result = await mediator.Send(command);
+        return result == string.Empty ? BadRequest() : Ok(new { token = result });
+    }
+
     [HttpPost]
     [Route("register")]
     [Consumes("multipart/form-data")]

@@ -13,5 +13,8 @@ public class AuthMapper : Profile
                 .ForMember(x => x.UserName, opt => opt.MapFrom(x => x.Email));
         CreateMap<RegisterDto, UserEntity>()
                 .ForMember(x => x.UserName, opt => opt.MapFrom(x => x.Email));
+        CreateMap<GoogleAccountDto, UserEntity>()
+            .ForMember(x => x.Image, opt => opt.Ignore())
+            .ForMember(x => x.UserName, opt => opt.MapFrom(x => x.Email));
     }
 }
