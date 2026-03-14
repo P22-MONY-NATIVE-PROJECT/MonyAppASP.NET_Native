@@ -4,6 +4,7 @@ import {ILogin} from "@/types/auth/ILogin";
 import {IRegister} from "@/types/auth/IRegister";
 import {serialize} from "object-to-formdata";
 import { createBaseQuery } from "@/utilities/createBaseQuery";
+import {IGoogleLogin} from "@/types/auth/IGoogleLogin";
 
 export const authService = createApi({
     reducerPath: 'api/auth',
@@ -18,6 +19,13 @@ export const authService = createApi({
             })
         }),
 
+        googleLogin: builder.mutation<IAuthResponse, IGoogleLogin>({
+            query: (credentials) => ({
+                url: 'google-login',
+                method: 'POST',
+                body: credentials
+            })
+        }),
 
         register: builder.mutation<IAuthResponse, IRegister>({
             query: (credentials) => {
@@ -36,5 +44,6 @@ export const authService = createApi({
 
 export const {
     useLoginMutation,
-    useRegisterMutation
+    useRegisterMutation,
+    useGoogleLoginMutation,
 } = authService;

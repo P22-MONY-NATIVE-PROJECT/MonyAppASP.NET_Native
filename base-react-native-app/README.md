@@ -48,3 +48,8 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+
+## Google login with react-auth-session
+
+F7:CA:D9:02:85:8D:31:05:E9:E3:CA:CD:D4:FF:F6:19:D3:C2:9D:CB
