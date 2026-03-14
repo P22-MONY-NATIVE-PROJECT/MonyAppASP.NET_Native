@@ -1,7 +1,7 @@
-﻿
+
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using WebMonyAPI.Commands.Auth;
 using WebMonyAPI.Commands.User;
@@ -42,5 +42,40 @@ public class AuthController(IMediator mediator) : ControllerBase
         var command = new EditUserCommand(dto, userId);
         var result = await mediator.Send(command);
         return result == string.Empty ? BadRequest() : Ok(new { token = result });
+    }
+
+    [HttpPost("forgot-password")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ForgotPassword([FromBody] AccountForgotPasswordDto model)
+    {
+        var command = new ForgotPasswordCommand(model);
+        var result = await mediator.Send(command);
+        if (result)
+            return Ok();
+        else
+            return BadRequest(new
+            {
+                Status = 400,
+                IsValid = false,
+                Errors = new { Email = "Користувача з такою поштою не існує" }
+            });
+    }
+
+    [HttpPost("reset-password")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ResetPassword([FromBody] AccountResetPasswordDto model)
+    {
+        var command = new ResetPasswordCommand(model);
+        var result = await mediator.Send(command);
+
+        if (result)
+            return Ok();
+
+        return BadRequest(new
+        {
+            Status = 400,
+            IsValid = false,
+            Errors = new { Code = "Невірний або прострочений код відновлення паролю" }
+        });
     }
 }
