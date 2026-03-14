@@ -17,6 +17,14 @@ export const registerSchema = z.object({
     path: ["confirmPassword"],
 });
 
+export const editProfileSchema = z.object({
+    firstName: z.string().min(1, 'First name is required'),
+    lastName: z.string().min(1, 'Last name is required'),
+    email: z.string().email('Invalid email address'),
+    imageFile: z.any().optional(),
+});
+ 
+
 export const forgotPasswordSchema = z.object({
     email: z.string().min(1, "Email обов'язковий").email("Невірний формат email"),
 });
@@ -25,7 +33,7 @@ export const resetPasswordSchema = z.object({
     code: z.string().min(1, "Код обов'язковий"),
     newPassword: z.string().min(6, "Пароль має бути не менше 6 символів"),
 });
-
+export type EditProfileFormData = z.infer<typeof editProfileSchema>;
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type RegisterFormData = z.infer<typeof registerSchema>;
 export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;

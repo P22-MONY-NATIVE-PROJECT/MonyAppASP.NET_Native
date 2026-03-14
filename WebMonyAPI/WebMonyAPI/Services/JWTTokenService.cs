@@ -17,6 +17,7 @@ public class JWTTokenService(IConfiguration configuration,
         var claims = new List<Claim>
         {
             new Claim("email", user.Email ?? ""),
+            new Claim("id", user.Id.ToString()),
             new Claim("name", $"{user.FirstName} {user.LastName}"),
             new Claim("image", user.Image != null? user.Image : "")
         };
