@@ -34,6 +34,8 @@ builder.Services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericReposito
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddScoped<IUserOnboardingService, UserOnboardingService>();
+
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddOpenApi(options =>

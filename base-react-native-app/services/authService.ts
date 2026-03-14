@@ -53,5 +53,6 @@ export const authService = createApi({
 export const {
     useLoginMutation,
     useRegisterMutation,
-    useRefreshMutation
+    useRefreshMutation,
+    useGoogleLoginMutation
 } = authService;

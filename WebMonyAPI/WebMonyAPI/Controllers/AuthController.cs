@@ -49,7 +49,7 @@ public class AuthController(IMediator mediator, IJWTTokenService tokenService) :
     [HttpPost("google")]
     public async Task<IActionResult> Google([FromBody] GoogleLoginDto dto)
     {
-        var command = new WebMonyAPI.Commands.Auth.GoogleLoginCommand(dto);
+        var command = new GoogleLoginCommand(dto);
         var result = await mediator.Send(command);
         if (string.IsNullOrWhiteSpace(result?.AccessToken))
             return BadRequest();
