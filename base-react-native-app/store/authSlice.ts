@@ -16,12 +16,27 @@ interface AuthState {
     isLoaded: boolean;
 }
 
+export const isTokenExpired = (token: string): boolean => {
+    try {
+        const decoded: any = jwtDecode(token);
+        if (!decoded.exp) return false; // no expiry = treat as valid
+        return decoded.exp * 1000 < Date.now();
+    } catch {
+        return true;
+    }
+};
+
 export const getUserFromToken = (token: string): User | null => {
     try {
+        if (isTokenExpired(token)) {
+            deleteToken();
+            return null;
+        }
+
         const decoded: any = jwtDecode(token);
 
         let roles: string[] = [];
-        const rawRoles = decoded["roles"] ?? decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+        const rawRoles = decoded["role"] ?? decoded["roles"] ?? decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
         if (typeof rawRoles === "string") roles = [rawRoles];
         else if (Array.isArray(rawRoles)) roles = rawRoles;
 
@@ -33,9 +48,9 @@ export const getUserFromToken = (token: string): User | null => {
             email: decoded["email"] ?? decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"] ?? "",
             image: decoded["image"] ?? "",
             token,
-            roles
+            roles,
         };
-    } catch (e) {
+    } catch {
         return null;
     }
 };

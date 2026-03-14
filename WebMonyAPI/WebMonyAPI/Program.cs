@@ -21,6 +21,8 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IJWTTokenService, JWTTokenService>();
 builder.Services.AddScoped<IIdentityService, IdentityService>();
+builder.Services.AddScoped<ISmtpService, SmtpService>();
+
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
