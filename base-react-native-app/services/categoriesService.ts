@@ -26,14 +26,14 @@ export const categoriesService = createApi({
 
         getCategoryById: builder.query<ICategoryItemResponse, IGetCategoryByIdRequest>({
             query: params => ({
-                url: `/${params.id}`,
+                url: `${params.id}`,
             }),
             providesTags: ["Category"]
         }),
 
         getAllCategoryTypes: builder.query<ICategoryTypeItemResponse[], void>({
             query: () => ({
-                url: `/all-category-types`,
+                url: `all-category-types`,
             }),
         }),
 
@@ -57,7 +57,7 @@ export const categoriesService = createApi({
 
         deleteCategory: builder.mutation<void, number>({
             query: id => ({
-                url: `/${id}`,
+                url: `${id}`,
                 method: "DELETE"
             }),
             invalidatesTags: ["Categories","Category"]

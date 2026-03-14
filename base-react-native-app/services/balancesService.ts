@@ -24,7 +24,7 @@ export const balancesService = createApi({
 
         getBalancesBySaving: builder.query<IBalanceResponse[], { isSaving: boolean }>({
             query: ({ isSaving }) => ({
-                url: "/by-saving",
+                url: "by-saving",
                 params: { isSaving },
             }),
             providesTags: ["Balances"]
@@ -61,7 +61,7 @@ export const balancesService = createApi({
 
         deleteBalance: builder.mutation<void, number>({
             query: id => ({
-                url: `/${id}`,
+                url: `${id}`,
                 method: "DELETE"
             }),
             invalidatesTags: ["Balances","Balance"]
@@ -69,7 +69,7 @@ export const balancesService = createApi({
 
         getBalanceById: builder.query<IBalanceResponse, IBalanceGetByIdRequest>({
             query: params => ({
-                url: `/${params.id}`,
+                url: `${params.id}`,
             }),
             providesTags: ["Balance"]
         }),

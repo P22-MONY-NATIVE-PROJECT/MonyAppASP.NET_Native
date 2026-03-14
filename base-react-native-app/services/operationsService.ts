@@ -63,7 +63,7 @@ export const operationsService = createApi({
 
             deleteOperation: builder.mutation<void, IDeleteOperationRequest>({
                 query: params => ({
-                    url: `/${params.id}`,
+                    url: `${params.id}`,
                     method: "DELETE"
                 }),
                 invalidatesTags: ["Operations"]
@@ -71,7 +71,7 @@ export const operationsService = createApi({
 
             getOperationById: builder.query<IOperationItemResponse, IGetOperationByIdRequest>({
                 query: params => ({
-                    url: `/${params.id}`,
+                    url: `${params.id}`,
                 }),
                 providesTags: ["Operation"]
             }),

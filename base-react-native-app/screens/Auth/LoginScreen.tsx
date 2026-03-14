@@ -6,7 +6,7 @@ import {useForm, Controller} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 
 import {useAppTheme} from "@/hooks/useAppTheme";
-import {useLoginMutation} from "@/services/authService";
+import {useLoginMutation, useGoogleLoginMutation} from "@/services/authService";
 import {loginSchema, LoginFormData} from "@/schemas/authSchema";
 
 import AuthLayout from "@/components/layouts/AuthLayout";
@@ -14,14 +14,53 @@ import CustomInput from "@/components/form/inputs/CustomInput";
 import PrimaryButton from "@/components/ui/buttons/PrimaryButton";
 import {AppLoader} from "@/components/ui/app-loader";
 import {useDispatch} from "react-redux";
-import {saveToken} from "@/utilities/storage";
+import {saveAuthTokens} from "@/utilities/storage";
 import {setAuth} from "@/store/authSlice";
+import {GoogleSignin} from "@react-native-google-signin/google-signin";
+import {IGoogleLoginRequest} from "@/types/auth/IGoogleLoginRequest";
 
 export default function LoginScreen() {
     const router = useRouter();
     const {isDark} = useAppTheme();
     const [login, {isLoading}] = useLoginMutation();
+    const [googleLogin, {isLoading: isGoogleLoading}] = useGoogleLoginMutation();
     const dispatch = useDispatch();
+
+    const signInWithGoogle = async () => {
+        try {
+            await GoogleSignin.hasPlayServices();
+
+            try {
+                await GoogleSignin.signOut();
+            } catch (e) {}
+
+            const response = await GoogleSignin.signIn();
+
+            const token = response.data?.idToken;
+
+            if (token) {
+                console.log("Відправляємо токен на сервер:", token.substring(0, 20) + "..."); // перевірка, чи є токен
+
+                const authRequest: IGoogleLoginRequest = { token };
+                const authResponse = await googleLogin(authRequest).unwrap();
+
+                await saveAuthTokens(authResponse.accessToken, authResponse.refreshToken);
+                dispatch(setAuth(authResponse.accessToken));
+
+                router.replace('/onBoarding');
+            } else {
+                Alert.alert("Помилка", "Не вдалося отримати токен від Google.");
+            }
+
+        } catch (error: any) {
+            console.log("Деталі помилки бекенда:", JSON.stringify(error, null, 2));
+
+            if (error?.code !== 'SIGN_IN_CANCELLED') {
+                const errorMessage = error?.data?.title || error?.data?.message || "Щось пішло не так під час входу через Google.";
+                Alert.alert("Помилка сервера", errorMessage);
+            }
+        }
+    };
 
     const {control, handleSubmit, formState: {errors}} = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
@@ -31,21 +70,19 @@ export default function LoginScreen() {
     const onSubmit = async (data: LoginFormData) => {
         try {
             const response = await login(data).unwrap();
-
-            await saveToken(response.token);
-            dispatch(setAuth(response.token));
+            await saveAuthTokens(response.accessToken, response.refreshToken);
+            dispatch(setAuth(response.accessToken));
 
             router.replace('/onBoarding');
         } catch (error: any) {
             Alert.alert("Помилка", error?.data?.message || "Не вдалося увійти");
-            //console.error("Login error:", error);
         }
     };
 
     return (
         <>
             <AppLoader
-                visible={isLoading}
+                visible={isLoading || isGoogleLoading}
                 message="Завантаження..."
             />
             <AuthLayout title="Welcome">
@@ -113,6 +150,7 @@ export default function LoginScreen() {
                             <Ionicons name="logo-facebook" size={22} color={isDark ? "#DFF7E2" : "#0E3E3E"}/>
                         </TouchableOpacity>
                         <TouchableOpacity
+                            onPress={signInWithGoogle}
                             className="w-[40px] h-[40px] border border-[#0E3E3E] dark:border-[#DFF7E2] rounded-full items-center justify-center">
                             <Ionicons name="logo-google" size={22} color={isDark ? "#DFF7E2" : "#0E3E3E"}/>
                         </TouchableOpacity>

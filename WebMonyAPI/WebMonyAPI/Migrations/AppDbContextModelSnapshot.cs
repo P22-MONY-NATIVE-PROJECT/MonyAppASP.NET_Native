@@ -252,6 +252,35 @@ namespace WebMonyAPI.Migrations
                     b.ToTable("tbl_currencies");
                 });
 
+            modelBuilder.Entity("WebMonyAPI.Entities.Identity.RefreshTokenEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tbl_refresh_tokens");
+                });
+
             modelBuilder.Entity("WebMonyAPI.Entities.Identity.RoleEntity", b =>
                 {
                     b.Property<long>("Id")

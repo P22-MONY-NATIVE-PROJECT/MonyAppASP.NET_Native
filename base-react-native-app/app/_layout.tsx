@@ -15,6 +15,7 @@ import { setAuth } from "@/store/authSlice";
 import { Colors } from "@/constants/theme";
 import {NetworkProvider, useNetwork} from "@/context/NetworkContext";
 import OfflineScreen from "@/screens/Network/OfflineScreen";
+import {GoogleSignin} from "@react-native-google-signin/google-signin";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -32,6 +33,12 @@ function AppContent() {
         'LeagueSpartan-Light': require('../assets/fonts/LeagueSpartan-Light.ttf'),
         'LeagueSpartan-SemiBold': require('../assets/fonts/LeagueSpartan-SemiBold.ttf'),
     });
+
+    useEffect(() => {
+        GoogleSignin.configure({
+            webClientId: process.env.EXPO_PUBLIC_CLIENT_ID,
+        });
+    }, []);
 
     const {isConnected} = useNetwork();
 

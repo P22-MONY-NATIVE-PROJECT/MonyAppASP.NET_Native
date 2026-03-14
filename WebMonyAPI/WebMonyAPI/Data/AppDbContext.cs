@@ -26,6 +26,7 @@ public class AppDbContext : IdentityDbContext<
     public DbSet<BalanceEntity> Balances { get; set; }
     public DbSet<OperationEntity> Operations { get; set; }
     public DbSet<OperationChargeEntity> OperationCharges { get; set; }
+    public DbSet<RefreshTokenEntity> RefreshTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

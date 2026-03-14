@@ -7,6 +7,8 @@ import {serialize} from "object-to-formdata";
 import { createBaseQuery } from "@/utilities/createBaseQuery";
 import {IForgotPasswordRequest} from "@/types/auth/IForgotPasswordRequest";
 import {IResetPasswordRequest} from "@/types/auth/IResetPasswordRequest";
+import {IRefreshRequest} from "@/types/auth/IRefreshRequest";
+import {IGoogleLoginRequest} from "@/types/auth/IGoogleLoginRequest";
 
 export const authService = createApi({
     reducerPath: 'api/auth',
@@ -23,7 +25,7 @@ export const authService = createApi({
 
         register: builder.mutation<IAuthResponse, IRegister>({
             query: (credentials) => {
-                const formData =  serialize(credentials);
+                const formData = serialize(credentials);
 
                 return {
                     url: 'register',
@@ -56,6 +58,21 @@ export const authService = createApi({
                 body: model
             })
         }),
+        refresh: builder.mutation<IAuthResponse, IRefreshRequest>({
+            query: (body) => ({
+                url: 'refresh',
+                method: 'POST',
+                body
+            })
+        }),
+
+        googleLogin: builder.mutation<IAuthResponse, IGoogleLoginRequest>({
+            query: (body) => ({
+                url: 'google',
+                method: 'POST',
+                body
+            })
+        })
     })
 });
 
@@ -64,5 +81,7 @@ export const {
     useRegisterMutation,
     useEditProfileMutation,
     useForgotPasswordMutation,
-    useResetPasswordMutation
+    useResetPasswordMutation,
+    useRefreshMutation,
+    useGoogleLoginMutation
 } = authService;
