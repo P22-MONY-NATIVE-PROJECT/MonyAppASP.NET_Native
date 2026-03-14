@@ -2,6 +2,7 @@ import {createApi} from "@reduxjs/toolkit/query/react";
 import {IAuthResponse} from "@/types/auth/IAuthResponse";
 import {ILogin} from "@/types/auth/ILogin";
 import {IRegister} from "@/types/auth/IRegister";
+import { IEditUser } from "@/types/auth/IEditUser";
 import {serialize} from "object-to-formdata";
 import { createBaseQuery } from "@/utilities/createBaseQuery";
 
@@ -18,7 +19,6 @@ export const authService = createApi({
             })
         }),
 
-
         register: builder.mutation<IAuthResponse, IRegister>({
             query: (credentials) => {
                 const formData =  serialize(credentials);
@@ -29,12 +29,21 @@ export const authService = createApi({
                     body: formData
                 };
             }
-        })
+        }),
+
+        editProfile: builder.mutation<IAuthResponse, IEditUser>({
+            query: (data) => ({
+                url: 'edit',
+                method: 'PUT',
+                body: serialize(data),
+            }),
+        }),
 
     })
 });
 
 export const {
     useLoginMutation,
-    useRegisterMutation
+    useRegisterMutation,
+    useEditProfileMutation
 } = authService;
