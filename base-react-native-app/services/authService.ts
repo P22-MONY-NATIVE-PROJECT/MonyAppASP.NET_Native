@@ -62,7 +62,7 @@ export const authService = createApi({
 export const {
     useLoginMutation,
     useRegisterMutation,
-    useEditProfileMutation
+    useEditProfileMutation,
     useForgotPasswordMutation,
     useResetPasswordMutation
 } = authService;
