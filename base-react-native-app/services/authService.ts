@@ -4,6 +4,8 @@ import {ILogin} from "@/types/auth/ILogin";
 import {IRegister} from "@/types/auth/IRegister";
 import {serialize} from "object-to-formdata";
 import { createBaseQuery } from "@/utilities/createBaseQuery";
+import {IForgotPasswordRequest} from "@/types/auth/IForgotPasswordRequest";
+import {IResetPasswordRequest} from "@/types/auth/IResetPasswordRequest";
 
 export const authService = createApi({
     reducerPath: 'api/auth',
@@ -29,12 +31,29 @@ export const authService = createApi({
                     body: formData
                 };
             }
-        })
+        }),
 
+        forgotPassword: builder.mutation<void, IForgotPasswordRequest>({
+            query: (model) => ({
+                url: 'forgot-password',
+                method: 'POST',
+                body: model
+            })
+        }),
+
+        resetPassword: builder.mutation<IAuthResponse, IResetPasswordRequest>({
+            query: (model) => ({
+                url: 'reset-password',
+                method: 'POST',
+                body: model
+            })
+        }),
     })
 });
 
 export const {
     useLoginMutation,
-    useRegisterMutation
+    useRegisterMutation,
+    useForgotPasswordMutation,
+    useResetPasswordMutation
 } = authService;

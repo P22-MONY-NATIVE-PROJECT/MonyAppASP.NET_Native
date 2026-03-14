@@ -17,5 +17,16 @@ export const registerSchema = z.object({
     path: ["confirmPassword"],
 });
 
+export const forgotPasswordSchema = z.object({
+    email: z.string().min(1, "Email обов'язковий").email("Невірний формат email"),
+});
+
+export const resetPasswordSchema = z.object({
+    code: z.string().min(1, "Код обов'язковий"),
+    newPassword: z.string().min(6, "Пароль має бути не менше 6 символів"),
+});
+
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type RegisterFormData = z.infer<typeof registerSchema>;
+export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
+export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;

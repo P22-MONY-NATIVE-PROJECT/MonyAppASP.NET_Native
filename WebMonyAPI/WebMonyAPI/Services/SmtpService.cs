@@ -13,11 +13,11 @@ public class SmtpService : ISmtpService
         {
             Text = message.Body
         };
-        var multipart = new MimeKit.Multipart("mixed");
+        var multipart = new Multipart("mixed");
         multipart.Add(body);
 
         var emailMessage = new MimeMessage();
-        emailMessage.From.Add(new MailboxAddress("CounterWatch", EmailConfigurationDto.From));
+        emailMessage.From.Add(new MailboxAddress("F-track", EmailConfigurationDto.From));
         emailMessage.To.Add(new MailboxAddress(message.To, message.To));
         emailMessage.Subject = message.Subject;
 
