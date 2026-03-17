@@ -47,7 +47,7 @@ export default function OnboardingScreen() {
     const renderItem = ({ item, index }: { item: typeof slides[0], index: number }) => {
         return (
             <View style={{ width }} className="flex-1">
-                <View className="h-[300px] items-center justify-center px-6">
+                <View className="h-[150px] items-center justify-center px-6">
                     <Text className="font-poppins-semibold text-[30px] text-center leading-[39px] text-[#0E3E3E] dark:text-[#DFF7E2]">
                         {item.title}
                     </Text>
