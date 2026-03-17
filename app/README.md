@@ -41,7 +41,7 @@ You can start developing by editing the files inside the **app** directory. This
    npx expo prebuild --clean
    ```
 
-3. **Change android/app/build.gradle**
+3. **Change android/build.gradle**
 
    ```
    buildscript {
@@ -68,7 +68,7 @@ You can start developing by editing the files inside the **app** directory. This
     apply plugin: "com.facebook.react.rootproject"
    ```
 
-4. **Change android/app/build.gradle**
+4. **Change android/gradle.properties**
 
     ```
    # Project-wide Gradle settings.
@@ -144,5 +144,6 @@ You can start developing by editing the files inside the **app** directory. This
    cd android
    .\gradlew clean 
    .\gradlew assembleRelease
+   android\app\build\outputs\apk\release\app-release.apk
    ```
 

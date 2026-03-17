@@ -16,7 +16,7 @@ import {AppLoader} from "@/components/ui/app-loader";
 import {useDispatch} from "react-redux";
 import {saveAuthTokens} from "@/utilities/storage";
 import {setAuth} from "@/store/authSlice";
-import {GoogleSignin} from "@react-native-google-signin/google-signin";
+// import {GoogleSignin} from "@react-native-google-signin/google-signin";
 import {IGoogleLoginRequest} from "@/types/auth/IGoogleLoginRequest";
 
 export default function LoginScreen() {
@@ -27,6 +27,7 @@ export default function LoginScreen() {
     const dispatch = useDispatch();
 
     const signInWithGoogle = async () => {
+        /*
         try {
             await GoogleSignin.hasPlayServices();
 
@@ -60,6 +61,8 @@ export default function LoginScreen() {
                 Alert.alert("Помилка сервера", errorMessage);
             }
         }
+        */
+
     };
 
     const {control, handleSubmit, formState: {errors}} = useForm<LoginFormData>({

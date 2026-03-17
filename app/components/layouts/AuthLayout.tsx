@@ -31,7 +31,7 @@ export default function AuthLayout({ title, children }: AuthLayoutProps) {
                 keyboardShouldPersistTaps="handled"
                 style={{ backgroundColor: isDark ? '#052224' : '#00D09E' }}
             >
-                <View className="h-[150px] items-center justify-center">
+                <View className="h-[100px] items-center justify-center">
                     <Text className="font-poppins-semibold text-[30px] text-[#093030] dark:text-[#DFF7E2]">
                         {title}
                     </Text>

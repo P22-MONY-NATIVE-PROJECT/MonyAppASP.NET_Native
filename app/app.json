@@ -19,8 +19,7 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false,
-      "package": "com.ftrack.app"
+      "predictiveBackGestureEnabled": false
     },
     "web": {
       "output": "static",
@@ -44,13 +43,6 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    },
-    "extra": {
-      "router": {},
-      "eas": {
-        "projectId": "3fca5c7e-4e81-47b5-bde9-15e6106800b4"
-      }
-    },
-    "owner": "pedrot007"
+    }
   }
 }
