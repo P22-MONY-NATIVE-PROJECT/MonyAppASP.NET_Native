@@ -48,8 +48,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "f72ad225-9762-4c0f-bbd9-1359c4330120"
+        "projectId": "3fca5c7e-4e81-47b5-bde9-15e6106800b4"
       }
-    }
+    },
+    "owner": "pedrot007"
   }
 }
