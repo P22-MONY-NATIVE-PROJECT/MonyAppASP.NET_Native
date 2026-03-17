@@ -146,4 +146,8 @@ You can start developing by editing the files inside the **app** directory. This
    .\gradlew assembleRelease
    android\app\build\outputs\apk\release\app-release.apk
    ```
+## ПІСЛЯ BUILD PRODACTION Є ПРОБЛЕМА
+```
+Краще відкоити файли app.json та package.json
+```
 
