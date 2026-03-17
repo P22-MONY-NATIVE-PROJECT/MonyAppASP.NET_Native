@@ -146,25 +146,3 @@ You can start developing by editing the files inside the **app** directory. This
    .\gradlew assembleRelease
    ```
 
-### Known issues / troubleshooting
-
-- **`Library projects cannot set applicationId. applicationId is set to 'com.ftrack.app' in default config`**
-  - Це стосується модуля `lottie-react-native`. У цьому проєкті в `node_modules/lottie-react-native/android/build.gradle` вже прибрано рядок з `applicationId`.
-  - Якщо ви перевстановите `node_modules` і знову отримаєте цю помилку, відкрийте цей файл і видаліть рядок з `applicationId` у блоці `defaultConfig`.
-
-- **CMake / `CMAKE_OBJECT_PATH_MAX` / `ninja` помилки**
-  - Якщо збірка падає на тасках типу `expo-modules-core:buildCMakeRelWithDebInfo[arm64-v8a]` або `react-native-screens:buildCMakeRelWithDebInfo[arm64-v8a]` з попередженнями про занадто довгі шляхи, перемістіть репозиторій ближче до кореня диска (наприклад, `D:\mony-app`) і запустіть білд ще раз.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
