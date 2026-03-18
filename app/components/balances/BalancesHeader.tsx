@@ -9,7 +9,6 @@ import * as Haptics from "expo-haptics";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { APP_URLS } from "@/constants/Urls";
-import { Avatar } from '@/components/avatar';
 
 export default function BalancesHeader() {
     const { data } = useGetBalancesQuery();
@@ -36,7 +35,7 @@ export default function BalancesHeader() {
         <>
             <View className="bg-emerald-500 dark:bg-emerald-800 pb-6 mb-6 rounded-b-[20px]">
                 <SafeAreaView edges={["top"]}>
-                    <View className="px-6 pt-4 flex-row items-start justify-between">
+                    <View className="px-6 pt-2 flex-row items-start justify-between">
                         {/* Balance info */}
                         <View>
                             <Text className="text-white text-lg font-semibold">
