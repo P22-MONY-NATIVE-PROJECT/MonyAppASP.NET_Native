@@ -21,7 +21,7 @@ import { profileStyles as s } from '@/styles/profileStyles';
 import { editProfileSchema, EditProfileFormData } from '@/schemas/authSchema';
 import { useEditProfileMutation } from '@/services/authService';
 import { setAuth } from '@/store/authSlice';
-import { saveToken } from '@/utilities/storage';
+import {saveAuthTokens} from '@/utilities/storage';
 import { APP_URLS } from '@/constants/Urls';
 import { AppLoader } from '@/components/ui/app-loader';
 
@@ -71,8 +71,10 @@ export default function EditProfileScreen() {
   const onSubmit = async (data: EditProfileFormData) => {
     try {
       const response = await editProfile(data).unwrap();
-      await saveToken(response.token);
-      dispatch(setAuth(response.token));
+        await saveAuthTokens(response.accessToken, response.refreshToken);
+        dispatch(setAuth(response.accessToken));
+      // await saveToken(response.token);
+      // dispatch(setAuth(response.token));
       router.back();
     } catch (error: any) {
       Alert.alert('Update failed', error?.data?.message || 'Something went wrong');
