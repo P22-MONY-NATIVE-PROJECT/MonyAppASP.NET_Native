@@ -64,6 +64,7 @@ public class AuthController(IMediator mediator, IJWTTokenService tokenService) :
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> Edit([FromForm] EditUserDto dto)
     {
+        var request = this.Request;
         var userId = User.FindFirstValue("id");
         if (userId == null) return Unauthorized();
  
