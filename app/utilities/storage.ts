@@ -1,47 +1,60 @@
-import * as SecureStore from 'expo-secure-store';
+import { MMKV } from 'react-native-mmkv';
+import { jwtDecode } from 'jwt-decode';
 
-export const saveToken = async (token: string) => {
-    await SecureStore.setItemAsync('token', token);
-};
+export const mmkv = new MMKV();
 
-export const getToken = async () => {
-    return await SecureStore.getItemAsync('token');
-};
+export interface User {
+    id: number;
+    name: string;
+    email: string;
+    image: string;
+    token: string;
+    refreshToken: string;
+    roles: string[];
+}
 
-export const deleteToken = async () => {
-    await SecureStore.deleteItemAsync('token');
-};
+export const storage = {
+    // Auth
+    setAuth: (accessToken: string, refreshToken: string) => {
+        mmkv.set('accessToken', accessToken);
+        mmkv.set('refreshToken', refreshToken);
+    },
+    getAccessToken: () => mmkv.getString('accessToken'),
+    getRefreshToken: () => mmkv.getString('refreshToken'),
+    clearAuth: () => {
+        mmkv.delete('accessToken');
+        mmkv.delete('refreshToken');
+    },
+    getUser: (): User | null => {
+        const token = mmkv.getString('accessToken');
+        const refreshToken = mmkv.getString('refreshToken');
+        if (!token || !refreshToken) return null;
 
-export const saveRefreshToken = async (refreshToken: string) => {
-    await SecureStore.setItemAsync('refreshToken', refreshToken);
-};
+        try {
+            const decoded: any = jwtDecode(token);
+            
+            let roles: string[] = [];
+            const rawRoles = decoded["role"] ?? decoded["roles"] ?? decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+            if (typeof rawRoles === "string") roles = [rawRoles];
+            else if (Array.isArray(rawRoles)) roles = rawRoles;
 
-export const getRefreshToken = async () => {
-    return await SecureStore.getItemAsync('refreshToken');
-};
+            const id = Number(decoded["id"] ?? decoded["sub"] ?? decoded["nameid"] ?? "0");
 
-export const deleteRefreshToken = async () => {
-    await SecureStore.deleteItemAsync('refreshToken');
-};
+            return {
+                id,
+                name: decoded["name"] ?? decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"] ?? "",
+                email: decoded["email"] ?? decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"] ?? "",
+                image: decoded["image"] ?? "",
+                token,
+                refreshToken,
+                roles,
+            };
+        } catch {
+            return null;
+        }
+    },
 
-export const saveAuthTokens = async (accessToken: string, refreshToken: string) => {
-    await Promise.all([
-        saveToken(accessToken),
-        saveRefreshToken(refreshToken),
-    ]);
-};
-
-export const deleteAuthTokens = async () => {
-    await Promise.all([
-        deleteToken(),
-        deleteRefreshToken(),
-    ]);
-};
-
-export const saveTheme = async (theme: 'light' | 'dark') => {
-    await SecureStore.setItemAsync('theme', theme);
-};
-
-export const getTheme = async () => {
-    return await SecureStore.getItemAsync('theme') as 'light' | 'dark' | null;
+    // Theme
+    setTheme: (theme: 'light' | 'dark') => mmkv.set('theme', theme),
+    getTheme: () => mmkv.getString('theme') as 'light' | 'dark' | undefined,
 };

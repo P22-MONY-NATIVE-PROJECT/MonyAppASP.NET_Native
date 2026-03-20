@@ -5,12 +5,7 @@ import {
     type FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
 import {APP_URLS} from "@/constants/Urls";
-import {
-    deleteAuthTokens,
-    getRefreshToken,
-    getToken,
-    saveAuthTokens,
-} from "@/utilities/storage";
+import { storage } from "@/utilities/storage";
 
 interface RefreshResponse {
     accessToken: string;
@@ -19,8 +14,8 @@ interface RefreshResponse {
 
 const rawBaseQuery = fetchBaseQuery({
     baseUrl: `${APP_URLS.BASE_URL}/api/`,
-    prepareHeaders: async (headers) => {
-        const token = await getToken();
+    prepareHeaders: (headers) => {
+        const token = storage.getAccessToken();
 
         if (token) {
             headers.set("authorization", `Bearer ${token}`);
@@ -43,10 +38,10 @@ export const createBaseQuery = (endpoint: string): BaseQueryFn<string | FetchArg
             return result;
         }
 
-        const refreshToken = await getRefreshToken();
+        const refreshToken = storage.getRefreshToken();
 
         if (!refreshToken) {
-            await deleteAuthTokens();
+            storage.clearAuth();
             return result;
         }
 
@@ -63,7 +58,7 @@ export const createBaseQuery = (endpoint: string): BaseQueryFn<string | FetchArg
         if (refreshResult.data) {
             const tokens = refreshResult.data as RefreshResponse;
 
-            await saveAuthTokens(tokens.accessToken, tokens.refreshToken);
+            storage.setAuth(tokens.accessToken, tokens.refreshToken);
 
             result = await rawBaseQuery(
                 {
@@ -80,7 +75,7 @@ export const createBaseQuery = (endpoint: string): BaseQueryFn<string | FetchArg
             return result;
         }
 
-        await deleteAuthTokens();
+        storage.clearAuth();
         return result;
     };
-};
+};
