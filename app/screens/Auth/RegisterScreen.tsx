@@ -13,7 +13,6 @@ import CustomInput from "@/components/form/inputs/CustomInput";
 import PrimaryButton from "@/components/ui/buttons/PrimaryButton";
 import {AppLoader} from "@/components/ui/app-loader";
 import {useDispatch} from "react-redux";
-import {saveAuthTokens, saveToken} from "@/utilities/storage";
 import {setAuth} from "@/store/authSlice";
 
 export default function RegisterScreen() {
@@ -36,8 +35,7 @@ export default function RegisterScreen() {
     const onSubmit = async (data: RegisterFormData) => {
         try {
             const response = await register(data).unwrap();
-            await saveAuthTokens(response.accessToken, response.refreshToken);
-            dispatch(setAuth(response.accessToken));
+            dispatch(setAuth({ accessToken: response.accessToken, refreshToken: response.refreshToken }));
 
             router.replace('/onBoarding');
         } catch (error: any) {

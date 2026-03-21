@@ -79,7 +79,7 @@ export default function CategoriesListScreen({ typeId }: Props) {
 
                             <Image
                                 source={{
-                                    uri: APP_URLS.IMAGES_100_URL + item.icon,
+                                    uri: APP_URLS.IMAGES_400_URL + item.icon,
                                 }}
                                 className="w-10 h-10"
                             />

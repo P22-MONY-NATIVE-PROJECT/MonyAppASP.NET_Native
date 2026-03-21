@@ -6,8 +6,6 @@ import {zodResolver} from '@hookform/resolvers/zod';
 
 import {useResetPasswordMutation} from "@/services/authService";
 import {resetPasswordSchema, ResetPasswordFormData} from "@/schemas/authSchema";
-import {saveToken} from "@/utilities/storage";
-import {setAuth} from "@/store/authSlice";
 import {useDispatch} from "react-redux";
 
 import AuthLayout from "@/components/layouts/AuthLayout";
