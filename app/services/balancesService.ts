@@ -1,30 +1,23 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
 import { serialize } from "object-to-formdata";
-import { createBaseQuery } from "@/utilities/createBaseQuery";
 import { IBalanceResponse } from "@/types/finance/IBalanceResponse";
 import { ICreateBalanceRequest } from "@/types/finance/ICreateBalanceRequest";
-import {ICategoryItemResponse} from "@/types/category/ICategoryItemResponse";
-import {IGetCategoryByIdRequest} from "@/types/category/IGetCategoryByIdRequest";
 import {IBalanceGetByIdRequest} from "@/types/finance/IBalanceGetByIdRequest";
 import {IEditBalanceRequest} from "@/types/finance/IEditBalanceRequest";
-import {operationsService} from "@/services/operationsService";
+import {api} from "@/services/api";
 
-export const balancesService = createApi({
-    reducerPath: "api/balances",
-    tagTypes: ["Balances", "Balance"],
-    baseQuery: createBaseQuery("balances"),
+export const balancesService =  api.injectEndpoints({
     endpoints: builder => ({
 
         getBalances: builder.query<IBalanceResponse[], void>({
             query: () => ({
-                url: "",
+                url: "balances",
             }),
             providesTags: ["Balances"]
         }),
 
         getBalancesBySaving: builder.query<IBalanceResponse[], { isSaving: boolean }>({
             query: ({ isSaving }) => ({
-                url: "by-saving",
+                url: "balances/by-saving",
                 params: { isSaving },
             }),
             providesTags: ["Balances"]
@@ -32,7 +25,7 @@ export const balancesService = createApi({
 
         createBalance: builder.mutation<void, ICreateBalanceRequest>({
             query: body => ({
-                url: "",
+                url: "balances",
                 method: "POST",
                 body: serialize(body)
             }),
@@ -41,27 +34,16 @@ export const balancesService = createApi({
 
         editBalance: builder.mutation<void, IEditBalanceRequest>({
             query: body => ({
-                url: "",
+                url: "balances",
                 method: "PUT",
                 body: serialize(body)
             }),
-            async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
-                try {
-                    await queryFulfilled;
-                    //оновили баланси
-                    dispatch(balancesService.util.invalidateTags(['Balances','Balances']))
-                    //оновляємо операції по балансах
-                    dispatch(operationsService.util.invalidateTags(['Operation','Operations']))
-                } catch (error) {
-                    console.error('Create balans failed:', error);
-                }
-            },
-            // invalidatesTags: ["Balances", "Balances"]
+            invalidatesTags: ["Balances", "Balances", 'Operation','Operations']
         }),
 
         deleteBalance: builder.mutation<void, number>({
             query: id => ({
-                url: `${id}`,
+                url: `balances/${id}`,
                 method: "DELETE"
             }),
             invalidatesTags: ["Balances","Balance"]
@@ -69,7 +51,7 @@ export const balancesService = createApi({
 
         getBalanceById: builder.query<IBalanceResponse, IBalanceGetByIdRequest>({
             query: params => ({
-                url: `${params.id}`,
+                url: `balances/${params.id}`,
             }),
             providesTags: ["Balance"]
         }),

@@ -1,24 +1,20 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
+// import { createApi } from "@reduxjs/toolkit/query/react";
 import { serialize } from "object-to-formdata";
-
 import { ICategoryItemResponse } from "@/types/category/ICategoryItemResponse";
 import { IGetCategoriesRequest } from "@/types/category/IGetCategoriesRequest";
 import { ICreateCategoryRequest } from "@/types/category/ICreateCategoryRequest";
 import { IEditCategoryRequest } from "@/types/category/IEditCategoryRequest";
-
-import { createBaseQuery } from "@/utilities/createBaseQuery";
+// import { createBaseQuery } from "@/utilities/createBaseQuery";
 import {IGetCategoryByIdRequest} from "@/types/category/IGetCategoryByIdRequest";
 import {ICategoryTypeItemResponse} from "@/types/category/ICategoryTypeItemResponse";
+import {api} from "@/services/api";
 
-export const categoriesService = createApi({
-    reducerPath: "api/categories",
-    tagTypes: ["Categories", "Category"],
-    baseQuery: createBaseQuery("categories"),
+export const categoriesService = api.injectEndpoints({
     endpoints: builder => ({
 
         getCategories: builder.query<ICategoryItemResponse[], IGetCategoriesRequest>({
             query: params => ({
-                url: "",
+                url: "categories",
                 params
             }),
             providesTags: ["Categories"]
@@ -26,20 +22,20 @@ export const categoriesService = createApi({
 
         getCategoryById: builder.query<ICategoryItemResponse, IGetCategoryByIdRequest>({
             query: params => ({
-                url: `${params.id}`,
+                url: `categories/${params.id}`,
             }),
             providesTags: ["Category"]
         }),
 
         getAllCategoryTypes: builder.query<ICategoryTypeItemResponse[], void>({
             query: () => ({
-                url: `all-category-types`,
+                url: `categories/all-category-types`,
             }),
         }),
 
         createCategory: builder.mutation<void, ICreateCategoryRequest>({
             query: body => ({
-                url: "",
+                url: "categories",
                 method: "POST",
                 body: serialize(body)
             }),
@@ -48,7 +44,7 @@ export const categoriesService = createApi({
 
         updateCategory: builder.mutation<void, IEditCategoryRequest>({
             query: body => ({
-                url: "",
+                url: "categories",
                 method: "PUT",
                 body: serialize(body)
             }),
@@ -57,7 +53,7 @@ export const categoriesService = createApi({
 
         deleteCategory: builder.mutation<void, number>({
             query: id => ({
-                url: `${id}`,
+                url: `categories/${id}`,
                 method: "DELETE"
             }),
             invalidatesTags: ["Categories","Category"]
