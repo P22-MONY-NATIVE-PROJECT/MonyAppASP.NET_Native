@@ -3,7 +3,7 @@ import { createBaseQuery } from "@/utilities/createBaseQuery";
 
 export const api = createApi({
     reducerPath: "api",
-    baseQuery: createBaseQuery("api"),
+    baseQuery: createBaseQuery(""),
     tagTypes: [
         "Balances",
         "Balance",
