@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, Text, TouchableOpacity, Alert} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useRouter} from 'expo-router';
 import {Ionicons} from '@expo/vector-icons';
 import {useForm, Controller} from 'react-hook-form';
@@ -87,6 +88,15 @@ export default function LoginScreen() {
                 message="Завантаження..."
             />
             <AuthLayout title="Welcome">
+                <KeyboardAwareScrollView
+                    className="flex-1"
+                    contentContainerStyle={{ paddingHorizontal: 32, paddingTop: 40, paddingBottom: 40, flexGrow: 1 }}
+                    bounces={false}
+                    overScrollMode="never"
+                    alwaysBounceVertical={false}
+                    enableOnAndroid={true}
+                    keyboardShouldPersistTaps="handled"
+                >
                 <Controller
                     control={control}
                     name="email"
@@ -157,6 +167,7 @@ export default function LoginScreen() {
                         </TouchableOpacity>
                     </View>
                 </View>
+                </KeyboardAwareScrollView>
             </AuthLayout>
         </>
     );
