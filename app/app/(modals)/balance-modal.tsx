@@ -150,12 +150,13 @@ export default function BalanceModal() {
 
                                 <TextInput
                                     value={form.amount.toString()}
-                                    onChangeText={(value) =>
+                                    onChangeText={(value) => {
+                                        const cleaned = value.replace(/[^0-9.,]/g, "");
                                         setForm((prev) => ({
                                             ...prev,
-                                            amount: Number(value.replace(",", ".")) || 0,
-                                        }))
-                                    }
+                                            amount: cleaned ? Number(cleaned.replace(",", ".")) : 0,
+                                        }));
+                                    }}
                                     keyboardType="decimal-pad"
                                     placeholder="Сума"
                                     placeholderTextColor="#9CA3AF"

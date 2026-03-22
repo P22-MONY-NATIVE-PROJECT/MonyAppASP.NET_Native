@@ -148,19 +148,22 @@ export default function OperationCreateSheet({
                                 Amount
                             </Text>
 
-                            <Controller
-                                control={control}
-                                name="initAmount"
-                                render={({ field: { onChange, value } }) => (
-                                    <TextInput
-                                        value={value ? String(value) : ""}
-                                        onChangeText={(v) => onChange(Number(v))}
-                                        keyboardType="decimal-pad"
-                                        placeholder="Enter amount"
-                                        className="bg-gray-100 dark:bg-neutral-800 rounded-xl px-4 py-3 mb-3 text-black dark:text-white"
-                                    />
-                                )}
-                            />
+                                <Controller
+                                    control={control}
+                                    name="initAmount"
+                                    render={({ field: { onChange, value } }) => (
+                                        <TextInput
+                                            value={value ? String(value) : ""}
+                                            onChangeText={(v) => {
+                                                const cleaned = v.replace(/[^0-9.,]/g, "");
+                                                onChange(cleaned ? Number(cleaned.replace(",", ".")) : 0);
+                                            }}
+                                            keyboardType="decimal-pad"
+                                            placeholder="Enter amount"
+                                            className="bg-gray-100 dark:bg-neutral-800 rounded-xl px-4 py-3 mb-3 text-black dark:text-white"
+                                        />
+                                    )}
+                                />
 
                             <Text className="mb-1 text-black dark:text-white">
                                 Comment
@@ -238,9 +241,10 @@ export default function OperationCreateSheet({
                                             render={({ field: { onChange, value } }) => (
                                                 <TextInput
                                                     value={value ? String(value) : ""}
-                                                    onChangeText={(v) =>
-                                                        onChange(Number(v))
-                                                    }
+                                                    onChangeText={(v) => {
+                                                        const cleaned = v.replace(/[^0-9.,]/g, "");
+                                                        onChange(cleaned ? Number(cleaned.replace(",", ".")) : 0);
+                                                    }}
                                                     placeholder="Charge amount"
                                                     keyboardType="decimal-pad"
                                                     className="bg-white dark:bg-neutral-700 rounded-lg px-3 py-2 mb-2 text-black dark:text-white"
@@ -258,9 +262,12 @@ export default function OperationCreateSheet({
                                             render={({ field: { onChange, value } }) => (
                                                 <TextInput
                                                     value={value ? String(value) : ""}
-                                                    onChangeText={(v) =>
-                                                        onChange(Number(v))
-                                                    }
+                                                    onChangeText={(v) => {
+                                                        const cleaned = v.replace(/[^0-9.,]/g, "");
+                                                        let num = cleaned ? Number(cleaned.replace(",", ".")) : 0;
+                                                        if (num > 100) num = 100;
+                                                        onChange(num);
+                                                    }}
                                                     placeholder="0-100"
                                                     keyboardType="decimal-pad"
                                                     className="bg-white dark:bg-neutral-700 rounded-lg px-3 py-2 mb-2 text-black dark:text-white"
