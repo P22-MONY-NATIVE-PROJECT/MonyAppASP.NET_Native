@@ -1,6 +1,6 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, TextInput, TouchableOpacity, TextInputProps } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import React, { useRef, useState } from 'react';
+import { Text, TextInput, TextInputProps, TouchableOpacity, View } from 'react-native';
 
 interface CustomInputProps extends TextInputProps {
     label: string;
@@ -14,7 +14,6 @@ export default function CustomInput({ label, isPassword, error, ...props }: Cust
 
     const handleTogglePassword = () => {
         setShowPassword(prev => !prev);
-        // Повертаємо фокус на поле щоб клавіатура не зникала
         setTimeout(() => inputRef.current?.focus(), 0);
     };
 

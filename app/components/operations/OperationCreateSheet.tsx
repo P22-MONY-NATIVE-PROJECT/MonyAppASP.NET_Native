@@ -6,6 +6,8 @@ import {
     TextInput,
     TouchableOpacity,
     ScrollView,
+    KeyboardAvoidingView,
+    Platform,
 } from "react-native";
 
 import { Controller, useForm } from "react-hook-form";
@@ -122,252 +124,258 @@ export default function OperationCreateSheet({
                     onPress={onClose}
                 />
 
-                <View className="bg-white dark:bg-neutral-900 rounded-t-3xl p-5 max-h-[85%]">
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === "ios" ? "padding" : "height"}
+                    className="w-full"
+                >
+                    <View className="bg-white dark:bg-neutral-900 rounded-t-3xl p-5 max-h-[90%]">
 
-                    <View className="items-center mb-4">
-                        <View className="w-12 h-1.5 bg-gray-400 rounded-full" />
-                    </View>
+                        <View className="items-center mb-4">
+                            <View className="w-12 h-1.5 bg-gray-400 rounded-full" />
+                        </View>
 
-                    <Text className="text-lg font-semibold text-center mb-4 text-black dark:text-white">
-                        {category?.name}
-                    </Text>
-
-                    <ScrollView
-                        showsVerticalScrollIndicator={false}
-                        keyboardShouldPersistTaps="handled"
-                    >
-
-                        <Text className="mb-1 text-black dark:text-white">
-                            Amount
+                        <Text className="text-lg font-semibold text-center mb-4 text-black dark:text-white">
+                            {category?.name}
                         </Text>
 
-                        <Controller
-                            control={control}
-                            name="initAmount"
-                            render={({ field: { onChange, value } }) => (
-                                <TextInput
-                                    value={value ? String(value) : ""}
-                                    onChangeText={(v) => onChange(Number(v))}
-                                    keyboardType="decimal-pad"
-                                    placeholder="Enter amount"
-                                    className="bg-gray-100 dark:bg-neutral-800 rounded-xl px-4 py-3 mb-3 text-black dark:text-white"
-                                />
-                            )}
-                        />
+                        <ScrollView
+                            showsVerticalScrollIndicator={false}
+                            keyboardShouldPersistTaps="handled"
+                            contentContainerStyle={{ paddingBottom: 20 }}
+                        >
 
-                        <Text className="mb-1 text-black dark:text-white">
-                            Comment
-                        </Text>
+                            <Text className="mb-1 text-black dark:text-white">
+                                Amount
+                            </Text>
 
-                        <Controller
-                            control={control}
-                            name="comment"
-                            render={({ field: { onChange, value } }) => (
-                                <TextInput
-                                    value={value}
-                                    onChangeText={onChange}
-                                    placeholder="Comment"
-                                    className="bg-gray-100 dark:bg-neutral-800 rounded-xl px-4 py-3 mb-3 text-black dark:text-white"
-                                />
-                            )}
-                        />
+                            <Controller
+                                control={control}
+                                name="initAmount"
+                                render={({ field: { onChange, value } }) => (
+                                    <TextInput
+                                        value={value ? String(value) : ""}
+                                        onChangeText={(v) => onChange(Number(v))}
+                                        keyboardType="decimal-pad"
+                                        placeholder="Enter amount"
+                                        className="bg-gray-100 dark:bg-neutral-800 rounded-xl px-4 py-3 mb-3 text-black dark:text-white"
+                                    />
+                                )}
+                            />
 
-                        <Text className="mb-2 text-black dark:text-white">
-                            Balance
-                        </Text>
+                            <Text className="mb-1 text-black dark:text-white">
+                                Comment
+                            </Text>
 
-                        <Controller
-                            control={control}
-                            name="balanceId"
-                            render={({ field: { onChange } }) => (
-                                <View className="flex-row flex-wrap mb-4">
-                                    {balances?.map((b) => (
-                                        <TouchableOpacity
-                                            key={b.id}
-                                            onPress={() => onChange(b.id)}
-                                            className={`px-4 py-2 mr-2 mb-2 rounded-xl ${
-                                                balanceId === b.id
-                                                    ? "bg-blue-500"
-                                                    : "bg-gray-200 dark:bg-neutral-800"
-                                            }`}
-                                        >
-                                            <Text
-                                                className={`${
+                            <Controller
+                                control={control}
+                                name="comment"
+                                render={({ field: { onChange, value } }) => (
+                                    <TextInput
+                                        value={value}
+                                        onChangeText={onChange}
+                                        placeholder="Comment"
+                                        className="bg-gray-100 dark:bg-neutral-800 rounded-xl px-4 py-3 mb-3 text-black dark:text-white"
+                                    />
+                                )}
+                            />
+
+                            <Text className="mb-2 text-black dark:text-white">
+                                Balance
+                            </Text>
+
+                            <Controller
+                                control={control}
+                                name="balanceId"
+                                render={({ field: { onChange } }) => (
+                                    <View className="flex-row flex-wrap mb-4">
+                                        {balances?.map((b) => (
+                                            <TouchableOpacity
+                                                key={b.id}
+                                                onPress={() => onChange(b.id)}
+                                                className={`px-4 py-2 mr-2 mb-2 rounded-xl ${
                                                     balanceId === b.id
-                                                        ? "text-white"
-                                                        : "text-black dark:text-white"
+                                                        ? "bg-blue-500"
+                                                        : "bg-gray-200 dark:bg-neutral-800"
                                                 }`}
                                             >
-                                                {b.name}
+                                                <Text
+                                                    className={`${
+                                                        balanceId === b.id
+                                                            ? "text-white"
+                                                            : "text-black dark:text-white"
+                                                    }`}
+                                                >
+                                                    {b.name}
+                                                </Text>
+                                            </TouchableOpacity>
+                                        ))}
+                                    </View>
+                                )}
+                            />
+
+                            <Text className="mb-2 text-black dark:text-white">
+                                Charges
+                            </Text>
+
+                            {charges.map((_, index) => {
+                                const chargeType = watch(`charges.${index}.type`);
+                                const chargeApplicationType = watch(
+                                    `charges.${index}.applicationType`
+                                );
+
+                                return (
+                                    <View
+                                        key={index}
+                                        className="bg-gray-100 dark:bg-neutral-800 rounded-xl p-3 mb-3"
+                                    >
+                                        <Text className="mb-1 text-black dark:text-white">
+                                            Amount
+                                        </Text>
+
+                                        <Controller
+                                            control={control}
+                                            name={`charges.${index}.amount`}
+                                            render={({ field: { onChange, value } }) => (
+                                                <TextInput
+                                                    value={value ? String(value) : ""}
+                                                    onChangeText={(v) =>
+                                                        onChange(Number(v))
+                                                    }
+                                                    placeholder="Charge amount"
+                                                    keyboardType="decimal-pad"
+                                                    className="bg-white dark:bg-neutral-700 rounded-lg px-3 py-2 mb-2 text-black dark:text-white"
+                                                />
+                                            )}
+                                        />
+
+                                        <Text className="mb-1 text-black dark:text-white">
+                                            Percentage
+                                        </Text>
+
+                                        <Controller
+                                            control={control}
+                                            name={`charges.${index}.percentage`}
+                                            render={({ field: { onChange, value } }) => (
+                                                <TextInput
+                                                    value={value ? String(value) : ""}
+                                                    onChangeText={(v) =>
+                                                        onChange(Number(v))
+                                                    }
+                                                    placeholder="0-100"
+                                                    keyboardType="decimal-pad"
+                                                    className="bg-white dark:bg-neutral-700 rounded-lg px-3 py-2 mb-2 text-black dark:text-white"
+                                                />
+                                            )}
+                                        />
+
+                                        <Text className="mb-1 text-black dark:text-white">
+                                            Type
+                                        </Text>
+
+                                        <View className="flex-row mb-2">
+                                            {Object.values(EChargeType)
+                                                .filter((v) => typeof v === "number")
+                                                .map((type) => (
+                                                    <TouchableOpacity
+                                                        key={type}
+                                                        onPress={() =>
+                                                            setValue(
+                                                                `charges.${index}.type`,
+                                                                type as EChargeType
+                                                            )
+                                                        }
+                                                        className={`px-3 py-1 mr-2 rounded-lg ${
+                                                            chargeType === type
+                                                                ? "bg-blue-500"
+                                                                : "bg-gray-300 dark:bg-neutral-700"
+                                                        }`}
+                                                    >
+                                                        <Text
+                                                            className={`${
+                                                                chargeType === type
+                                                                    ? "text-white"
+                                                                    : "text-black dark:text-white"
+                                                            }`}
+                                                        >
+                                                            {EChargeType[type as number]}
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                ))}
+                                        </View>
+
+                                        <Text className="mb-1 text-black dark:text-white">
+                                            Application
+                                        </Text>
+
+                                        <View className="flex-row flex-wrap mb-2">
+                                            {Object.values(EChargeApplicationType)
+                                                .filter((v) => typeof v === "number")
+                                                .map((type) => (
+                                                    <TouchableOpacity
+                                                        key={type}
+                                                        onPress={() =>
+                                                            setValue(
+                                                                `charges.${index}.applicationType`,
+                                                                type as EChargeApplicationType
+                                                            )
+                                                        }
+                                                        className={`px-3 py-1 mr-2 mb-2 rounded-lg ${
+                                                            chargeApplicationType === type
+                                                                ? "bg-blue-500"
+                                                                : "bg-gray-300 dark:bg-neutral-700"
+                                                        }`}
+                                                    >
+                                                        <Text
+                                                            className={`${
+                                                                chargeApplicationType === type
+                                                                    ? "text-white"
+                                                                    : "text-black dark:text-white"
+                                                            }`}
+                                                        >
+                                                            {
+                                                                EChargeApplicationType[
+                                                                    type as number
+                                                                    ]
+                                                            }
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                ))}
+                                        </View>
+
+                                        <TouchableOpacity
+                                            onPress={() => removeCharge(index)}
+                                            className="bg-red-500 py-2 rounded-lg items-center mt-2"
+                                        >
+                                            <Text className="text-white">
+                                                Remove charge
                                             </Text>
                                         </TouchableOpacity>
-                                    ))}
-                                </View>
-                            )}
-                        />
-
-                        <Text className="mb-2 text-black dark:text-white">
-                            Charges
-                        </Text>
-
-                        {charges.map((_, index) => {
-                            const chargeType = watch(`charges.${index}.type`);
-                            const chargeApplicationType = watch(
-                                `charges.${index}.applicationType`
-                            );
-
-                            return (
-                                <View
-                                    key={index}
-                                    className="bg-gray-100 dark:bg-neutral-800 rounded-xl p-3 mb-3"
-                                >
-                                    <Text className="mb-1 text-black dark:text-white">
-                                        Amount
-                                    </Text>
-
-                                    <Controller
-                                        control={control}
-                                        name={`charges.${index}.amount`}
-                                        render={({ field: { onChange, value } }) => (
-                                            <TextInput
-                                                value={value ? String(value) : ""}
-                                                onChangeText={(v) =>
-                                                    onChange(Number(v))
-                                                }
-                                                placeholder="Charge amount"
-                                                keyboardType="decimal-pad"
-                                                className="bg-white dark:bg-neutral-700 rounded-lg px-3 py-2 mb-2 text-black dark:text-white"
-                                            />
-                                        )}
-                                    />
-
-                                    <Text className="mb-1 text-black dark:text-white">
-                                        Percentage
-                                    </Text>
-
-                                    <Controller
-                                        control={control}
-                                        name={`charges.${index}.percentage`}
-                                        render={({ field: { onChange, value } }) => (
-                                            <TextInput
-                                                value={value ? String(value) : ""}
-                                                onChangeText={(v) =>
-                                                    onChange(Number(v))
-                                                }
-                                                placeholder="0-100"
-                                                keyboardType="decimal-pad"
-                                                className="bg-white dark:bg-neutral-700 rounded-lg px-3 py-2 mb-2 text-black dark:text-white"
-                                            />
-                                        )}
-                                    />
-
-                                    <Text className="mb-1 text-black dark:text-white">
-                                        Type
-                                    </Text>
-
-                                    <View className="flex-row mb-2">
-                                        {Object.values(EChargeType)
-                                            .filter((v) => typeof v === "number")
-                                            .map((type) => (
-                                                <TouchableOpacity
-                                                    key={type}
-                                                    onPress={() =>
-                                                        setValue(
-                                                            `charges.${index}.type`,
-                                                            type as EChargeType
-                                                        )
-                                                    }
-                                                    className={`px-3 py-1 mr-2 rounded-lg ${
-                                                        chargeType === type
-                                                            ? "bg-blue-500"
-                                                            : "bg-gray-300 dark:bg-neutral-700"
-                                                    }`}
-                                                >
-                                                    <Text
-                                                        className={`${
-                                                            chargeType === type
-                                                                ? "text-white"
-                                                                : "text-black dark:text-white"
-                                                        }`}
-                                                    >
-                                                        {EChargeType[type as number]}
-                                                    </Text>
-                                                </TouchableOpacity>
-                                            ))}
                                     </View>
+                                );
+                            })}
 
-                                    <Text className="mb-1 text-black dark:text-white">
-                                        Application
-                                    </Text>
+                            <TouchableOpacity
+                                onPress={addCharge}
+                                className="bg-gray-300 dark:bg-neutral-700 py-3 rounded-xl items-center mb-4"
+                            >
+                                <Text className="text-black dark:text-white">
+                                    Add charge
+                                </Text>
+                            </TouchableOpacity>
 
-                                    <View className="flex-row flex-wrap mb-2">
-                                        {Object.values(EChargeApplicationType)
-                                            .filter((v) => typeof v === "number")
-                                            .map((type) => (
-                                                <TouchableOpacity
-                                                    key={type}
-                                                    onPress={() =>
-                                                        setValue(
-                                                            `charges.${index}.applicationType`,
-                                                            type as EChargeApplicationType
-                                                        )
-                                                    }
-                                                    className={`px-3 py-1 mr-2 mb-2 rounded-lg ${
-                                                        chargeApplicationType === type
-                                                            ? "bg-blue-500"
-                                                            : "bg-gray-300 dark:bg-neutral-700"
-                                                    }`}
-                                                >
-                                                    <Text
-                                                        className={`${
-                                                            chargeApplicationType === type
-                                                                ? "text-white"
-                                                                : "text-black dark:text-white"
-                                                        }`}
-                                                    >
-                                                        {
-                                                            EChargeApplicationType[
-                                                                type as number
-                                                                ]
-                                                        }
-                                                    </Text>
-                                                </TouchableOpacity>
-                                            ))}
-                                    </View>
+                            <TouchableOpacity
+                                disabled={isLoading}
+                                onPress={handleSubmit(handleCreate)}
+                                className="bg-black dark:bg-white py-4 rounded-xl items-center mb-6"
+                            >
+                                <Text className="text-white dark:text-black font-semibold">
+                                    Create operation
+                                </Text>
+                            </TouchableOpacity>
 
-                                    <TouchableOpacity
-                                        onPress={() => removeCharge(index)}
-                                        className="bg-red-500 py-2 rounded-lg items-center mt-2"
-                                    >
-                                        <Text className="text-white">
-                                            Remove charge
-                                        </Text>
-                                    </TouchableOpacity>
-                                </View>
-                            );
-                        })}
-
-                        <TouchableOpacity
-                            onPress={addCharge}
-                            className="bg-gray-300 dark:bg-neutral-700 py-3 rounded-xl items-center mb-4"
-                        >
-                            <Text className="text-black dark:text-white">
-                                Add charge
-                            </Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            disabled={isLoading}
-                            onPress={handleSubmit(handleCreate)}
-                            className="bg-black dark:bg-white py-4 rounded-xl items-center mb-6"
-                        >
-                            <Text className="text-white dark:text-black font-semibold">
-                                Create operation
-                            </Text>
-                        </TouchableOpacity>
-
-                    </ScrollView>
-                </View>
+                        </ScrollView>
+                    </View>
+                </KeyboardAvoidingView>
             </View>
         </Modal>
     );
