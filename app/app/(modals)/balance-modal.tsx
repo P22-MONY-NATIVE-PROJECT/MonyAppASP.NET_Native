@@ -22,6 +22,7 @@ import {
 } from "@/services/balancesService";
 import { IImageFile } from "@/types/common/IImageFile";
 import {AppLoader} from "@/components/ui/app-loader";
+import { BackButton } from "@/components/ui/BackButton";
 
 interface BalanceFormState {
     name: string;
@@ -126,12 +127,12 @@ export default function BalanceModal() {
 
                         <View className="flex-1 justify-center py-10">
 
-                            <ThemedText
-                                type="title"
-                                style={{ textAlign: "center", marginBottom: 20 }}
-                            >
-                                {isEdit ? "Редагувати баланс" : "Новий баланс"}
-                            </ThemedText>
+                            <View className="flex-row items-center justify-between mb-6">
+                                <BackButton />
+                                <ThemedText type="title" style={{ flex: 1, textAlign: "center", marginRight: 40 }}>
+                                    {isEdit ? "Редагувати баланс" : "Новий баланс"}
+                                </ThemedText>
+                            </View>
 
                             <View className="bg-white dark:bg-gray-900 p-8 rounded-3xl gap-8 shadow-sm">
 

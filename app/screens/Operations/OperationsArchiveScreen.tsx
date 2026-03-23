@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FlatList, Pressable, Text, View } from "react-native";
+import { FlatList, Pressable, Text, View, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 
@@ -7,6 +7,7 @@ import { ThemedView } from "@/components/themed-view";
 import { useGetOperationsQuery, useDeleteOperationMutation } from "@/services/operationsService";
 import MonthSwitcher from "@/components/categories/MonthSwitcher";
 import { AppLoader } from "@/components/ui/app-loader";
+import { BackButton } from "@/components/ui/BackButton";
 
 import { IOperationItemResponse } from "@/types/operation/IOperationItemResponse";
 import {formatOperationDate} from "@/utilities/formatOperationDate";
@@ -66,7 +67,12 @@ export default function OperationsArchiveScreen() {
 
                 <AppLoader visible={isLoading} message="Завантаження операцій..." />
 
-                <MonthSwitcher date={currentDate} onChange={setCurrentDate} />
+                <View className="flex-row items-center justify-between mb-4">
+                    <BackButton />
+                    <View className="flex-1 ml-4">
+                        <MonthSwitcher date={currentDate} onChange={setCurrentDate} />
+                    </View>
+                </View>
 
                 <FlatList
                     data={operations}

@@ -20,6 +20,7 @@ import {
     useGetOperationByIdQuery,
 } from "@/services/operationsService";
 import { useGetCategoryByIdQuery } from "@/services/categoriesService";
+import { BackButton } from "@/components/ui/BackButton";
 
 import { EChargeApplicationType } from "@/types/operation/EChargeApplicationType";
 import { EChargeType } from "@/types/operation/EChargeType";
@@ -150,9 +151,12 @@ export default function OperationEditForm() {
                 className="flex-1"
             >
                 <ScrollView contentContainerStyle={{ padding: 16 }}>
-                    <Text className="text-2xl font-bold text-center text-black dark:text-white mb-6">
-                        Редагувати операцію
-                    </Text>
+                    <View className="flex-row items-center justify-between mb-6">
+                        <BackButton />
+                        <Text className="text-2xl font-bold text-center text-black dark:text-white flex-1 mr-10">
+                            Редагувати операцію
+                        </Text>
+                    </View>
 
                     <Text className="text-black dark:text-white mb-1 font-medium">
                         Сума

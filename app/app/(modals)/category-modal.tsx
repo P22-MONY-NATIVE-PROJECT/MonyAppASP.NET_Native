@@ -14,6 +14,7 @@ import {ThemedView} from "@/components/themed-view";
 import {APP_URLS} from "@/constants/Urls";
 import { ThemedText } from "@/components/themed-text";
 import {AppLoader} from "@/components/ui/app-loader";
+import { BackButton } from "@/components/ui/BackButton";
 
 export default function CategoryModal() {
     const { id, typeId } = useLocalSearchParams();
@@ -96,12 +97,12 @@ export default function CategoryModal() {
 
                 <View className="flex-1 justify-center">
 
-                    <ThemedText
-                        type="title"
-                        style={{ textAlign: "center", marginBottom: 20 }}
-                    >
-                        {isEdit ? "Редагувати категорію" : "Нова категорія"}
-                    </ThemedText>
+                    <View className="flex-row items-center justify-between mb-6">
+                        <BackButton />
+                        <ThemedText type="title" style={{ flex: 1, textAlign: "center", marginRight: 40 }}>
+                            {isEdit ? "Редагувати категорію" : "Нова категорія"}
+                        </ThemedText>
+                    </View>
 
                     <View className="bg-white dark:bg-gray-900 p-8 rounded-3xl gap-8 shadow-sm">
 
