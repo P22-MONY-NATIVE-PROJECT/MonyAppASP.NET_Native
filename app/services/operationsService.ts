@@ -1,69 +1,41 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
-
-import { createBaseQuery } from "@/utilities/createBaseQuery";
 import {IOperationItemResponse} from "@/types/operation/IOperationItemResponse";
 import {ICreateOperationRequest} from "@/types/operation/ICreateOperationRequest";
 import {IDeleteOperationRequest} from "@/types/operation/IDeleteOperationRequest";
 import {IGetOperationByIdRequest} from "@/types/operation/IGetOperationByIdRequest";
 import {IEditOperationRequest} from "@/types/operation/IEditOperationRequest";
-import {balancesService} from "@/services/balancesService";
+import {api} from "@/services/api";
 
-export const operationsService = createApi({
-    reducerPath: "api/operations",
-    tagTypes: ["Operations", "Operation"],
-    baseQuery: createBaseQuery("operations"),
-    endpoints: builder => {
-        return ({
+export const operationsService = api.injectEndpoints({
+    endpoints: builder => ({
 
             getOperations: builder.query<IOperationItemResponse[], void>({
                 query: () => ({
-                    url: ""
+                    url: "operations"
                 }),
                 providesTags: ["Operations"]
             }),
 
             createOperation: builder.mutation<void, ICreateOperationRequest>({
                 query: body => ({
-                    url: "",
+                    url: "operations",
                     method: "POST",
                     body: body //serialize(body)
                 }),
-                async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
-                    try {
-                        await queryFulfilled;
-                        //оновляємо операції по балансах
-                        dispatch(operationsService.util.invalidateTags(['Operation','Operations']))
-                        //оновили баланси
-                        dispatch(balancesService.util.invalidateTags(['Balances','Balances']))
-                    } catch (error) {
-                        console.error('Create balans failed:', error);
-                    }
-                },
+                invalidatesTags: ['Balances','Balances','Operation','Operations']
             }),
 
             editOperation: builder.mutation<void, IEditOperationRequest>({
                 query: body => ({
-                    url: "",
+                    url: "operations",
                     method: "PUT",
                     body: body
                 }),
-                async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
-                    try {
-                        await queryFulfilled;
-                        //оновляємо операції по балансах
-                        dispatch(operationsService.util.invalidateTags(['Operation','Operations']))
-                        //оновили баланси
-                        dispatch(balancesService.util.invalidateTags(['Balances','Balances']))
-                    } catch (error) {
-                        console.error('Create balans failed:', error);
-                    }
-                },
-                // invalidatesTags: ["Operations", "Operation"]
+                invalidatesTags: ['Balances','Balances','Operation','Operations']
             }),
 
             deleteOperation: builder.mutation<void, IDeleteOperationRequest>({
                 query: params => ({
-                    url: `${params.id}`,
+                    url: `operations/${params.id}`,
                     method: "DELETE"
                 }),
                 invalidatesTags: ["Operations"]
@@ -71,12 +43,11 @@ export const operationsService = createApi({
 
             getOperationById: builder.query<IOperationItemResponse, IGetOperationByIdRequest>({
                 query: params => ({
-                    url: `${params.id}`,
+                    url: `operations/${params.id}`,
                 }),
                 providesTags: ["Operation"]
             }),
-        });
-    },
+    }),
 });
 
 export const {
