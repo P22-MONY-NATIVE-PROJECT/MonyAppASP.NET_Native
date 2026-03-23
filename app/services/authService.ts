@@ -1,23 +1,19 @@
-import {createApi} from "@reduxjs/toolkit/query/react";
 import {IAuthResponse} from "@/types/auth/IAuthResponse";
 import {ILogin} from "@/types/auth/ILogin";
 import {IRegister} from "@/types/auth/IRegister";
 import { IEditUser } from "@/types/auth/IEditUser";
 import {serialize} from "object-to-formdata";
-import { createBaseQuery } from "@/utilities/createBaseQuery";
 import {IForgotPasswordRequest} from "@/types/auth/IForgotPasswordRequest";
 import {IResetPasswordRequest} from "@/types/auth/IResetPasswordRequest";
 import {IRefreshRequest} from "@/types/auth/IRefreshRequest";
 import {IGoogleLoginRequest} from "@/types/auth/IGoogleLoginRequest";
+import { api } from "@/services/api";
 
-export const authService = createApi({
-    reducerPath: 'api/auth',
-    baseQuery: createBaseQuery('Auth'),
-    tagTypes: ['Account', 'AccountPassword'],
+export const authService = api.injectEndpoints({
     endpoints: (builder) => ({
         login: builder.mutation<IAuthResponse, ILogin>({
             query: (credentials) => ({
-                url: 'login',
+                url: 'Auth/login',
                 method: 'POST',
                 body: credentials
             })
@@ -28,7 +24,7 @@ export const authService = createApi({
                 const formData = serialize(credentials);
 
                 return {
-                    url: 'register',
+                    url: 'Auth/register',
                     method: 'POST',
                     body: formData
                 };
@@ -37,7 +33,7 @@ export const authService = createApi({
 
         editProfile: builder.mutation<IAuthResponse, IEditUser>({
             query: (data) => ({
-                url: 'edit',
+                url: 'Auth/edit',
                 method: 'PUT',
                 body: serialize(data),
             }),
@@ -45,7 +41,7 @@ export const authService = createApi({
 
         forgotPassword: builder.mutation<void, IForgotPasswordRequest>({
             query: (model) => ({
-                url: 'forgot-password',
+                url: 'Auth/forgot-password',
                 method: 'POST',
                 body: model
             })
@@ -53,14 +49,14 @@ export const authService = createApi({
 
         resetPassword: builder.mutation<IAuthResponse, IResetPasswordRequest>({
             query: (model) => ({
-                url: 'reset-password',
+                url: 'Auth/reset-password',
                 method: 'POST',
                 body: model
             })
         }),
         refresh: builder.mutation<IAuthResponse, IRefreshRequest>({
             query: (body) => ({
-                url: 'refresh',
+                url: 'Auth/refresh',
                 method: 'POST',
                 body
             })
@@ -68,7 +64,7 @@ export const authService = createApi({
 
         googleLogin: builder.mutation<IAuthResponse, IGoogleLoginRequest>({
             query: (body) => ({
-                url: 'google',
+                url: 'Auth/google',
                 method: 'POST',
                 body
             })
@@ -84,4 +80,4 @@ export const {
     useResetPasswordMutation,
     useRefreshMutation,
     useGoogleLoginMutation
-} = authService;
+} = authService;
