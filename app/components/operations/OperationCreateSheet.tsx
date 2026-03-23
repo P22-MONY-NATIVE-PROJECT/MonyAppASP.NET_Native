@@ -8,6 +8,7 @@ import {
     ScrollView,
     KeyboardAvoidingView,
     Platform,
+    Pressable,
 } from "react-native";
 
 import { Controller, useForm } from "react-hook-form";
@@ -115,28 +116,30 @@ export default function OperationCreateSheet({
     };
 
     return (
-        <Modal visible={visible} transparent animationType="slide">
-            <View className="flex-1 justify-end bg-black/40">
-
-                <TouchableOpacity
-                    className="absolute inset-0"
-                    activeOpacity={1}
+        <Modal
+            visible={visible}
+            transparent
+            animationType="slide"
+            onRequestClose={onClose}
+        >
+            <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' }}>
+                <Pressable
+                    style={{ flex: 1 }}
                     onPress={onClose}
                 />
 
                 <KeyboardAvoidingView
-                    behavior={Platform.OS === "ios" ? "padding" : "height"}
-                    className="w-full"
+                    behavior={Platform.OS === "ios" ? "padding" : undefined}
                 >
-                    <View className="bg-white dark:bg-neutral-900 rounded-t-3xl p-5 max-h-[90%]">
-
-                        <View className="items-center mb-4">
-                            <View className="w-12 h-1.5 bg-gray-400 rounded-full" />
+                    <View className="bg-white dark:bg-neutral-900 rounded-t-3xl">
+                        <View className="items-center py-4">
+                            <View className="w-12 h-1.5 bg-gray-400 dark:bg-gray-600 rounded-full" />
                         </View>
 
-                        <Text className="text-lg font-semibold text-center mb-4 text-black dark:text-white">
-                            {category?.name}
-                        </Text>
+                        <View className="px-5 pb-6" style={{ maxHeight: 620 }}>
+                            <Text className="text-xl font-bold text-center mb-6 text-black dark:text-white">
+                                {category?.name}
+                            </Text>
 
                         <ScrollView
                             showsVerticalScrollIndicator={false}
@@ -382,8 +385,9 @@ export default function OperationCreateSheet({
 
                         </ScrollView>
                     </View>
-                </KeyboardAvoidingView>
-            </View>
-        </Modal>
+                </View>
+            </KeyboardAvoidingView>
+        </View>
+    </Modal>
     );
 }
