@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, TextInputProps } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import React, { useRef, useState } from 'react';
+import { Text, TextInput, TextInputProps, TouchableOpacity, View } from 'react-native';
 
 interface CustomInputProps extends TextInputProps {
     label: string;
@@ -10,6 +10,12 @@ interface CustomInputProps extends TextInputProps {
 
 export default function CustomInput({ label, isPassword, error, ...props }: CustomInputProps) {
     const [showPassword, setShowPassword] = useState(false);
+    const inputRef = useRef<TextInput>(null);
+
+    const handleTogglePassword = () => {
+        setShowPassword(prev => !prev);
+        setTimeout(() => inputRef.current?.focus(), 0);
+    };
 
     return (
         <View className="mb-4">
@@ -18,6 +24,7 @@ export default function CustomInput({ label, isPassword, error, ...props }: Cust
             </Text>
             <View className={`w-full h-[45px] bg-[#DFF7E2] rounded-[20px] px-5 flex-row items-center justify-between border ${error ? 'border-red-500' : 'border-transparent'}`}>
                 <TextInput
+                    ref={inputRef}
                     placeholderTextColor="rgba(14, 62, 62, 0.45)"
                     secureTextEntry={isPassword && !showPassword}
                     className="font-poppins-regular text-[14px] text-[#0E3E3E] flex-1"
@@ -25,7 +32,7 @@ export default function CustomInput({ label, isPassword, error, ...props }: Cust
                     {...props}
                 />
                 {isPassword && (
-                    <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                    <TouchableOpacity onPress={handleTogglePassword}>
                         <Ionicons name={showPassword ? "eye-off-outline" : "eye-outline"} size={20} color="#0E3E3E" />
                     </TouchableOpacity>
                 )}

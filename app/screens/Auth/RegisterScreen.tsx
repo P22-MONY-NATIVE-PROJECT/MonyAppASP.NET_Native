@@ -1,5 +1,6 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, Alert, ScrollView} from 'react-native';
+import {View, Text, TouchableOpacity, Alert} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useRouter} from 'expo-router';
 import {useForm, Controller} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
@@ -50,7 +51,16 @@ export default function RegisterScreen() {
                 message="Завантаження..."
             />
             <AuthLayout title="Create Account">
-                <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom: 20}}>
+                <KeyboardAwareScrollView
+                    className="flex-1"
+                    contentContainerStyle={{ paddingHorizontal: 32, paddingTop: 40, paddingBottom: 40, flexGrow: 1 }}
+                    showsVerticalScrollIndicator={false}
+                    bounces={false}
+                    overScrollMode="never"
+                    alwaysBounceVertical={false}
+                    enableOnAndroid={true}
+                    keyboardShouldPersistTaps="handled"
+                >
                     <Controller
                         control={control}
                         name="imageFile"
@@ -155,7 +165,7 @@ export default function RegisterScreen() {
                             </Text>
                         </TouchableOpacity>
                     </View>
-                </ScrollView>
+                </KeyboardAwareScrollView>
             </AuthLayout>
         </>
     );

@@ -20,6 +20,7 @@ import {
     useGetOperationByIdQuery,
 } from "@/services/operationsService";
 import { useGetCategoryByIdQuery } from "@/services/categoriesService";
+import { BackButton } from "@/components/ui/BackButton";
 
 import { EChargeApplicationType } from "@/types/operation/EChargeApplicationType";
 import { EChargeType } from "@/types/operation/EChargeType";
@@ -150,26 +151,32 @@ export default function OperationEditForm() {
                 className="flex-1"
             >
                 <ScrollView contentContainerStyle={{ padding: 16 }}>
-                    <Text className="text-2xl font-bold text-center text-black dark:text-white mb-6">
-                        Редагувати операцію
-                    </Text>
+                    <View className="flex-row items-center justify-between mb-6">
+                        <BackButton />
+                        <Text className="text-2xl font-bold text-center text-black dark:text-white flex-1 mr-10">
+                            Редагувати операцію
+                        </Text>
+                    </View>
 
                     <Text className="text-black dark:text-white mb-1 font-medium">
                         Сума
                     </Text>
 
-                    <Controller
-                        control={control}
-                        name="amount"
-                        render={({ field: { onChange, value } }) => (
-                            <TextInput
-                                value={value ? String(value) : ""}
-                                onChangeText={(v) => onChange(Number(v))}
-                                keyboardType="decimal-pad"
-                                className="bg-gray-100 dark:bg-gray-800 text-black dark:text-white p-4 rounded-xl mb-4 border border-gray-300 dark:border-gray-700"
-                            />
-                        )}
-                    />
+                        <Controller
+                            control={control}
+                            name="amount"
+                            render={({ field: { onChange, value } }) => (
+                                <TextInput
+                                    value={value ? String(value) : ""}
+                                    onChangeText={(v) => {
+                                        const cleaned = v.replace(/[^0-9.,]/g, "");
+                                        onChange(cleaned ? Number(cleaned.replace(",", ".")) : 0);
+                                    }}
+                                    keyboardType="decimal-pad"
+                                    className="bg-gray-100 dark:bg-gray-800 text-black dark:text-white p-4 rounded-xl mb-4 border border-gray-300 dark:border-gray-700"
+                                />
+                            )}
+                        />
 
                     <Text className="text-black dark:text-white mb-1 font-medium">
                         Коментар
@@ -236,39 +243,43 @@ export default function OperationEditForm() {
                                     Amount
                                 </Text>
 
-                                <Controller
-                                    control={control}
-                                    name={`charges.${index}.amount`}
-                                    render={({ field: { onChange, value } }) => (
-                                        <TextInput
-                                            value={value ? String(value) : ""}
-                                            onChangeText={(v) =>
-                                                onChange(Number(v))
-                                            }
-                                            keyboardType="decimal-pad"
-                                            className="bg-white dark:bg-gray-700 rounded-lg px-3 py-2 mb-2 text-black dark:text-white"
-                                        />
-                                    )}
-                                />
+                                    <Controller
+                                        control={control}
+                                        name={`charges.${index}.amount`}
+                                        render={({ field: { onChange, value } }) => (
+                                            <TextInput
+                                                value={value ? String(value) : ""}
+                                                onChangeText={(v) => {
+                                                    const cleaned = v.replace(/[^0-9.,]/g, "");
+                                                    onChange(cleaned ? Number(cleaned.replace(",", ".")) : 0);
+                                                }}
+                                                keyboardType="decimal-pad"
+                                                className="bg-white dark:bg-gray-700 rounded-lg px-3 py-2 mb-2 text-black dark:text-white"
+                                            />
+                                        )}
+                                    />
 
                                 <Text className="text-black dark:text-white mb-1">
                                     Percentage
                                 </Text>
 
-                                <Controller
-                                    control={control}
-                                    name={`charges.${index}.percentage`}
-                                    render={({ field: { onChange, value } }) => (
-                                        <TextInput
-                                            value={value ? String(value) : ""}
-                                            onChangeText={(v) =>
-                                                onChange(Number(v))
-                                            }
-                                            keyboardType="decimal-pad"
-                                            className="bg-white dark:bg-gray-700 rounded-lg px-3 py-2 mb-2 text-black dark:text-white"
-                                        />
-                                    )}
-                                />
+                                    <Controller
+                                        control={control}
+                                        name={`charges.${index}.percentage`}
+                                        render={({ field: { onChange, value } }) => (
+                                            <TextInput
+                                                value={value ? String(value) : ""}
+                                                onChangeText={(v) => {
+                                                    const cleaned = v.replace(/[^0-9.,]/g, "");
+                                                    let num = cleaned ? Number(cleaned.replace(",", ".")) : 0;
+                                                    if (num > 100) num = 100;
+                                                    onChange(num);
+                                                }}
+                                                keyboardType="decimal-pad"
+                                                className="bg-white dark:bg-gray-700 rounded-lg px-3 py-2 mb-2 text-black dark:text-white"
+                                            />
+                                        )}
+                                    />
 
                                 <Text className="text-black dark:text-white mb-1">
                                     Type

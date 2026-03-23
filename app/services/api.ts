@@ -10,7 +10,9 @@ export const api = createApi({
         "Operations",
         "Operation",
         "Categories",
-        "Category"
+        "Category",
+        "Account",
+        "AccountPassword"
     ],
     endpoints: () => ({})
 });
