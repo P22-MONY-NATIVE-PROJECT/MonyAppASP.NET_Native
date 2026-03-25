@@ -12,6 +12,8 @@ using WebMonyAPI.Infrastructure.Repositories;
 using WebMonyAPI.Interfaces;
 using WebMonyAPI.Mappers;
 using WebMonyAPI.Services;
+using Quartz;
+using WebMonyAPI.Infrastructure.Jobs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +41,19 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IUserOnboardingService, UserOnboardingService>();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+builder.Services.AddQuartz(q =>
+{
+    var jobKey = new JobKey("CheckLowBalanceJob");
+    q.AddJob<CheckLowBalanceJob>(opts => opts.WithIdentity(jobKey));
+
+    q.AddTrigger(opts => opts
+        .ForJob(jobKey)
+        .WithIdentity("CheckLowBalanceJob-trigger")
+        .WithCronSchedule("0 * * * * ?"));
+});
+
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
 builder.Services.AddOpenApi(options =>
 {
