@@ -107,4 +107,13 @@ public class AuthController(IMediator mediator, IJWTTokenService tokenService) :
             Errors = new { Code = "Невірний або прострочений код відновлення паролю" }
         });
     }
+
+    [Authorize]
+    [HttpPost("push-token")]
+    public async Task<IActionResult> UpdatePushToken([FromBody] PushTokenDto dto)
+    {
+        var command = new UpdatePushTokenCommand(dto.Token);
+        var result = await mediator.Send(command);
+        return result ? Ok() : BadRequest();
+    }
 }

@@ -1,10 +1,11 @@
 using MediatR;
 using Quartz;
 using WebMonyAPI.Queries.Finances;
+using WebMonyAPI.Interfaces;
 
 namespace WebMonyAPI.Infrastructure.Jobs;
 
-public class CheckLowBalanceJob(IMediator mediator) : IJob
+public class CheckLowBalanceJob(IMediator mediator, IPushNotificationService pushNotificationService) : IJob
 {
     public async Task Execute(IJobExecutionContext context)
     {
@@ -12,7 +13,14 @@ public class CheckLowBalanceJob(IMediator mediator) : IJob
 
         foreach (var user in lowBalanceUsers)
         {
-            Console.WriteLine($"Потрібно сповістити {user.Email}, бо в нього такий то баланс: {user.TotalBalanceUsd:F2}$");
+            if (!string.IsNullOrEmpty(user.PushToken))
+            {
+                await pushNotificationService.SendNotificationAsync(
+                    user.PushToken,
+                    "Низький баланс",
+                    $"У вас загальний баланс < 200$ ({user.TotalBalanceUsd:F2}$)"
+                );
+            }
         }
     }
 }

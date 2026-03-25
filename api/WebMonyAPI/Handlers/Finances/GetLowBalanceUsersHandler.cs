@@ -15,12 +15,13 @@ public class GetLowBalanceUsersHandler(AppDbContext context)
             .Select(u => new 
             {
                 Email = u.Email ?? "Unknown",
+                PushToken = u.PushToken,
                 TotalBalanceUsd = u.Balances != null 
                     ? u.Balances.Sum(b => b.Amount * (b.Currency != null ? b.Currency.DollarExchangeRate : 0))
                     : 0
             })
             .Where(u => u.TotalBalanceUsd < request.Threshold)
-            .Select(u => new UserLowBalanceInfo(u.Email, u.TotalBalanceUsd))
+            .Select(u => new UserLowBalanceInfo(u.Email, u.TotalBalanceUsd, u.PushToken))
             .ToListAsync(cancellationToken);
 
         return usersWithLowBalance;
