@@ -68,7 +68,8 @@ export const authService = api.injectEndpoints({
                 method: 'POST',
                 body
             })
-        })
+        }),
+
     })
 });
 
@@ -79,5 +80,6 @@ export const {
     useForgotPasswordMutation,
     useResetPasswordMutation,
     useRefreshMutation,
-    useGoogleLoginMutation
-} = authService;
+    useGoogleLoginMutation,
+} = authService;
+

@@ -17,8 +17,6 @@ using WebMonyAPI.Infrastructure.Jobs;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Додаємо сервіси
-
 builder.Services.AddControllers();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IJWTTokenService, JWTTokenService>();
@@ -75,7 +73,6 @@ builder.Services.AddOpenApi(options =>
             Description = "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\""
         };
 
-        // Apply security requirement globally
         document.Security = [
             new OpenApiSecurityRequirement
             {
@@ -140,7 +137,7 @@ builder.Services.AddAuthentication(options =>
             var path = context.HttpContext.Request.Path;
 
             if (!string.IsNullOrEmpty(accessToken) &&
-                path.StartsWithSegments("/hubs/chat"))
+                path.StartsWithSegments("/hubs"))
             {
                 context.Token = accessToken;
             }
@@ -150,7 +147,27 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.SetIsOriginAllowed(_ => true)
+                   .AllowAnyHeader()
+                   .AllowAnyMethod()
+                   .AllowCredentials();
+        });
+});
+
+
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<Microsoft.AspNetCore.SignalR.IUserIdProvider, WebMonyAPI.Hubs.CustomUserIdProvider>();
+
 var app = builder.Build();
+
+app.UseCors("AllowAll");
+
+app.MapHub<WebMonyAPI.Hubs.NotificationHub>("/hubs/notifications");
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
@@ -164,8 +181,6 @@ app.UseSwaggerUI(options =>
     options.SwaggerEndpoint("/openapi/v1.json", "v1");
     options.OAuthUsePkce();
 });
-
-// Configure the HTTP request pipeline.
 
 app.MapControllers();
 

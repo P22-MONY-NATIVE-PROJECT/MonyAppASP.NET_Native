@@ -13,14 +13,11 @@ public class CheckLowBalanceJob(IMediator mediator, IPushNotificationService pus
 
         foreach (var user in lowBalanceUsers)
         {
-            if (!string.IsNullOrEmpty(user.PushToken))
-            {
-                await pushNotificationService.SendNotificationAsync(
-                    user.PushToken,
-                    "Низький баланс",
-                    $"У вас загальний баланс < 200$ ({user.TotalBalanceUsd:F2}$)"
-                );
-            }
+            await pushNotificationService.SendToUserAsync(
+                user.UserId,
+                "Низький баланс",
+                $"У вас загальний баланс < 200$ ({user.TotalBalanceUsd:F2}$)"
+            );
         }
     }
 }

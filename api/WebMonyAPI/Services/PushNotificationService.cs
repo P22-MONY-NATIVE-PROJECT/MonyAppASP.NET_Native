@@ -1,25 +1,19 @@
-using System.Text;
-using System.Text.Json;
 using WebMonyAPI.Interfaces;
+using Microsoft.AspNetCore.SignalR;
+using WebMonyAPI.Hubs;
 
 namespace WebMonyAPI.Services;
 
-public class PushNotificationService(IHttpClientFactory httpClientFactory) : IPushNotificationService
+public class PushNotificationService(IHubContext<NotificationHub> hubContext) : IPushNotificationService
 {
-    public async Task SendNotificationAsync(string pushToken, string title, string message)
+    public async Task SendToUserAsync(long userId, string title, string message)
     {
-        if (string.IsNullOrEmpty(pushToken)) return;
-
-        var client = httpClientFactory.CreateClient();
-        var payload = new
-        {
-            to = pushToken,
-            title = title,
-            body = message,
-            sound = "default"
-        };
-
-        var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
-        await client.PostAsync("https://exp.host/--/api/v2/push/send", content);
+        Console.WriteLine($"[SignalR Service] Sending notification to user {userId}: {title} - {message}");
+        
+        await hubContext.Clients.User(userId.ToString()).SendAsync("ReceiveNotification", new { title, message });
+        await hubContext.Clients.Group($"User_{userId}").SendAsync("ReceiveNotification", new { title, message });
     }
 }
+
+
+
