@@ -14,9 +14,12 @@ import { Colors } from '@/constants/theme';
 import OfflineScreen from '@/screens/Network/OfflineScreen';
 import {useNetwork} from "@/context/NetworkContext";
 
+import { useNotifications } from '@/hooks/useNotifications';
+
 SplashScreen.preventAutoHideAsync();
 
 const AppContent = () => {
+    useNotifications();
     const { isDark } = useAppTheme();
     const user = useSelector((state: RootState) => state.auth.user);
 
@@ -32,12 +35,15 @@ const AppContent = () => {
     const { isConnected } = useNetwork();
 
     useEffect(() => {
+        console.log('[AppContent] Fonts status:', { fontsLoaded, fontError });
         if (fontsLoaded || fontError) {
-            SplashScreen.hideAsync();
+            console.log('[AppContent] Hiding splash screen...');
+            SplashScreen.hideAsync().catch(err => console.log('Error hiding splash screen:', err));
         }
     }, [fontsLoaded, fontError]);
 
     if (!fontsLoaded && !fontError) {
+        console.log('[AppContent] Waiting for fonts, rendering null');
         return null;
     }
 

@@ -12,16 +12,18 @@ using WebMonyAPI.Infrastructure.Repositories;
 using WebMonyAPI.Interfaces;
 using WebMonyAPI.Mappers;
 using WebMonyAPI.Services;
+using Quartz;
+using WebMonyAPI.Infrastructure.Jobs;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Додаємо сервіси
 
 builder.Services.AddControllers();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IJWTTokenService, JWTTokenService>();
 builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<ISmtpService, SmtpService>();
+builder.Services.AddScoped<IPushNotificationService, PushNotificationService>();
+builder.Services.AddHttpClient();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -39,6 +41,19 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IUserOnboardingService, UserOnboardingService>();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+builder.Services.AddQuartz(q =>
+{
+    var jobKey = new JobKey("CheckLowBalanceJob");
+    q.AddJob<CheckLowBalanceJob>(opts => opts.WithIdentity(jobKey));
+
+    q.AddTrigger(opts => opts
+        .ForJob(jobKey)
+        .WithIdentity("CheckLowBalanceJob-trigger")
+        .WithCronSchedule("0 * * * * ?"));
+});
+
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
 builder.Services.AddOpenApi(options =>
 {
@@ -58,7 +73,6 @@ builder.Services.AddOpenApi(options =>
             Description = "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\""
         };
 
-        // Apply security requirement globally
         document.Security = [
             new OpenApiSecurityRequirement
             {
@@ -123,7 +137,7 @@ builder.Services.AddAuthentication(options =>
             var path = context.HttpContext.Request.Path;
 
             if (!string.IsNullOrEmpty(accessToken) &&
-                path.StartsWithSegments("/hubs/chat"))
+                path.StartsWithSegments("/hubs"))
             {
                 context.Token = accessToken;
             }
@@ -133,7 +147,27 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.SetIsOriginAllowed(_ => true)
+                   .AllowAnyHeader()
+                   .AllowAnyMethod()
+                   .AllowCredentials();
+        });
+});
+
+
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<Microsoft.AspNetCore.SignalR.IUserIdProvider, WebMonyAPI.Hubs.CustomUserIdProvider>();
+
 var app = builder.Build();
+
+app.UseCors("AllowAll");
+
+app.MapHub<WebMonyAPI.Hubs.NotificationHub>("/hubs/notifications");
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
@@ -147,8 +181,6 @@ app.UseSwaggerUI(options =>
     options.SwaggerEndpoint("/openapi/v1.json", "v1");
     options.OAuthUsePkce();
 });
-
-// Configure the HTTP request pipeline.
 
 app.MapControllers();
 

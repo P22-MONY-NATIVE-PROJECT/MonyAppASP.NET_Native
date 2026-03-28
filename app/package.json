@@ -13,6 +13,7 @@
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
     "@hookform/resolvers": "^5.2.2",
+    "@microsoft/signalr": "^10.0.0",
     "@react-native-community/netinfo": "^12.0.1",
     "@react-navigation/bottom-tabs": "^7.4.0",
     "@react-navigation/elements": "^2.6.3",
@@ -20,6 +21,7 @@
     "@reduxjs/toolkit": "^2.11.2",
     "expo": "~54.0.33",
     "expo-constants": "~18.0.13",
+    "expo-device": "^55.0.10",
     "expo-font": "~14.0.11",
     "expo-haptics": "~15.0.8",
     "expo-image": "~3.0.11",
