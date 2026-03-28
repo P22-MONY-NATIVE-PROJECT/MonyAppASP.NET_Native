@@ -17,7 +17,9 @@ public class GetLowBalanceUsersHandler(AppDbContext context)
                 UserId = u.Id,
                 Email = u.Email ?? "Unknown",
                 TotalBalanceUsd = u.Balances != null 
-                    ? u.Balances.Sum(b => b.Amount * (b.Currency != null ? b.Currency.DollarExchangeRate : 0))
+                    ? u.Balances
+                    .Where(b => !b.IsDeleted)
+                    .Sum(b => b.Amount * (b.Currency != null ? b.Currency.DollarExchangeRate : 0))
                     : 0
             })
             .Where(u => u.TotalBalanceUsd < request.Threshold)
