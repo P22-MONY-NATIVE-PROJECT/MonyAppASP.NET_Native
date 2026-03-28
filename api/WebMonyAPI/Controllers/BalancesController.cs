@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace WebMonyAPI.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class BalancesController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
-    [Authorize]
-        public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll()
     {
         try
         {
@@ -26,23 +26,21 @@ public class BalancesController(IMediator mediator) : ControllerBase
         }
     }
 
-        [HttpGet("by-saving")]
-        [Authorize]
-        public async Task<IActionResult> GetBySaving([FromQuery] bool isSaving)
+    [HttpGet("by-saving")]
+    public async Task<IActionResult> GetBySaving([FromQuery] bool isSaving)
+    {
+        try
         {
-            try
-            {
-                var result = await mediator.Send(new GetBalancesBySavingQuery(isSaving));
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+            var result = await mediator.Send(new GetBalancesBySavingQuery(isSaving));
+            return Ok(result);
         }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
 
     [HttpGet("{id:long}")]
-    [Authorize]
     public async Task<IActionResult> GetById(long id)
     {
         try
@@ -58,7 +56,6 @@ public class BalancesController(IMediator mediator) : ControllerBase
 
     [HttpPost]
     [Consumes("multipart/form-data")]
-    [Authorize]
     public async Task<IActionResult> Create([FromForm] CreateBalanceDto dto)
     {
         try
@@ -74,7 +71,6 @@ public class BalancesController(IMediator mediator) : ControllerBase
 
     [HttpPut]
     [Consumes("multipart/form-data")]
-    [Authorize]
     public async Task<IActionResult> Update([FromForm] UpdateBalanceDto dto)
     {
         try
@@ -89,7 +85,6 @@ public class BalancesController(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete("{id:long}")]
-    [Authorize]
     public async Task<IActionResult> Delete(long id)
     {
         try
