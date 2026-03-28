@@ -16,7 +16,8 @@ export const authService = api.injectEndpoints({
                 url: 'Auth/login',
                 method: 'POST',
                 body: credentials
-            })
+            }),
+            invalidatesTags: ["Balances","Balance","Operations","Operation","Categories","Category"]
         }),
 
         register: builder.mutation<IAuthResponse, IRegister>({
@@ -28,7 +29,8 @@ export const authService = api.injectEndpoints({
                     method: 'POST',
                     body: formData
                 };
-            }
+            },
+            invalidatesTags: ["Balances","Balance","Operations","Operation","Categories","Category"]
         }),
 
         editProfile: builder.mutation<IAuthResponse, IEditUser>({
@@ -82,4 +84,4 @@ export const {
     useRefreshMutation,
     useGoogleLoginMutation,
 } = authService;
-
+
