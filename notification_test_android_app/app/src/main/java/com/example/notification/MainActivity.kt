@@ -25,30 +25,35 @@ import com.example.notification.ui.theme.NotificationTheme
 
 class MainActivity : ComponentActivity() {
 
-    private val CHANNEL_ID = "simple_notification_channel"
-    private val NOTIFICATION_ID = 1
+    private val CHANNEL_GENERAL = "general_channel"
+    private val CHANNEL_MESSAGES = "messages_channel"
+    private val GROUP_KEY_MESSAGES = "com.example.notification.MESSAGES"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        createNotificationChannels()
 
-        // Створюю канал сповіщень
-        createNotificationChannel()
-
-        // Створюю кнопку
         setContent {
             NotificationTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Box(
+                    androidx.compose.foundation.layout.Column(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(innerPadding),
-                        contentAlignment = Alignment.Center
+                        verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Button(onClick = {
-                            showNotification()
-                        }) {
-                            Text(text = "Натисни для сповіщення!")
+                        Button(onClick = { showSimpleNotification() }) {
+                            Text("Звичайне (ID: 1)")
+                        }
+
+                        Button(onClick = { showMultipleNotification() }) {
+                            Text("Окреме (Новий ID щоразу)")
+                        }
+
+                        Button(onClick = { showGroupedNotification() }) {
+                            Text("У групу (Messages)")
                         }
                     }
                 }
@@ -56,53 +61,67 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    // Канали сповіщень потрібні для групування сповіщень в системі
-    private fun createNotificationChannel() {
+    private fun createNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "Основні сповіщення"
-            val descriptionText = "Канал для звичайних сповіщень додатка"
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
-                description = descriptionText
-                setShowBadge(true) // Це дозволяє показувати "крапку/бейдж" над іконкою
-            }
+            val general = NotificationChannel(CHANNEL_GENERAL, "Загальні", NotificationManager.IMPORTANCE_DEFAULT)
+            val messages = NotificationChannel(CHANNEL_MESSAGES, "Повідомлення", NotificationManager.IMPORTANCE_HIGH)
 
-            val notificationManager: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
+            manager.createNotificationChannels(listOf(general, messages))
         }
     }
 
-    private fun showNotification() {
-        // Налаштовую саме сповіщення
-        val builder = NotificationCompat.Builder(this, CHANNEL_ID)
+    // ЗАВЖДИ ОДНЕ
+    private fun showSimpleNotification() {
+        val builder = NotificationCompat.Builder(this, CHANNEL_GENERAL)
             .setSmallIcon(android.R.drawable.ic_dialog_info)
-            .setContentTitle("Нове повідомлення!")
-            .setContentText("Це твоє перше сповіщення.")
+            .setContentTitle("Статичне сповіщення")
+            .setContentText("Я завжди маю ID 1, тому я одне")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setNumber(1)
-            .setAutoCancel(true) // Видаляти сповіщення, коли користувач на нього клікає
 
-        with(NotificationManagerCompat.from(this)) {
-            // Перевірка дозволу
+        notifyWithPermission(1, builder.build())
+    }
+
+    // БАГАТО ОКРЕМИХ
+    private fun showMultipleNotification() {
+        val uniqueID = System.currentTimeMillis().toInt()
+        val builder = NotificationCompat.Builder(this, CHANNEL_GENERAL)
+            .setSmallIcon(android.R.drawable.ic_btn_speak_now)
+            .setContentTitle("Окреме сповіщення")
+            .setContentText("Мій ID: $uniqueID")
+
+        notifyWithPermission(uniqueID, builder.build())
+    }
+
+    // ГРУПУВАННЯ
+    private fun showGroupedNotification() {
+        val uniqueID = System.currentTimeMillis().toInt()
+
+        val builder = NotificationCompat.Builder(this, CHANNEL_MESSAGES)
+            .setSmallIcon(android.R.drawable.stat_notify_chat)
+            .setContentTitle("Чат")
+            .setContentText("Нове повідомлення $uniqueID")
+            .setGroup(GROUP_KEY_MESSAGES) // Ключ групи
+            .setAutoCancel(true)
+
+        val summary = NotificationCompat.Builder(this, CHANNEL_MESSAGES)
+            .setSmallIcon(android.R.drawable.stat_notify_chat)
+            .setGroup(GROUP_KEY_MESSAGES)
+            .setGroupSummary(true) // Це робить сповіщення головним у групі
+            .build()
+
+        notifyWithPermission(uniqueID, builder.build())
+        notifyWithPermission(0, summary)
+    }
+
+    private fun notifyWithPermission(id: Int, notification: android.app.Notification) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+            NotificationManagerCompat.from(this).notify(id, notification)
+        } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                if (ActivityCompat.checkSelfPermission(
-                        this@MainActivity,
-                        Manifest.permission.POST_NOTIFICATIONS
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
-                    ActivityCompat.requestPermissions(
-                        this@MainActivity,
-                        arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                        101
-                    )
-                    return
-                }
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 101)
             }
-
-            // Показую сповіщення
-            notify(NOTIFICATION_ID, builder.build())
         }
     }
 }
