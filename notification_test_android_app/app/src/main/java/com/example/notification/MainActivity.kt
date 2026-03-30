@@ -100,7 +100,8 @@ class MainActivity : ComponentActivity() {
                     return
                 }
             }
-            // Показуємо сповіщення
+
+            // Показую сповіщення
             notify(NOTIFICATION_ID, builder.build())
         }
     }
