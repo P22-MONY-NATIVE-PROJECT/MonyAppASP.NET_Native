@@ -96,7 +96,7 @@ class MainActivity : ComponentActivity() {
 
     // ГРУПУВАННЯ
     private fun showGroupedNotification() {
-        val uniqueID = System.currentTimeMillis().toInt()
+        var uniqueID = System.currentTimeMillis().toInt()
 
         val builder = NotificationCompat.Builder(this, CHANNEL_MESSAGES)
             .setSmallIcon(android.R.drawable.stat_notify_chat)
@@ -111,6 +111,12 @@ class MainActivity : ComponentActivity() {
             .setGroupSummary(true) // Це робить сповіщення головним у групі
             .build()
 
+        notifyWithPermission(uniqueID, builder.build())
+        uniqueID = System.currentTimeMillis().toInt()
+        notifyWithPermission(uniqueID, builder.build())
+        uniqueID = System.currentTimeMillis().toInt()
+        notifyWithPermission(uniqueID, builder.build())
+        uniqueID = System.currentTimeMillis().toInt()
         notifyWithPermission(uniqueID, builder.build())
         notifyWithPermission(0, summary)
     }
