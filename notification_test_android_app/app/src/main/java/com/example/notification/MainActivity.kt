@@ -25,13 +25,18 @@ import com.example.notification.ui.theme.NotificationTheme
 
 class MainActivity : ComponentActivity() {
 
+    //Канал усіх повідомлень
     private val CHANNEL_GENERAL = "general_channel"
+    //Канал конкрених повідомлень, для незалежних повідомлень
+    //Повідомлення буду іти окремо від загальних повідомлень
     private val CHANNEL_MESSAGES = "messages_channel"
+    //Клю для повідомлень
     private val GROUP_KEY_MESSAGES = "com.example.notification.MESSAGES"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        //Створює канали для повідомлень
         createNotificationChannels()
 
         setContent {
@@ -44,14 +49,18 @@ class MainActivity : ComponentActivity() {
                         verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        //Звичайне повідомлення - якщо відправимо,
+                        //то більше воно не може приходити, поки ми його не закриємо
                         Button(onClick = { showSimpleNotification() }) {
                             Text("Звичайне (ID: 1)")
                         }
 
+                        //Багато різних повідомлень, окремо одне від одного
                         Button(onClick = { showMultipleNotification() }) {
                             Text("Окреме (Новий ID щоразу)")
                         }
-
+                        //Повідомлення буде багато, але в одній кучі,
+                        //Можна одне і теж повідомлення, багато разів надсилати
                         Button(onClick = { showGroupedNotification() }) {
                             Text("У групу (Messages)")
                         }
@@ -62,12 +71,18 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun createNotificationChannels() {
+        //Перевіряємо на версію Android SDK - чи віний device
+        //24 або 26 sdk - minSdk = 30
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // NotificationManager - Головний клас для створення каналів
+            // і по цих каналах можна створювати сповідення
             val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
+            //Повідомлення будуть по одному приходити
             val general = NotificationChannel(CHANNEL_GENERAL, "Загальні", NotificationManager.IMPORTANCE_DEFAULT)
+            //CHANNEL_MESSAGES - група повідомлень
             val messages = NotificationChannel(CHANNEL_MESSAGES, "Повідомлення", NotificationManager.IMPORTANCE_HIGH)
-
+            //Реєструємо канали повідомлень
             manager.createNotificationChannels(listOf(general, messages))
         }
     }
@@ -95,8 +110,9 @@ class MainActivity : ComponentActivity() {
     }
 
     // ГРУПУВАННЯ
+    // ГРУПУВАННЯ
     private fun showGroupedNotification() {
-        val uniqueID = System.currentTimeMillis().toInt()
+        var uniqueID = System.currentTimeMillis().toInt()
 
         val builder = NotificationCompat.Builder(this, CHANNEL_MESSAGES)
             .setSmallIcon(android.R.drawable.stat_notify_chat)
@@ -111,6 +127,12 @@ class MainActivity : ComponentActivity() {
             .setGroupSummary(true) // Це робить сповіщення головним у групі
             .build()
 
+        notifyWithPermission(uniqueID, builder.build())
+        uniqueID = System.currentTimeMillis().toInt()
+        notifyWithPermission(uniqueID, builder.build())
+        uniqueID = System.currentTimeMillis().toInt()
+        notifyWithPermission(uniqueID, builder.build())
+        uniqueID = System.currentTimeMillis().toInt()
         notifyWithPermission(uniqueID, builder.build())
         notifyWithPermission(0, summary)
     }
