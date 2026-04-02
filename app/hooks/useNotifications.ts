@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import { Alert } from 'react-native';
 import { storage } from '@/utilities/storage';
+import NotificationGenerator from "@/utilities/notificationGenerator";
 
 export const useNotifications = () => {
     const [lastNotification, setLastNotification] = useState<any | null>(null);
@@ -15,6 +16,14 @@ export const useNotifications = () => {
             return;
         }
 
+        const _ = async () => {
+            try {
+                await NotificationGenerator.configureNotifications();
+            } catch (e) {
+                Alert.alert('Потрібен дозвіл', 'Будь ласка, дозвольте сповіщення у налаштуваннях.');
+            }
+        };
+
         const initSignalR = async () => {
             const token = await storage.getAccessToken();
             if (!token) {
@@ -25,7 +34,7 @@ export const useNotifications = () => {
             
             setOnNotificationReceived((data: { title: string; message: string }) => {
                 console.log('[useNotifications] SignalR Notification received:', data);
-                Alert.alert(data.title, data.message);
+                NotificationGenerator.createNotification(data.title, data.message, 'general', 'base_notification');
                 setLastNotification(data);
             });
         };
