@@ -1,3 +1,4 @@
+import { ICreateNotification } from '@/types/notifications/ICreateNotification';
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 
@@ -10,7 +11,7 @@ Notifications.setNotificationHandler({
     }),
 });
 
-class NotificationGenerator {
+class NotificationService {
     async configureNotifications() {
         const { status } = await Notifications.requestPermissionsAsync();
 
@@ -28,15 +29,15 @@ class NotificationGenerator {
         return status;
     }
 
-    async createNotification(title: string, body: string, channel: string, id?: string) {
+    async createNotification(model : ICreateNotification) {
         await Notifications.scheduleNotificationAsync({
             content: {
-                title: title,
-                body: body,
-                ...( { android: { channelId: channel } } as any),
+                title: model.title,
+                body: model.body,
+                ...( { android: { channelId: model.channelId } } as any),
             },
             trigger: null,
-            identifier: id,
+            identifier: model.id,
         });
     }
 
@@ -45,4 +46,4 @@ class NotificationGenerator {
     }
 }
 
-export default new NotificationGenerator();
+export default new NotificationService();
