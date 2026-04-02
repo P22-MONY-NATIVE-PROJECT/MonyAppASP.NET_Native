@@ -6,7 +6,7 @@ import { Alert } from 'react-native';
 import { storage } from '@/utilities/storage';
 import NotificationService from "@/services/notificationService";
 import {ICreateNotification} from "@/types/notifications/ICreateNotification";
-import {NOTIFICATION_BASE_ID, NOTIFICATION_GENERAL_CHANNEL_ID} from "@/constants/notidication";
+import {NOTIFICATION_BASE_ID, NOTIFICATION_GENERAL_CHANNEL_ID} from "@/constants/notification";
 
 export const useNotifications = () => {
     const [lastNotification, setLastNotification] = useState<any | null>(null);
