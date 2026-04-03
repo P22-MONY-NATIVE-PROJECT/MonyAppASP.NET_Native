@@ -12,8 +12,10 @@ export const useNotifications = () => {
     const [lastNotification, setLastNotification] = useState<any | null>(null);
     const user = useSelector((state: RootState) => state.auth.user);
 
+    const userId = user?.id;
+
     useEffect(() => {
-        if (!user) {
+        if (!userId) {
             stopSignalRConnection();
             return;
         }
@@ -53,7 +55,7 @@ export const useNotifications = () => {
             // but usually we want it to live with the layout.
         };
 
-    }, [user]);
+    }, [userId]);
 
     return { lastNotification };
 };
