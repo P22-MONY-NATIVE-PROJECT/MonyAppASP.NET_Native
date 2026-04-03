@@ -6,6 +6,7 @@ import {
 } from "@reduxjs/toolkit/query";
 import {APP_URLS} from "@/constants/Urls";
 import { storage } from "@/utilities/storage";
+import { setAuth } from "@/store/authSlice";
 
 interface RefreshResponse {
     accessToken: string;
@@ -58,7 +59,7 @@ export const createBaseQuery = (endpoint: string): BaseQueryFn<string | FetchArg
         if (refreshResult.data) {
             const tokens = refreshResult.data as RefreshResponse;
 
-            storage.setAuth(tokens.accessToken, tokens.refreshToken);
+            api.dispatch(setAuth(tokens));
 
             result = await rawBaseQuery(
                 {

@@ -1,6 +1,8 @@
 import * as signalR from "@microsoft/signalr";
 import { APP_URLS } from "@/constants/Urls";
 import { storage } from "@/utilities/storage";
+import { store } from "@/store";
+import { logout } from "@/store/authSlice";
 
 let connection: signalR.HubConnection | null = null;
 let onNotificationReceived: ((data: { title: string; message: string }) => void) | null = null;
@@ -38,10 +40,6 @@ export const startSignalRConnection = async () => {
     await connection.start();
     console.log("[SignalR] Connection started successfully");
   } catch (err: any) {
-    if (err?.statusCode === 401) {
-        console.warn("[SignalR] Connection failed with 401. Clearing storage as token is likely invalid.");
-        storage.clearAuth();
-    }
     console.error("[SignalR] Connection failed: ", err);
   }
 };

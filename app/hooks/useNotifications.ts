@@ -18,22 +18,16 @@ export const useNotifications = () => {
             return;
         }
 
-        const _ = async () => {
+        const init = async () => {
             try {
+                // Configure expo-notifications and request permissions
                 await NotificationService.configureNotifications();
+                console.log('[useNotifications] Notifications configured successfully');
             } catch (e) {
-                Alert.alert('Потрібен дозвіл', 'Будь ласка, дозвольте сповіщення у налаштуваннях.');
+                console.warn('[useNotifications] Error configuring notifications:', e);
             }
-        };
 
-        const initSignalR = async () => {
-            const token = await storage.getAccessToken();
-            if (!token) {
-                console.log('[useNotifications] No token found in storage, skipping SignalR init');
-                return;
-            }
-            await startSignalRConnection();
-            
+            // Set the SignalR callback BEFORE starting the connection
             setOnNotificationReceived((data: { title: string; message: string }) => {
                 console.log('[useNotifications] SignalR Notification received:', data);
 
@@ -47,11 +41,16 @@ export const useNotifications = () => {
                 NotificationService.createNotification(notiModel);
                 setLastNotification(data);
             });
+
+            // Start the connection
+            await startSignalRConnection();
         };
 
-        initSignalR();
+        init();
 
         return () => {
+            // Optional: we can stop connection on unmount if needed, 
+            // but usually we want it to live with the layout.
         };
 
     }, [user]);
