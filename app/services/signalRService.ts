@@ -16,6 +16,7 @@ const getValidToken = async (): Promise<string> => {
 
 export const startSignalRConnection = async () => {
     const token = await getValidToken();
+    // console.log("Connecton get token",token);
     if (!token) {
         console.log("[SignalR] No token found in storage, skipping connection.");
         return;
@@ -56,10 +57,11 @@ export const startSignalRConnection = async () => {
     }
 
     try {
+        console.log("[SignalR] Connected to the connection...");
         await connection.start();
         console.log("[SignalR] Connection started successfully");
     } catch (err: any) {
-        console.error("[SignalR] Connection failed: ", err);
+        console.error("[SignalR]++-- Connection failed: ", err);
     }
 };
 

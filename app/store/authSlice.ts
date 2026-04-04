@@ -1,5 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { storage, User } from '@/utilities/storage';
+import {stopSignalRConnection} from "@/services/signalRService";
 
 interface AuthState {
     user: User | null;
@@ -23,7 +24,6 @@ const authSlice = createSlice({
             }
         },
         logout: (state) => {
-
             storage.clearAuth();
             state.user = null;
         },

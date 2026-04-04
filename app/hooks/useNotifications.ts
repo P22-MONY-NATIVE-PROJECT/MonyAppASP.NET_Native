@@ -14,10 +14,21 @@ export const useNotifications = () => {
 
     const userId = user?.id;
 
+    console.log("Login user", userId);
+
     useEffect(() => {
         if (!user) {
             console.log('[useNotifications] User NOT set, stopping SignalR if active.');
-            stopSignalRConnection();
+            try {
+                stopSignalRConnection()
+                    .then(r =>
+                        console.log("Закрили зєднання"));
+            }
+            catch(error)
+            {
+                console.log("Помилка виходу із додатку", error);
+            }
+
             return;
         }
 
@@ -46,13 +57,12 @@ export const useNotifications = () => {
                 NotificationService.createNotification(notiModel);
                 setLastNotification(data);
             });
-
             // Start the connection
             await startSignalRConnection();
         };
 
         init();
-    }, [user?.id]);
+    }, [userId]);
 
 
     return { lastNotification };
