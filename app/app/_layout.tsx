@@ -13,12 +13,13 @@ const RootLayout = () => {
     useEffect(() => {
         initStorage().then(() => {
             const accessToken  = storage.getAccessToken();
-            const refreshToken = storage.getRefreshToken();
-            if (accessToken && refreshToken) {
-                store.dispatch(setAuth({ accessToken, refreshToken }));
+            if (accessToken) {
+                store.dispatch(setAuth({ accessToken }));
             }
         }).finally(() => setStorageReady(true));
     }, []);
+
+
 
     if (!storageReady) {
         return null;

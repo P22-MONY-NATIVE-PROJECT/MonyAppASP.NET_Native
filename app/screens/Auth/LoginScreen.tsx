@@ -27,43 +27,9 @@ export default function LoginScreen() {
     const dispatch = useDispatch();
 
     const signInWithGoogle = async () => {
-        /*
-        try {
-            await GoogleSignin.hasPlayServices();
-
-            try {
-                await GoogleSignin.signOut();
-            } catch (e) {}
-
-            const response = await GoogleSignin.signIn();
-
-            const token = response.data?.idToken;
-
-            if (token) {
-                console.log("Відправляємо токен на сервер:", token.substring(0, 20) + "..."); // перевірка, чи є токен
-
-                const authRequest: IGoogleLoginRequest = { token };
-                const authResponse = await googleLogin(authRequest).unwrap();
-
-                await saveAuthTokens(authResponse.accessToken, authResponse.refreshToken);
-                dispatch(setAuth(authResponse.accessToken));
-
-                router.replace('/onBoarding');
-            } else {
-                Alert.alert("Помилка", "Не вдалося отримати токен від Google.");
-            }
-
-        } catch (error: any) {
-            console.log("Деталі помилки бекенда:", JSON.stringify(error, null, 2));
-
-            if (error?.code !== 'SIGN_IN_CANCELLED') {
-                const errorMessage = error?.data?.title || error?.data?.message || "Щось пішло не так під час входу через Google.";
-                Alert.alert("Помилка сервера", errorMessage);
-            }
-        }
-        */
-
+        // Log in with Google logic (requires @react-native-google-signin/google-signin)
     };
+
 
     const {control, handleSubmit, formState: {errors}} = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
@@ -73,13 +39,14 @@ export default function LoginScreen() {
     const onSubmit = async (data: LoginFormData) => {
         try {
             const response = await login(data).unwrap();
-            dispatch(setAuth({ accessToken: response.accessToken, refreshToken: response.refreshToken }));
+            dispatch(setAuth({ accessToken: response.accessToken }));
 
             router.replace('/onBoarding');
         } catch (error: any) {
             Alert.alert("Помилка", error?.data?.message || "Не вдалося увійти");
         }
     };
+
 
     return (
         <>

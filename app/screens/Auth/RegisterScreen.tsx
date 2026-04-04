@@ -36,13 +36,14 @@ export default function RegisterScreen() {
     const onSubmit = async (data: RegisterFormData) => {
         try {
             const response = await register(data).unwrap();
-            dispatch(setAuth({ accessToken: response.accessToken, refreshToken: response.refreshToken }));
+            dispatch(setAuth({ accessToken: response.accessToken }));
 
             router.replace('/onBoarding');
         } catch (error: any) {
             Alert.alert("Помилка реєстрації", error?.data?.message || "Щось пішло не так");
         }
     };
+
 
     return (
         <>

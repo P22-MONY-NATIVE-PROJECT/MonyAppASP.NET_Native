@@ -15,10 +15,13 @@ export const useNotifications = () => {
     const userId = user?.id;
 
     useEffect(() => {
-        if (!userId) {
+        if (!user) {
+            console.log('[useNotifications] User NOT set, stopping SignalR if active.');
             stopSignalRConnection();
             return;
         }
+
+        console.log('[useNotifications] User is AUTHENTICATED. Initializing SignalR/Notifications logic for User ID:', user.id);
 
         const init = async () => {
             try {
@@ -49,13 +52,8 @@ export const useNotifications = () => {
         };
 
         init();
+    }, [user?.id]);
 
-        return () => {
-            // Optional: we can stop connection on unmount if needed, 
-            // but usually we want it to live with the layout.
-        };
-
-    }, [userId]);
 
     return { lastNotification };
 };

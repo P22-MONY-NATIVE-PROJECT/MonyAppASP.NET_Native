@@ -13,9 +13,9 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        setAuth: (state, action: PayloadAction<{ accessToken: string; refreshToken: string } | null>) => {
+        setAuth: (state, action: PayloadAction<{ accessToken: string } | null>) => {
             if (action.payload) {
-                storage.setAuth(action.payload.accessToken, action.payload.refreshToken);
+                storage.setAuth(action.payload.accessToken);
                 state.user = storage.getUser();
             } else {
                 storage.clearAuth();
@@ -23,6 +23,7 @@ const authSlice = createSlice({
             }
         },
         logout: (state) => {
+
             storage.clearAuth();
             state.user = null;
         },

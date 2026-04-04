@@ -38,17 +38,8 @@ public class AuthController(IMediator mediator, IJWTTokenService tokenService) :
         return Ok(result);
     }
 
-    [HttpPost("refresh")]
-    public async Task<IActionResult> Refresh([FromBody] RefreshRequestDto dto)
-    {
-        var result = await tokenService.RefreshTokenAsync(dto.RefreshToken);
-        if (result == null || string.IsNullOrWhiteSpace(result.AccessToken))
-            return BadRequest();
-
-        return Ok(result);
-    }
-
     [HttpPost("google")]
+
     public async Task<IActionResult> Google([FromBody] GoogleLoginDto dto)
     {
         var command = new GoogleLoginCommand(dto);
