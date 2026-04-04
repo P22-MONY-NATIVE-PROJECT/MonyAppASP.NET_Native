@@ -30,11 +30,11 @@ export const createBaseQuery = (endpoint: string): BaseQueryFn<string | FetchArg
 
         let result = await rawBaseQuery(normalizedArgs, api, extraOptions);
 
-        // if (result.error?.status === 401) {
-        //     console.log("[BaseQuery] 401 Unauthorized - Clearing auth and logging out.");
+         if (result.error?.status === 401) {
+             console.log("[BaseQuery] 401 Unauthorized - Clearing auth and logging out.");
         //     storage.clearAuth();
         //     api.dispatch(logout());
-        // }
+         }
 
         return result;
     };

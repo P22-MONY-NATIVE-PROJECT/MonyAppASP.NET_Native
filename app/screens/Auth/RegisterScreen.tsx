@@ -15,6 +15,7 @@ import PrimaryButton from "@/components/ui/buttons/PrimaryButton";
 import {AppLoader} from "@/components/ui/app-loader";
 import {useDispatch} from "react-redux";
 import {setAuth} from "@/store/authSlice";
+import {api} from "@/services/api";
 
 export default function RegisterScreen() {
     const router = useRouter();
@@ -37,7 +38,7 @@ export default function RegisterScreen() {
         try {
             const response = await register(data).unwrap();
             dispatch(setAuth({ accessToken: response.accessToken }));
-
+            dispatch(api.util.resetApiState());
             router.replace('/onBoarding');
         } catch (error: any) {
             Alert.alert("Помилка реєстрації", error?.data?.message || "Щось пішло не так");

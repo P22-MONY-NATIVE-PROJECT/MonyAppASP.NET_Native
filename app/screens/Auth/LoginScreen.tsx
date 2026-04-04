@@ -18,6 +18,7 @@ import {useDispatch} from "react-redux";
 import {setAuth} from "@/store/authSlice";
 // import {GoogleSignin} from "@react-native-google-signin/google-signin";
 import {IGoogleLoginRequest} from "@/types/auth/IGoogleLoginRequest";
+import {api} from "@/services/api";
 
 export default function LoginScreen() {
     const router = useRouter();
@@ -40,7 +41,8 @@ export default function LoginScreen() {
         try {
             const response = await login(data).unwrap();
             dispatch(setAuth({ accessToken: response.accessToken }));
-
+            //Оновляємо усі стани компонентів
+            dispatch(api.util.resetApiState());
             router.replace('/onBoarding');
         } catch (error: any) {
             Alert.alert("Помилка", error?.data?.message || "Не вдалося увійти");
