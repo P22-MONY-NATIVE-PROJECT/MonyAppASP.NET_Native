@@ -21,6 +21,12 @@ public class RegisterHandler(
 {
     public async Task<TokenDto> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
+        var existingUser = await userManager.FindByEmailAsync(request.model.Email);
+        if (existingUser != null)
+        {
+            throw new Exception($"Користувач з поштою {request.model.Email} вже зареєстрований");
+        }
+
         var user = mapper.Map<UserEntity>(request.model);
 
         if (request.model.ImageFile != null)
@@ -29,17 +35,36 @@ public class RegisterHandler(
         }
 
         var createResult = await userManager.CreateAsync(user, request.model.Password);
+
         if (!createResult.Succeeded)
-            return new TokenDto();
+        {
+            var errors = string.Join(", ", createResult.Errors.Select(e => e.Description));
+            throw new Exception($"Помилка реєстрації: {errors}");
+        }
 
         if (!await roleManager.RoleExistsAsync("User"))
         {
-            await roleManager.CreateAsync(new RoleEntity { Name = "User" });
+            var roleResult = await roleManager.CreateAsync(new RoleEntity { Name = "User" });
+            if (!roleResult.Succeeded)
+            {
+                throw new Exception("Не вдалося створити системну роль 'User'");
+            }
         }
 
-        await userManager.AddToRoleAsync(user, "User");
+        var roleAddResult = await userManager.AddToRoleAsync(user, "User");
+        if (!roleAddResult.Succeeded)
+        {
+            throw new Exception("Не вдалося призначити роль користувачу");
+        }
 
-        await onboardingService.SeedInitialDataAsync(user, cancellationToken);
+        try
+        {
+            await onboardingService.SeedInitialDataAsync(user, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Помилка при створенні початкових даних: {ex.Message}");
+        }
 
         return await tokenService.CreateTokenAsync(user);
     }

@@ -35,12 +35,16 @@ public class AuthController(IMediator mediator, IJWTTokenService tokenService) :
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> Register([FromForm] RegisterDto dto)
     {
-        var command = new RegisterCommand(dto);
-        var result = await mediator.Send(command);
-        if (string.IsNullOrWhiteSpace(result?.AccessToken))
-            return BadRequest();
+        try {
+            var command = new RegisterCommand(dto);
+            var result = await mediator.Send(command);
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpPost("google")]
