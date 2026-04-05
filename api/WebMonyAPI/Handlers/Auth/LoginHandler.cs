@@ -14,11 +14,11 @@ public class LoginHandler(UserManager<UserEntity> userManager, IJWTTokenService 
         var user = await userManager.FindByEmailAsync(request.model.Email);
 
         if (user == null)
-            return new TokenDto();
+            throw new Exception($"Користувача з поштою {request.model.Email} не існує");
 
         var isValidPassword = await userManager.CheckPasswordAsync(user, request.model.Password);
         if (!isValidPassword)
-            return new TokenDto();
+            throw new Exception("Невірний пароль");
 
         user.IsDeleted = false;
         await userManager.UpdateAsync(user);

@@ -17,12 +17,17 @@ public class AuthController(IMediator mediator, IJWTTokenService tokenService) :
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto dto)
     {
-        var command = new LoginCommand(dto);
-        var result = await mediator.Send(command);
-        if (string.IsNullOrWhiteSpace(result?.AccessToken))
-            return BadRequest();
+        try
+        {
+            var command = new LoginCommand(dto);
+            var result = await mediator.Send(command);
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpPost]
