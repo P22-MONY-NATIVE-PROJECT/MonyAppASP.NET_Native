@@ -1,6 +1,6 @@
-// export const BASE_URL = 'http://192.168.0.101:5159';
+export const BASE_URL = 'http://192.168.0.102:5159';
 // export const BASE_URL = 'http://192.168.50.185:5159';
-export const BASE_URL = 'https://f-track.itstep.click';
+// export const BASE_URL = 'https://f-track.itstep.click';
 
 const  IMAGE_URL = BASE_URL + "/images";
 // const  IMAGES_50_URL = IMAGE_URL + "/50_";

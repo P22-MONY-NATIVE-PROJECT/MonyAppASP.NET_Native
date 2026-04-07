@@ -2,12 +2,10 @@ import * as SecureStore from 'expo-secure-store';
 import { jwtDecode } from 'jwt-decode';
 
 let _accessToken: string | null = null;
-let _refreshToken: string | null = null;
 let _theme: 'light' | 'dark' | null = null;
 
 export async function initStorage(): Promise<void> {
     _accessToken  = await SecureStore.getItemAsync('accessToken');
-    _refreshToken = await SecureStore.getItemAsync('refreshToken');
     const saved   = await SecureStore.getItemAsync('theme');
     _theme = (saved === 'dark' || saved === 'light') ? saved : null;
 }
@@ -18,31 +16,25 @@ export interface User {
     email: string;
     image: string;
     token: string;
-    refreshToken: string;
     roles: string[];
 }
 
 export const storage = {
 
-    setAuth: (accessToken: string, refreshToken: string) => {
+    setAuth: (accessToken: string) => {
         _accessToken  = accessToken;
-        _refreshToken = refreshToken;
         SecureStore.setItemAsync('accessToken',  accessToken);
-        SecureStore.setItemAsync('refreshToken', refreshToken);
     },
 
     getAccessToken:  (): string | null => _accessToken,
-    getRefreshToken: (): string | null => _refreshToken,
 
     clearAuth: () => {
         _accessToken  = null;
-        _refreshToken = null;
         SecureStore.deleteItemAsync('accessToken');
-        SecureStore.deleteItemAsync('refreshToken');
     },
 
     getUser: (): User | null => {
-        if (!_accessToken || !_refreshToken) return null;
+        if (!_accessToken) return null;
         try {
             const decoded: any = jwtDecode(_accessToken);
 
@@ -64,7 +56,6 @@ export const storage = {
                 email: decoded['email'] ?? decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress']   ?? '',
                 image: decoded['image'] ?? '',
                 token: _accessToken,
-                refreshToken: _refreshToken,
                 roles,
             };
         } catch {
@@ -78,3 +69,4 @@ export const storage = {
     },
     getTheme: (): 'light' | 'dark' | undefined => _theme ?? undefined,
 };
+

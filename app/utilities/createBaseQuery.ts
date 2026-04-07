@@ -6,11 +6,7 @@ import {
 } from "@reduxjs/toolkit/query";
 import {APP_URLS} from "@/constants/Urls";
 import { storage } from "@/utilities/storage";
-
-interface RefreshResponse {
-    accessToken: string;
-    refreshToken: string;
-}
+import { logout } from "@/store/authSlice";
 
 const rawBaseQuery = fetchBaseQuery({
     baseUrl: `${APP_URLS.BASE_URL}/api/`,
@@ -34,48 +30,13 @@ export const createBaseQuery = (endpoint: string): BaseQueryFn<string | FetchArg
 
         let result = await rawBaseQuery(normalizedArgs, api, extraOptions);
 
-        if (result.error?.status !== 401) {
-            return result;
-        }
+         if (result.error?.status === 401) {
+             console.log("[BaseQuery] 401 Unauthorized - Clearing auth and logging out.");
+        //     storage.clearAuth();
+        //     api.dispatch(logout());
+         }
 
-        const refreshToken = storage.getRefreshToken();
-
-        if (!refreshToken) {
-            storage.clearAuth();
-            return result;
-        }
-
-        const refreshResult = await rawBaseQuery(
-            {
-                url: "Auth/refresh",
-                method: "POST",
-                body: { refreshToken },
-            },
-            api,
-            extraOptions
-        );
-
-        if (refreshResult.data) {
-            const tokens = refreshResult.data as RefreshResponse;
-
-            storage.setAuth(tokens.accessToken, tokens.refreshToken);
-
-            result = await rawBaseQuery(
-                {
-                    ...normalizedArgs,
-                    headers: {
-                        ...(normalizedArgs.headers ?? {}),
-                        authorization: `Bearer ${tokens.accessToken}`,
-                    },
-                },
-                api,
-                extraOptions
-            );
-
-            return result;
-        }
-
-        storage.clearAuth();
         return result;
     };
-};
+};
+

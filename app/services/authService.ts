@@ -5,7 +5,6 @@ import { IEditUser } from "@/types/auth/IEditUser";
 import {serialize} from "object-to-formdata";
 import {IForgotPasswordRequest} from "@/types/auth/IForgotPasswordRequest";
 import {IResetPasswordRequest} from "@/types/auth/IResetPasswordRequest";
-import {IRefreshRequest} from "@/types/auth/IRefreshRequest";
 import {IGoogleLoginRequest} from "@/types/auth/IGoogleLoginRequest";
 import { api } from "@/services/api";
 
@@ -17,7 +16,7 @@ export const authService = api.injectEndpoints({
                 method: 'POST',
                 body: credentials
             }),
-            invalidatesTags: ["Balances","Balance","Operations","Operation","Categories","Category"]
+            //invalidatesTags: ["Balances","Balance","Operations","Operation","Categories","Category"]
         }),
 
         register: builder.mutation<IAuthResponse, IRegister>({
@@ -30,7 +29,7 @@ export const authService = api.injectEndpoints({
                     body: formData
                 };
             },
-            invalidatesTags: ["Balances","Balance","Operations","Operation","Categories","Category"]
+            //invalidatesTags: ["Balances","Balance","Operations","Operation","Categories","Category"]
         }),
 
         editProfile: builder.mutation<IAuthResponse, IEditUser>({
@@ -56,13 +55,6 @@ export const authService = api.injectEndpoints({
                 body: model
             })
         }),
-        refresh: builder.mutation<IAuthResponse, IRefreshRequest>({
-            query: (body) => ({
-                url: 'Auth/refresh',
-                method: 'POST',
-                body
-            })
-        }),
 
         googleLogin: builder.mutation<IAuthResponse, IGoogleLoginRequest>({
             query: (body) => ({
@@ -81,7 +73,7 @@ export const {
     useEditProfileMutation,
     useForgotPasswordMutation,
     useResetPasswordMutation,
-    useRefreshMutation,
     useGoogleLoginMutation,
 } = authService;
+
 

@@ -12,28 +12,38 @@ export const useNotifications = () => {
     const [lastNotification, setLastNotification] = useState<any | null>(null);
     const user = useSelector((state: RootState) => state.auth.user);
 
+    const userId = user?.id;
+
+    console.log("Login user", userId);
+
     useEffect(() => {
         if (!user) {
-            stopSignalRConnection();
+            console.log('[useNotifications] User NOT set, stopping SignalR if active.');
+            try {
+                stopSignalRConnection()
+                    .then(r =>
+                        console.log("Закрили зєднання"));
+            }
+            catch(error)
+            {
+                console.log("Помилка виходу із додатку", error);
+            }
+
             return;
         }
 
-        const _ = async () => {
-            try {
-                await NotificationService.configureNotifications();
-            } catch (e) {
-                Alert.alert('Потрібен дозвіл', 'Будь ласка, дозвольте сповіщення у налаштуваннях.');
-            }
-        };
+        console.log('[useNotifications] User is AUTHENTICATED. Initializing SignalR/Notifications logic for User ID:', user.id);
 
-        const initSignalR = async () => {
-            const token = await storage.getAccessToken();
-            if (!token) {
-                console.log('[useNotifications] No token found in storage, skipping SignalR init');
-                return;
+        const init = async () => {
+            try {
+                // Configure expo-notifications and request permissions
+                await NotificationService.configureNotifications();
+                console.log('[useNotifications] Notifications configured successfully');
+            } catch (e) {
+                console.warn('[useNotifications] Error configuring notifications:', e);
             }
-            await startSignalRConnection();
-            
+
+            // Set the SignalR callback BEFORE starting the connection
             setOnNotificationReceived((data: { title: string; message: string }) => {
                 console.log('[useNotifications] SignalR Notification received:', data);
 
@@ -47,14 +57,13 @@ export const useNotifications = () => {
                 NotificationService.createNotification(notiModel);
                 setLastNotification(data);
             });
+            // Start the connection
+            await startSignalRConnection();
         };
 
-        initSignalR();
+        init();
+    }, [userId]);
 
-        return () => {
-        };
-
-    }, [user]);
 
     return { lastNotification };
 };

@@ -70,12 +70,13 @@ export default function EditProfileScreen() {
   const onSubmit = async (data: EditProfileFormData) => {
     try {
       const response = await editProfile(data).unwrap();
-      dispatch(setAuth({ accessToken: response.accessToken, refreshToken: response.refreshToken }));
+      dispatch(setAuth({ accessToken: response.accessToken }));
       router.back();
     } catch (error: any) {
       Alert.alert('Update failed', error?.data?.message || 'Something went wrong');
     }
   };
+
 
   // Show local pick > existing server image > nothing
   const avatarUri = localImageUri ?? (user?.image ? APP_URLS.IMAGES_400_URL + user.image : null);
